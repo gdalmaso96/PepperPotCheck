@@ -1,0 +1,111 @@
+#########################################################################################
+#                                                                                       #
+#                    Script for Pepper Pot emittance measurement tests                  #
+#                                                                                       #
+#########################################################################################
+
+#########################################################################################
+# Commands
+# g4bl scripts/pepperpot.g4bl last=1e7 spacing=25 holeR=0.5 L=100 nRows=9 ALUMINUM=1
+
+#################################### Global Settings ####################################
+physics QGSP_BIC_HP_EMX
+reference particle=mu+ referenceMomentum=28 beamX=0 beamY=0 beamZ=0
+param -unset histoFile=g4beamline
+param -unset first=1
+param -unset last=10000
+param -unset killer=1
+particlecolor pi+=0,0,1 mu+=1,0,0 e+=0,1,0 reference=1,0,0
+#########################################################################################
+
+######################################### Seed ##########################################
+param -unset SEED=0
+if $SEED>0
+    randomseed Set $SEED
+endif
+
+################################# Elements Strengths ####################################
+param -unset sign=1 		# sign=-1 for backtracking ::: sign=1 for normal DS tracking
+include "/home/developer/Simulazioni/PepperPot/Settings/Currents.txt"
+include "/home/developer/Simulazioni/PepperPot/Settings/Scalefactors.txt" 	# scaling factors for fieldmaps/generic elements/fieldexpressions
+#########################################################################################
+######################################## Beam ###########################################
+
+param -unset beamFile=/home/developer/Simulazioni/PepperPot/beam/CMBL2021_05_QSK41_final_spread5.root
+param -unset poszQSK41=250
+param -unset poszQSK42=$poszQSK41+500
+param -unset poszQSK43=$poszQSK42+500
+param -unset poszPILL=$poszQSK43+500
+param -unset L=50
+param -unset poszGrid=$poszPILL-$L
+
+param -unset beamPositionZ=$poszQSK41-250
+
+beam root file=$beamFile firstEvent=$first lastEvent=$last beamZ=$beamPositionZ name="beam"
+
+#########################################################################################
+
+######################################### QSK ###########################################
+fieldmap QSK file=/home/developer/Simulazioni/CMBL/QuadScanTest/FieldMaps/feldqsk.dat
+#genericquad QSKDUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 poleTipRadius=125 coilRadius=160 coilHalfwidth=55
+genericquad QSKDUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 apertureRadius=125
+#########################################################################################
+
+######################################### PILL ##########################################
+virtualdetector PILL radius=1000 length=1 color=0,1,0,0.5 material=Vacuum format=Extended require=(PDGid==-13) #(PDGid!=14&&PDGid!=-14&&PDGid!=12&&PDGid!=-12)
+#########################################################################################
+
+######################################### GRID ##########################################
+param -unset holeR=1
+param -unset spacing=25
+param -unset nRows=9
+
+param -unset POLY=0
+param -unset LEAD=0
+param -unset ALUMINUM=0
+param -unset thick=3
+material POLYVINYLTOLUENE H,0.5243 C,0.4757 density=1.023
+
+tubs hole innerRadius=0 outerRadius=$holeR initialPhi=0 finalPhi=360 length=$thick*1.5
+box house height=$spacing*0.9999 width=$spacing*0.9999 length=$thick
+tubs frame innerRadius=0 outerRadius=250 initialPhi=0 finalPhi=360 length=$thick
+box iframe height=$nRows*$spacing width=$nRows*$spacing length=$thick*1.5
+
+
+if $POLY
+    boolean op=subtraction oFRAME frame iframe material=POLYVINYLTOLUENE color=1,1,0
+    boolean op=subtraction GRID house hole material=POLYVINYLTOLUENE color=1,1,0
+elseif $LEAD
+    boolean op=subtraction oFRAME frame iframe material=Pb color=1,1,0
+    boolean op=subtraction GRID house hole material=Pb color=1,1,0
+elseif $ALUMINUM
+    boolean op=subtraction oFRAME frame iframe material=Al color=0.5,0.5,0.5,0.8
+    boolean op=subtraction GRID house hole material=Al color=0.5,0.5,0.5,0.8
+else
+    boolean op=subtraction oFRAME frame iframe kill=1 color=1,1,0
+    boolean op=subtraction GRID house hole kill=1 color=1,1,0
+endif
+#########################################################################################
+
+####################################### BEAMLINE ########################################
+
+#####################################################
+place QSK rename=QSK41 current=$QSK41set z=$poszQSK41
+place QSKDUMMY z=$poszQSK41 rename=QSK41DUMMY
+place QSK rename=QSK42 current=$QSK42set z=$poszQSK42
+place QSKDUMMY z=$poszQSK42 rename=QSK42DUMMY
+place QSK rename=QSK43 current=$QSK43set z=$poszQSK43
+place QSKDUMMY z=$poszQSK43 rename=QSK43DUMMY
+place PILL z=$poszPILL
+
+param -unset placePepperPot=0
+if $placePepperPot
+	place oFRAME z=$poszGrid
+	#place PILL z=$poszGrid-$thick*0.5-0.5 rename=PILLgrid
+
+	do i 1 $nRows
+		do j 1 $nRows
+			place GRID z=$poszGrid x=($i-$nRows*0.5-0.5)*$spacing  y=($j-$nRows*0.5-0.5)*$spacing
+		enddo
+	enddo
+endif

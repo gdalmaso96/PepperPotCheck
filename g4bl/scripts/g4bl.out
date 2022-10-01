@@ -1,0 +1,414 @@
+G4BL_DIR=/home/developer/G4beamline-3.06
+G4ENSDFSTATEDATA=/home/developer/Geant4Data/G4ENSDFSTATE2.2
+G4LEDATA=/home/developer/Geant4Data/G4EMLOW7.7
+G4LEVELGAMMADATA=/home/developer/Geant4Data/PhotonEvaporation5.3
+G4SAIDXSDATA=/home/developer/Geant4Data/G4SAIDDATA2.0
+G4NEUTRONHPDATA=/home/developer/Geant4Data/G4NDL4.5
+G4NEUTRONXSDATA=/home/developer/Geant4Data/G4NEUTRONXS1.4
+G4PIIDATA=/home/developer/Geant4Data/G4PII1.3
+G4RADIOACTIVEDATA=/home/developer/Geant4Data/RadioactiveDecay5.3
+G4REALSURFACEDATA=/home/developer/Geant4Data/RealSurface2.1.1
+G4ABLADATA=/home/developer/Geant4Data/G4ABLA3.1
+G4PARTICLEXSDATA=/home/developer/Geant4Data/G4PARTICLEXS1.1
+G4INCLDATA=/home/developer/Geant4Data/G4INCL1.0
+G4TENDLDATA=/home/developer/Geant4Data/G4TENDL1.3.2
+G4beamline Process ID 166
+
+*************************************************************
+ g4beamline version: 3.06                        (Jan 27 2022)
+                      Copyright : Tom Roberts, Muons, Inc.
+                        License : Gnu Public License
+                            WWW : http://g4beamline.muonsinc.com
+**************************************************************
+ Geant4 version Name: geant4-10-05-patch-01    (17-April-2019)
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+param        viewer        best,1
+geometry                   nPoints=100 printGeometry=0 visual=0
+                           tolerance=0.002
+G4PhysListFactory::GetReferencePhysList <QGSP_BIC_HP_EMX>  EMoption= 2
+<<< Geant4 Physics List simulation engine: QGSP_BIC_HP
+
+<<< Reference Physics List QGSP_BIC_HP_EMX is built
+
+physics      QGSP_BIC_HP_EMX disable= inactivate= deactivate= doStochastics=1
+                           fluct=1 minRangeCut=1 list=0 gammaToMuPair=0
+                           spinTracking=0 synchrotronRadiation=0
+                           synchrotronRadiationMuon=0 maxTime=1e+06
+                           splittingFactor=1
+reference                  particle=mu+ beamX=0 beamY=0 beamZ=0 beamT=0
+                           rotation= referenceMomentum=28 beamXp=0 beamYp=0
+                           meanMomentum=28 meanXp=0 meanYp=0 tuneZ=-3.7e+21
+                           tuneMomentum=-3.7e+21 tolerance=0.001 noEfield=0
+                           noBfield=0 noEloss=0 P=28
+param        histoFile     g4beamline  (already defined)
+param        first         1
+param        last          10000
+param        killer        1
+particlecolor              e+=0,1,0 mu+=1,0,0 pi+=0,0,1 reference=1,0,0
+param        SEED          0
+param        sign          1
+param        AHSW41cur     97.49
+param        QSF41cur      -93.251
+param        HSC41cur      -19.06
+param        QSF42cur      82.6211
+param        QSF43cur      -64.4526
+param        HSC42cur      -29.8842
+param        QSF44cur      81.8146
+param        QSF45cur      84.9998
+param        HSC43cur      44.9989
+param        QSF46cur      -82.662
+param        QSF47cur      95.1497
+param        HSC44cur      -9.99954
+param        QSF48cur      -50.5661
+param        AST41cur      -97.4
+param        ASC41cur      119
+param        QSB41cur      39.3
+param        QSB42cur      -47.76
+param        QSB43cur      15.00
+param        SEP41cur      -79
+param        SEP41vol      -300
+param        QSK41cur      24.074974186601978
+param        QSK42cur      -41.088738
+param        QSK43cur      26.709925230374527
+param        SML41cur      -12.412704
+param        ASL41cur      -73.318022
+param        QSO41cur      33.313499819008975
+param        QSO42cur      -10.179362
+param        ASK41cur      -91.108922
+param        QSM41cur      -105.83616
+param        COPSOLcur     0
+param        VERTSTEERcur  0
+param        MU3ESOLcur    100
+param        FSH41Ldac     250
+param        FSH41Rdac     280
+param        FS42Ldac      300
+param        FS42Rdac      380
+param        FS42Vdac      250
+param        FSH43Ldac     240
+param        FSH43Rdac     220
+param        scaleAHSW     -0.0027777778
+param        scaleQSF      -0.01
+param        scaleHSC      1.6666667
+param        scaleAST      0.004
+param        scaleASC      -0.01
+param        scaleQSB      -0.2123264
+param        scaleSEP_B    1
+param        scaleSEP_E    1
+param        scaleQSK      -0.025
+param        scaleSML      0.00014035785
+param        scaleASL      -0.012439358
+param        scaleQSO      0.002
+param        scaleASK      -0.010884354
+param        scaleQSM      -0.0047619048
+param        scaleCOPSOL   0.01
+param        scaleQSN      0.01
+param        scaleFSH41L   1
+param        scaleFSH41R   1
+param        scaleFS42L    1
+param        scaleFS42R    1
+param        scaleFS42V    1
+param        scaleFSH43L   1
+param        scaleFSH43R   1
+param        scaleMU3ESOL  0.01
+param        AHSW41set     -0.27080556
+param        QSF41set      0.93251
+param        HSC41set      -31.766667
+param        QSF42set      -0.826211
+param        QSF43set      0.644526
+param        HSC42set      -49.807001
+param        QSF44set      -0.818146
+param        QSF45set      -0.849998
+param        HSC43set      74.998168
+param        QSF46set      0.82662
+param        QSF47set      -0.951497
+param        HSC44set      -16.6659
+param        QSF48set      0.505661
+param        AST41set      -0.3896
+param        ASC41set      -1.19
+param        QSB41set      -8.3444275
+param        QSB42set      10.140709
+param        QSB43set      -3.184896
+param        SEP41_E_set   -300
+param        SEP41_B_set   -79
+param        QSK41set      -0.60187435
+param        QSK42set      1.0272185
+param        QSK43set      -0.66774813
+param        SML41set      -0.0017422204
+param        ASL41set      0.91202912
+param        QSO41set      0.066627
+param        QSO42set      -0.020358724
+param        ASK41set      0.99166176
+param        QSM41set      0.50398172
+param        COPSOLset     0
+param        MU3ESOLset    1
+param        FSH41Lset     250
+param        FSH41Rset     280
+param        FS42Lset      300
+param        FS42Rset      380
+param        FS42Vset      250
+param        FSH43Lset     240
+param        FSH43Rset     220
+param        beamFile      /home/developer/Simulazioni/PepperPot/beam/CMBL2021_05_QSK41_final_spread5.root
+param        poszQSK41     250
+param        poszQSK42     750
+param        poszQSK43     1250
+param        poszPILL      1750
+param        L             50
+param        poszGrid      1700
+param        beamPositionZ 0
+beam    ROOT   nEvents=10000 firstEvent=1 lastEvent=10000 beamZ=0.0 maxR=1000000.0 renumber=0 weight=1.000000 
+		filename=/home/developer/Simulazioni/PepperPot/beam/CMBL2021_05_QSK41_final_spread5.root directory= name=beam 
+		
+BLFieldMap: reading file '/home/developer/Simulazioni/CMBL/QuadScanTest/FieldMaps/feldqsk.dat'
+fieldmap     QSK           filename=/home/developer/Simulazioni/CMBL/QuadScanTest/FieldMaps/feldqsk.dat
+                           file=/home/developer/Simulazioni/CMBL/QuadScanTest/FieldMaps/feldqsk.dat
+                           current=1 gradient=1 timeOffset=0
+genericquad  QSKDUMMY      fieldLength=1 ironLength=400 ironRadius=500
+                           apertureRadius=125 poleTipRadius=0 coilRadius=0
+                           coilHalfwidth=0 coilHalfWidth=0 gradient=0
+                           maxStep=100 ironMaterial=Fe fieldMaterial=Vacuum
+                           ironColor=1,0,0,0.6 kill=1 fringe= fringeFactor=1
+                           openAperture=0
+virtualdetector PILL       radius=1000 innerRadius=0 height=2000 width=2000
+                           length=1 maxStep=100 material=Vacuum
+                           color=0,1,0,0.5 noSingles=0 format=extended
+                           filename= file= require=(PDGid==-13)
+                           referenceParticle=0 coordinates=Centerline kill=0
+param        holeR         1
+param        spacing       25
+param        nRows         9
+param        POLY          0
+param        LEAD          0
+param        ALUMINUM      0
+param        thick         3
+material POLYVINYLTOLUENE Mixture: 0.52*H+0.48*C
+                density=1.023 temperature=273 pressure=1.0
+tubs         hole          innerRadius=0 outerRadius=1 initialPhi=0
+                           finalPhi=360 length=4.5 maxStep=100 material=
+                           color=1,1,1 kill=0 radius=1
+box          house         height=25 width=25 length=3 maxStep=100 material=
+                           color=1,1,1 kill=0
+tubs         frame         innerRadius=0 outerRadius=250 initialPhi=0
+                           finalPhi=360 length=3 maxStep=100 material=
+                           color=1,1,1 kill=0 radius=250
+box          iframe        height=225 width=225 length=4.5 maxStep=100
+                           material= color=1,1,1 kill=0
+boolean      oFRAME        maxStep=100 material=Vacuum color=1,1,0 kill=1
+                           op=subtraction x=0 y=0 z=0 rotation=
+boolean      GRID          maxStep=100 material=Vacuum color=1,1,0 kill=1
+                           op=subtraction x=0 y=0 z=0 rotation=
+place   QSK     copies=1 x=0.0 y=0.0 z=250.0 rename='QSK41'
+                current=-0.60187435
+place   QSKDUMMY copies=1 x=0.0 y=0.0 z=250.0 rename='QSK41DUMMY'
+place   QSK     copies=1 x=0.0 y=0.0 z=750.0 rename='QSK42'
+                current=1.0272185
+place   QSKDUMMY copies=1 x=0.0 y=0.0 z=750.0 rename='QSK42DUMMY'
+place   QSK     copies=1 x=0.0 y=0.0 z=1250.0 rename='QSK43'
+                current=-0.66774813
+place   QSKDUMMY copies=1 x=0.0 y=0.0 z=1250.0 rename='QSK43DUMMY'
+place   PILL    copies=1 x=0.0 y=0.0 z=1750.0 
+param        placePepperPot 0
+
+World size (before incrementing by 201.357 mm): 2000.0 H  2000.0 W  3501.0 L
+
+PARAMETERS:
+      AHSW41cur=97.49
+      AHSW41set=-0.27080556
+       ALUMINUM=0
+       ASC41cur=119
+       ASC41set=-1.19
+       ASK41cur=-91.108922
+       ASK41set=0.99166176
+       ASL41cur=-73.318022
+       ASL41set=0.91202912
+       AST41cur=-97.4
+       AST41set=-0.3896
+      COPSOLcur=0
+      COPSOLset=0
+       FS42Ldac=300
+       FS42Lset=300
+       FS42Rdac=380
+       FS42Rset=380
+       FS42Vdac=250
+       FS42Vset=250
+      FSH41Ldac=250
+      FSH41Lset=250
+      FSH41Rdac=280
+      FSH41Rset=280
+      FSH43Ldac=240
+      FSH43Lset=240
+      FSH43Rdac=220
+      FSH43Rset=220
+       HSC41cur=-19.06
+       HSC41set=-31.766667
+       HSC42cur=-29.8842
+       HSC42set=-49.807001
+       HSC43cur=44.9989
+       HSC43set=74.998168
+       HSC44cur=-9.99954
+       HSC44set=-16.6659
+              L=50
+           LEAD=0
+     MU3ESOLcur=100
+     MU3ESOLset=1
+           POLY=0
+       QSB41cur=39.3
+       QSB41set=-8.3444275
+       QSB42cur=-47.76
+       QSB42set=10.140709
+       QSB43cur=15.00
+       QSB43set=-3.184896
+       QSF41cur=-93.251
+       QSF41set=0.93251
+       QSF42cur=82.6211
+       QSF42set=-0.826211
+       QSF43cur=-64.4526
+       QSF43set=0.644526
+       QSF44cur=81.8146
+       QSF44set=-0.818146
+       QSF45cur=84.9998
+       QSF45set=-0.849998
+       QSF46cur=-82.662
+       QSF46set=0.82662
+       QSF47cur=95.1497
+       QSF47set=-0.951497
+       QSF48cur=-50.5661
+       QSF48set=0.505661
+       QSK41cur=24.074974186601978
+       QSK41set=-0.60187435
+       QSK42cur=-41.088738
+       QSK42set=1.0272185
+       QSK43cur=26.709925230374527
+       QSK43set=-0.66774813
+       QSM41cur=-105.83616
+       QSM41set=0.50398172
+       QSO41cur=33.313499819008975
+       QSO41set=0.066627
+       QSO42cur=-10.179362
+       QSO42set=-0.020358724
+           SEED=0
+    SEP41_B_set=-79
+    SEP41_E_set=-300
+       SEP41cur=-79
+       SEP41vol=-300
+       SML41cur=-12.412704
+       SML41set=-0.0017422204
+   VERTSTEERcur=0
+            Zcl=1750.5
+       beamFile=/home/developer/Simulazioni/PepperPot/beam/CMBL2021_05_QSK41_final_spread5.root
+  beamPositionZ=0
+     deltaChord=3.0
+deltaIntersection=0.1
+   deltaOneStep=0.01
+         epsMax=0.05
+         epsMin=2.5e-7
+ eventTimeLimit=30
+    fieldVoxels=200,200,200
+          first=1
+      histoFile=g4beamline
+    histoUpdate=0
+          holeR=1
+         killer=1
+           last=10000
+        maxStep=100.0
+        minStep=0.01
+          nRows=9
+ placePepperPot=0
+       poszGrid=1700
+       poszPILL=1750
+      poszQSK41=250
+      poszQSK42=750
+      poszQSK43=1250
+      scaleAHSW=-0.0027777778
+       scaleASC=-0.01
+       scaleASK=-0.010884354
+       scaleASL=-0.012439358
+       scaleAST=0.004
+    scaleCOPSOL=0.01
+     scaleFS42L=1
+     scaleFS42R=1
+     scaleFS42V=1
+    scaleFSH41L=1
+    scaleFSH41R=1
+    scaleFSH43L=1
+    scaleFSH43R=1
+       scaleHSC=1.6666667
+   scaleMU3ESOL=0.01
+       scaleQSB=-0.2123264
+       scaleQSF=-0.01
+       scaleQSK=-0.025
+       scaleQSM=-0.0047619048
+       scaleQSN=0.01
+       scaleQSO=0.002
+     scaleSEP_B=1
+     scaleSEP_E=1
+       scaleSML=0.00014035785
+           sign=1
+        spacing=25
+ steppingFormat=N GLOBAL CL KE STEP VOL PROCESS
+steppingVerbose=0
+          thick=3
+         viewer=best,1
+ wallClockLimit=-1
+  worldMaterial=Vacuum
+     zTolerance=2.0
+BLMappedMagnet::Construct QSK41 parent= relZ=250.0
+Checking overlaps for volume QSK41DUMMY ... OK! 
+Checking overlaps for volume QSK41DUMMY ... OK! 
+BLCMDgenericquad::Construct QSK41DUMMY parent= relZ=250.0 globZ=250.0
+BLMappedMagnet::Construct QSK42 parent= relZ=750.0
+Checking overlaps for volume QSK42DUMMY ... OK! 
+Checking overlaps for volume QSK42DUMMY ... OK! 
+BLCMDgenericquad::Construct QSK42DUMMY parent= relZ=750.0 globZ=750.0
+BLMappedMagnet::Construct QSK43 parent= relZ=1250.0
+Checking overlaps for volume QSK43DUMMY ... OK! 
+Checking overlaps for volume QSK43DUMMY ... OK! 
+BLCMDgenericquad::Construct QSK43DUMMY parent= relZ=1250.0 globZ=1250.0
+Checking overlaps for volume PILL ... OK! 
+BLCMDvirtualdetector::Construct PILL parent= relZ=1750.0 globZ=1750.0
+/home/developer/Geant4Data/G4NDL4.5
+@@@ G4ParticleHPInelastic instantiated for particle neutron data directory variable is G4NEUTRONHPDATA pointing to /home/developer/Geant4Data/G4NDL4.5/Inelastic
+@@@ G4ParticleHPInelasticData instantiated for particle neutron data directory variable is G4NEUTRONHPDATA pointing to /home/developer/Geant4Data/G4NDL4.5
+NeutronHP: /Capture file for Z = 6, A = 12 is not found and NeutronHP will use /home/developer/Geant4Data/G4NDL4.5/Capture/CrossSection/6_nat_Carbon
+NeutronHP: /Elastic file for Z = 6, A = 12 is not found and NeutronHP will use /home/developer/Geant4Data/G4NDL4.5/Elastic/CrossSection/6_nat_Carbon
+NeutronHP: /Inelastic file for Z = 6, A = 12 is not found and NeutronHP will use /home/developer/Geant4Data/G4NDL4.5/Inelastic/CrossSection/6_nat_Carbon
+NeutronHP: /Capture file for Z = 6, A = 13 is not found and NeutronHP will use /home/developer/Geant4Data/G4NDL4.5/Capture/CrossSection/6_nat_Carbon
+NeutronHP: /Elastic file for Z = 6, A = 13 is not found and NeutronHP will use /home/developer/Geant4Data/G4NDL4.5/Elastic/CrossSection/6_nat_Carbon
+NeutronHP: /Inelastic file for Z = 6, A = 13 is not found and NeutronHP will use /home/developer/Geant4Data/G4NDL4.5/Inelastic/CrossSection/6_nat_Carbon
+G4PhysicsListHelper::RegisterProcess :RadioactiveDecay for GenericIon with  type/subtype =6/210  is has same subType as RadioactiveDecay for GenericIon
+It will not be added !!
+**************************************************************************
+*** G4Exception: Run0111
+***    severity: Warning
+***   issued by: G4PhysicsListHelper::RegisterPorcess
+*** description: Duplication of processes
+**************************************************************************
+beam: Root TNtuple /home/developer/Simulazioni/PepperPot/beam/CMBL2021_05_QSK41_final_spread5.root:/beam
+
+Geometry test nPoints=100 tolerance=0.002 mm:
+Testing geometry for children of group 'World':
+Total geometry errors = 0  0 seconds
+
+================= Prepare Tune Particle(s) ===========
+================= Begin Tune Particle(s) =============
+=======================================================================
+======       Radioactive Decay Physics Parameters              ========
+=======================================================================
+Max life time                                     1.4427e+06 ps
+Internal e- conversion flag                       1
+Stored internal conversion coefficients           1
+Enable correlated gamma emission                  0
+Max 2J for sampling of angular correlations       10
+Atomic de-excitation enabled                      1
+Auger electron emission enabled                   1
+Auger cascade enabled                             1
+Check EM cuts disabled for atomic de-excitation   1
+Use Bearden atomic level energies                 0
+=======================================================================
+NeutronHP: /Capture file for Z = 6, A = 12 is not found and NeutronHP will use /home/developer/Geant4Data/G4NDL4.5/Capture/CrossSection/6_nat_Carbon
