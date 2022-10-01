@@ -22,7 +22,7 @@ Centroids could be included as well in the fit to help a bit.
 
 Plan on writing a python script that can run on the cluster.
 
-## Second strategy - 
+## Second strategy - fit Pz spectrum assuming scaling factors
 <ol>
   <li>Could define a Pz distribution as the convolution of a triangle with a theta function and a gaussian. Could then minimize chi2 to measured profiles to determine Pz spectrum. Even if the emittance is big probably QSK non linearities are not high enough to allow for a sensitive estimate. None the less, including the measurements at COBRA center (with full beamline) would give better sensitivity on longitudinal dynamics</li>
  </ol>
