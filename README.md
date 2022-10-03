@@ -31,7 +31,7 @@ That being said, for such a method to be effective I have to go through the setp
 
 COBRA and BTS could as well constrain the centroids.
 
-## Third strategy - fit Pz spectrum assuming scaling factors
+## Third strategy - fit Pz spectrum + phase space assuming scaling factors
 Fit full phase space with asymmetric guass with exponential tail using both quad scan and pepper-pot measurements. To do:
 <ol>
   <li> Check parametrization as function of u in transverse phase space from PepperPot 2022.</li>
@@ -58,4 +58,10 @@ At each iteration need to:
 ## Luca's involvement
 As the longitudinal fit is probably a bit too convoluted, Luca could try to do the fit to the scale factor. I will prepare a g4bl model and make a first comparison myself between the PILL profiles and the simulation. Could also think of introducing a scale factor on the position scale: if Air MS is non neglible (by current estimate shouldn't introduce any issue), then we would observe a broadening of all the shapes. Assuming that the effect is still small stretching the distributions from the simulation could be enough, otherwise it would be needed to introduce a double deconvolution to the measured beam phase space based on computing the expected brodening for such a column of air, or even fit it through simulation.
 
+# Included Data
+Two folders containing 2022 data are included:
+<ol>
+  <li> Data_2022_Mu3e: contains beam profiles at collimator as a function of QSK43 current </li>
+  <li> Data_2022_MEG: contains the PepperPot scan, the MENT scans and the raster scan at COBRA center </li>
+</ol>
 
