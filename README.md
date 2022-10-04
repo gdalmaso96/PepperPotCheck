@@ -1,5 +1,6 @@
 # PepperPotCheck
 This repo contains the studies of the PepperPot measurement performed in June 2022 along the MEG beam line
+The strategies reported here are not ordered by importance. The third strategy is somewhat favored for fitting anything, but the first step should be a blunt comparison between Pepper Pot phase space and quadrupole scan phase space.
 
 ## Elements positioning
 Based on CMBL 2022 logbook, the PILL was positioned 37 mm away from border of the Mylar window (47 to window attachment, as the ring is 10 mm thick). For phase space reconstruction the distance between QSK43 center and pill position was 1108.5 mm.
@@ -31,7 +32,7 @@ That being said, for such a method to be effective I have to go through the setp
 
 COBRA and BTS could as well constrain the centroids.
 
-## Third strategy - fit Pz spectrum + phase space assuming scaling factors
+## Third strategy - fit Pz spectrum + phase space assuming scaling factors - HIGH PRIORITY
 Fit full phase space with asymmetric guass with exponential tail using both quad scan and pepper-pot measurements. To do:
 <ol>
   <li> Check parametrization as function of u in transverse phase space from PepperPot 2022.</li>
@@ -54,6 +55,8 @@ At each iteration need to:
   <li> run one simulation per each beam quadrupole setting, one per COBRA center settings, one per each PepperPot plate (maybe include flange)</li>
   <li> evaluate chi2 on beam profiles </li> 
 </ol>
+
+From this fit it could be possible cross check scaling factors as compared to the surface muon energy: the focusing of the quadrupoles depends on the ratio between the gradient and Pz, which means that Pz itself is sensitive to the scaling factor. By imposing the energy of the monochromatic line (which is known by kinematics), it is possible to fit the scaling factors as well.
 
 ## Luca's involvement
 As the longitudinal fit is probably a bit too convoluted, Luca could try to do the fit to the scale factor. I will prepare a g4bl model and make a first comparison myself between the PILL profiles and the simulation. Could also think of introducing a scale factor on the position scale: if Air MS is non neglible (by current estimate shouldn't introduce any issue), then we would observe a broadening of all the shapes. Assuming that the effect is still small stretching the distributions from the simulation could be enough, otherwise it would be needed to introduce a double deconvolution to the measured beam phase space based on computing the expected brodening for such a column of air, or even fit it through simulation.
