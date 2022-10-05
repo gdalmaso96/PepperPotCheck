@@ -65,6 +65,7 @@ As the longitudinal fit is probably a bit too convoluted, Luca could try to do t
 Two folders containing 2022 data are included:
 <ol>
   <li> Data_2022_Mu3e: contains beam profiles at collimator as a function of QSK43 current </li>
-  <li> Data_2022_MEG: contains the PepperPot scan, the MENT scans and the raster scan at COBRA center </li>
+  <li> Data_2022_MEG: contains the PepperPot scan, the MENT scans and the raster scan at COBRA center. Here I'm assuming that FSH41 doesn't affect the phase space </li>
 </ol>
+
 
