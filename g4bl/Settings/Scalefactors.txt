@@ -1,0 +1,67 @@
+#################################### scaling factors ####################################
+param -unset scaleAHSW=-1/360							# fieldmap measured 360 A from Vjeran |y|<10 (can be extended with calculated fieldmap)
+param -unset scaleQSF=-1/100.83854							# TOSCA calculation January 2018
+param -unset scaleHSC=1/0.63529								# real G/A factor 9.158 - fieldmap calculated (TOSCA) for 0.6 A - TOSCA point G/A factor 9.7 or ~9.1 from fit in x=+-200 range - ~8.8-9.3 dependent on fit range
+param -unset scaleAST=1/250 							# fieldmap calculated (TOSCA) for 250 A
+param -unset scaleASC=-1/100							# fieldmap calculated (TOSCA) for -100 A
+param -unset scaleQSB=-1/4.8781155 						# TOSCA model equivalent current 4.70973 A (no coil info available --> fit compared to real G/A factor)
+param -unset scaleSEP_B=1 								# find this value
+param -unset scaleSEP_E=1 								# calculate this value from E=U/d with d= from drawing 
+param -unset scaleQSK=-1/40.006519 								# TOSCA calculation spring/summer 2018 param -unset scaleSML=70.6/(503000)						# Find out correct sign of field, absolute value from sheet
+param -unset scaleSML=70.6/(503000)						# Find out correct sign of field, absolute value from sheet
+param -unset scaleASL=-1/80.39						# 
+param -unset scaleQSO=1/500							# G/A from map: 7.9 	- fieldmap complemented to 3D from 2D measurement 500 A by Vjeran - range |x|<9, |y|<10, -109.6<z<69.6
+param -unset scaleASK=-1/91.875							#
+param -unset scaleQSM=-1/210 							# G/A from map: 7.3		- fieldmap calculated (TOSCA) for 210 A - map from vjeran generated for |x|<31, |y|<15, |z|<75 --> complemented in Mathematica to |y|<31
+param -unset scaleCOPSOL=1/100 							# see logbook page 128
+param -unset scaleQSN=1/100 							# Is not clear but assumed to be Imax from report
+param -unset scaleFSH41L=1
+param -unset scaleFSH41R=1
+param -unset scaleFS42L=1
+param -unset scaleFS42R=1
+param -unset scaleFS42V=1
+param -unset scaleFSH43L=1
+param -unset scaleFSH43R=1
+param -unset scaleMU3ESOL=1/100 						# just arbitrarily set to 1/100
+#########################################################################################
+
+################################## parameters to set ####################################
+param -unset AHSW41set=$AHSW41cur*$sign*$scaleAHSW
+param -unset QSF41set=$QSF41cur*$sign*$scaleQSF
+param -unset HSC41set=$HSC41cur*$sign*$scaleHSC
+param -unset QSF42set=$QSF42cur*$sign*$scaleQSF
+param -unset QSF43set=$QSF43cur*$sign*$scaleQSF
+param -unset HSC42set=$HSC42cur*$sign*$scaleHSC
+param -unset QSF44set=$QSF44cur*$sign*$scaleQSF
+param -unset QSF45set=$QSF45cur*$sign*$scaleQSF
+param -unset HSC43set=$HSC43cur*$sign*$scaleHSC
+param -unset QSF46set=$QSF46cur*$sign*$scaleQSF
+param -unset QSF47set=$QSF47cur*$sign*$scaleQSF
+param -unset HSC44set=$HSC44cur*$sign*$scaleHSC
+param -unset QSF48set=$QSF48cur*$sign*$scaleQSF
+param -unset AST41set=$AST41cur*$sign*$scaleAST
+param -unset ASC41set=$ASC41cur*$sign*$scaleASC
+param -unset QSB41set=$QSB41cur*$sign*$scaleQSB
+param -unset QSB42set=$QSB42cur*$sign*$scaleQSB
+param -unset QSB43set=$QSB43cur*$sign*$scaleQSB
+param -unset SEP41_E_set=$SEP41vol*$scaleSEP_E # in the electrostatic case the sign of the field stays the same independent of tracking direction
+param -unset SEP41_B_set=$SEP41cur*$sign*$scaleSEP_B
+param -unset QSK41set=$QSK41cur*$sign*$scaleQSK
+param -unset QSK42set=$QSK42cur*$sign*$scaleQSK
+param -unset QSK43set=$QSK43cur*$sign*$scaleQSK
+param -unset SML41set=$SML41cur*$sign*$scaleSML	
+param -unset ASL41set=$ASL41cur*$sign*$scaleASL
+param -unset QSO41set=$QSO41cur*$sign*$scaleQSO
+param -unset QSO42set=$QSO42cur*$sign*$scaleQSO
+param -unset ASK41set=$ASK41cur*$sign*$scaleASK
+param -unset QSM41set=$QSM41cur*$sign*$scaleQSM
+param -unset COPSOLset=$COPSOLcur*$sign*$scaleCOPSOL
+param -unset MU3ESOLset=$MU3ESOLcur*$sign*$scaleMU3ESOL
+param -unset FSH41Lset=$FSH41Ldac*$scaleFSH41L
+param -unset FSH41Rset=$FSH41Rdac*$scaleFSH41R
+param -unset FS42Lset=$FS42Ldac*$scaleFS42L
+param -unset FS42Rset=$FS42Rdac*$scaleFS42R
+param -unset FS42Vset=$FS42Vdac*$scaleFS42V
+param -unset FSH43Lset=$FSH43Ldac*$scaleFSH43L
+param -unset FSH43Rset=$FSH43Rdac*$scaleFSH43R
+#########################################################################################
