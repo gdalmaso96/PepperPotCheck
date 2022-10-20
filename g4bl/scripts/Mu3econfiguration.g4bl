@@ -26,12 +26,12 @@ endif
 
 ################################# Elements Strengths ####################################
 param -unset sign=1 		# sign=-1 for backtracking ::: sign=1 for normal DS tracking
-include "/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/Settings/Currents.txt"
-include "/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/Settings/Scalefactors.txt" 	# scaling factors for fieldmaps/generic elements/fieldexpressions
+include "/meg/home/dalmaso_g/PepperPotCheck/g4bl/Settings/Currents.txt"
+include "/meg/home/dalmaso_g/PepperPotCheck/g4bl/Settings/Scalefactors.txt" 	# scaling factors for fieldmaps/generic elements/fieldexpressions
 #########################################################################################
 ######################################## Beam ###########################################
 
-param -unset beamFile=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/beam/PepperPotPhaseSpace.root
+param -unset beamFile=/meg/home/dalmaso_g/PepperPotCheck/g4bl/beam/PepperPotPhaseSpace.root
 param -unset beamName="beam"
 param -unset PILLdist=1108.5 # QSK43 center to PILL distance (MEG 2022 is 1117)
 param -unset poszQSK41=250
@@ -51,7 +51,7 @@ beam root file=$beamFile firstEvent=$first lastEvent=$last beamZ=$beamPositionZ 
 #########################################################################################
 
 ######################################### QSK ###########################################
-fieldmap QSK file=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/FieldMaps/feldqsk.dat
+fieldmap QSK file=/meg/home/dalmaso_g/PepperPotCheck/g4bl/FieldMaps/feldqsk.dat
 #genericquad QSKDUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 poleTipRadius=125 coilRadius=160 coilHalfwidth=55
 genericquad QSKDUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 apertureRadius=125
 #########################################################################################
