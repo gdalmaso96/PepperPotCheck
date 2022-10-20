@@ -179,7 +179,7 @@ class BeamData:
 		subprocess.call(commandBeam, shell=True)
 
 		# Back propagate
-		commandBeam = " " + self.workDir + "/scripts/" + self.simulations['Invert']['Beamline']
+		commandBeam = " " + self.workDir + "/g4bl/scripts/" + self.simulations['Invert']['Beamline']
 		params = self.simulations['Invert'].copy()
 		params.pop('Beamline')
 
@@ -206,7 +206,7 @@ class BeamData:
 		test = []
 		for data in self.datasets:
 			if data['LL'] == 1:
-				command= " " + self.workDir + "/scripts/" + self.simulations[data['Beamline']]
+				command= " " + self.workDir + "/g4bl/scripts/" + self.simulations[data['Beamline']]
 
 
 				# Copy dataset and extract g4bl parameters
@@ -258,7 +258,7 @@ class BeamData:
 		for data in self.datasets:
 			if data['Simulation n.'] == run:
 				# Set simulation script
-				command= " " + self.workDir + "/scripts/" + self.simulations[data['Beamline']]
+				command= " " + self.workDir + "/g4bl/scripts/" + self.simulations[data['Beamline']]
 				
 				# Copy dataset and extract g4bl parameters
 				# In the future might want to copy and pop while getting information about what simulatio to run
