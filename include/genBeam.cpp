@@ -173,8 +173,8 @@ void invertBeam(TString fileName = "/Users/giovanni/PhD/Simulazioni/BeamTimeMEG/
 	F->Close();
 }
 
-void genBeam(TString fileName, double a, double b, double c, double d, double x0, double xp0, double y0, double yp0, long nEvents){
-	generator2Deasy("Hpx_2D", "Hpy_2D", a, b, c, d, x0, xp0, y0, yp0, nEvents, "/Users/giovanni/PhD/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/PepperPotPhaseSpace.root", fileName);
+void genBeam(TString fileName, double a, double b, double c, double d, double x0, double xp0, double y0, double yp0, long nEvents, TString original = "/Users/giovanni/PhD/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/PepperPotPhaseSpace.root"){
+	generator2Deasy("Hpx_2D", "Hpy_2D", a, b, c, d, x0, xp0, y0, yp0, nEvents, original, fileName);
 }
 
 void genBeam(TString fileName, TString newFileName){

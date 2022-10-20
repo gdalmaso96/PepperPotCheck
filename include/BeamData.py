@@ -174,7 +174,7 @@ class BeamData:
 	# Beam parameters are: [0,3] - longitudinal parameters, [4, 7] - centroids
 	def RunTrial(self, beam, nEvents, histoFile, beamFile):
 		# Generate beamfile
-		commandBeam = "root -q -b \"" + self.workDir + "include/genBeam.cpp(\\\"" + self.workDir + "g4bl/beam/" + "DS" + beamFile +  "\\\", %f, %f, %f, %f, %f, %f, %f, %f, %d)\"" %(beam[0], beam[1], beam[2], beam[3], beam[4], beam[5], beam[6], beam[7], nEvents)
+		commandBeam = "root -q -b \"" + self.workDir + "include/genBeam.cpp(\\\"" + self.workDir + "g4bl/beam/" + "DS" + beamFile +  "\\\", %f, %f, %f, %f, %f, %f, %f, %f, %d," %(beam[0], beam[1], beam[2], beam[3], beam[4], beam[5], beam[6], beam[7], nEvents) + "\\\"" + self.workDir + "g4bl/PepperPotPhaseSpace.root\\\")\""
 		print(commandBeam)
 		subprocess.call(commandBeam, shell=True)
 
