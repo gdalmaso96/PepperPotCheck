@@ -31,7 +31,7 @@ include "/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/Set
 #########################################################################################
 ######################################## Beam ###########################################
 
-param -unset beamFile=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/beam/PepperPotPhaseSpace.root
+param -unset beamFile=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/beam/USbeam.root
 param -unset beamName="beam"
 param -unset PILLdist=1117 # QSK43 center to PILL distance (MEG 2022 is 1117)
 param -unset poszQSK41=250
@@ -40,9 +40,9 @@ param -unset poszQSK43=$poszQSK42+500
 # Mu3e param -unset poszSML41=$poszQSK43+250+32+149+200+411*0.5+6*3 # halfQSK + QSKpipe extrusion + flange + flange + halfSML + 3 O-rings
 param -unset poszSML41=$poszQSK43+250+32+149+411*0.5+6*2 # halfQSK + QSKpipe extrusion + flange + halfSML + 2 O-rings
 param -unset poszCOL=$poszSML41+155 # Guessed from Felix CMBL
-param -unset poszPILL=$poszQSK43+$PILLdist
-param -unset L=44
-param -unset poszGrid=$poszPILL-$L
+param -unset poszBTS=$poszQSK43+2607
+param -unset poszCOBRA=$poszBTS+3224
+param -unset poszPILL=$poszCOBRA
 
 param -unset beamPositionZ=$poszQSK41-250
 param -unset X0=0
@@ -67,39 +67,18 @@ tubs MEGCOL innerRadius=65 outerRadius=159 length=50 material=Pb color=1,0,1,0.8
 #########################################################################################
 
 ######################################### PILL ##########################################
-virtualdetector PILL radius=1000 length=1 color=0,1,0,0.5 material=Vacuum format=Extended require=(PDGid==-13) #(PDGid!=14&&PDGid!=-14&&PDGid!=12&&PDGid!=-12)
+virtualdetector PILL radius=317.9999*0.5 length=1 color=0,1,0,0.5 material=Vacuum format=Extended require=(PDGid==-13) #(PDGid!=14&&PDGid!=-14&&PDGid!=12&&PDGid!=-12)
 #########################################################################################
 
-######################################### GRID ##########################################
-param -unset holeR=1
-param -unset spacing=25
-param -unset nRows=9
+########################################## BTS ##########################################
+fieldmap BTS file=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/FieldMaps/fieldBTS.dat
+#tubs BTSDUMMY kill=1 innerRadius=232.5 outerRadius=235.36 length=2808 material=Vacuum color=1,0,1,0.5 #2630
+tubs BTSDUMMY kill=1 innerRadius=318*0.5 outerRadius=2350.36 length=10 material=Vacuum color=1,0,1,0.5 #2630
+#########################################################################################
 
-param -unset POLY=0
-param -unset LEAD=0
-param -unset ALUMINUM=0
-param -unset thick=3
-material POLYVINYLTOLUENE H,0.5243 C,0.4757 density=1.023
-
-tubs hole innerRadius=0 outerRadius=$holeR initialPhi=0 finalPhi=360 length=$thick*1.5
-box house height=$spacing*0.9999 width=$spacing*0.9999 length=$thick
-tubs frame innerRadius=0 outerRadius=250 initialPhi=0 finalPhi=360 length=$thick
-box iframe height=$nRows*$spacing width=$nRows*$spacing length=$thick*1.5
-
-
-if $POLY
-	boolean op=subtraction oFRAME frame iframe material=POLYVINYLTOLUENE color=1,1,0
-	boolean op=subtraction GRID house hole material=POLYVINYLTOLUENE color=1,1,0
-elseif $LEAD
-	boolean op=subtraction oFRAME frame iframe material=Pb color=1,1,0
-	boolean op=subtraction GRID house hole material=Pb color=1,1,0
-elseif $ALUMINUM
-	boolean op=subtraction oFRAME frame iframe material=Al color=0.5,0.5,0.5,0.8
-	boolean op=subtraction GRID house hole material=Al color=0.5,0.5,0.5,0.8
-else
-	boolean op=subtraction oFRAME frame iframe kill=1 color=1,1,0
-	boolean op=subtraction GRID house hole kill=1 color=1,1,0
-endif
+########################################## COBRA ##########################################
+fieldmap COBRA file=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/FieldMaps/COBRAmap.dat
+tubs COBRADUMMY kill=1 innerRadius=318*0.5 outerRadius=351 length=2840 material=Vacuum color=1,0,1,0.5 #2630
 #########################################################################################
 
 ####################################### BEAMLINE ########################################
@@ -116,16 +95,10 @@ place SML41 z=$poszSML41
 place SML41DUMMY z=$poszSML41
 place MEGCOL z=$poszCOL
 
+place BTS z=$poszBTS current=$BTSset
+place BTSDUMMY z=$poszBTS
+
+place COBRA z=$poszCOBRA current=$COBRAset
+place COBRADUMMY z=$poszCOBRA
+
 place PILL z=$poszPILL
-
-param -unset placePepperPot=0
-if $placePepperPot
-	place oFRAME z=$poszGrid
-	#place PILL z=$poszGrid-$thick*0.5-0.5 rename=PILLgrid
-
-	do i 1 $nRows
-		do j 1 $nRows
-			place GRID z=$poszGrid x=($i-$nRows*0.5-0.5)*$spacing  y=($j-$nRows*0.5-0.5)*$spacing
-		enddo
-	enddo
-endif

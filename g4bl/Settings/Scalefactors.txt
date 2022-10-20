@@ -23,6 +23,7 @@ param -unset scaleFS42V=1
 param -unset scaleFSH43L=1
 param -unset scaleFSH43R=1
 param -unset scaleMU3ESOL=1/100 						# just arbitrarily set to 1/100
+param -unset scaleBTS=1./200
 #########################################################################################
 
 ################################## parameters to set ####################################
@@ -64,4 +65,6 @@ param -unset FS42Rset=$FS42Rdac*$scaleFS42R
 param -unset FS42Vset=$FS42Vdac*$scaleFS42V
 param -unset FSH43Lset=$FSH43Ldac*$scaleFSH43L
 param -unset FSH43Rset=$FSH43Rdac*$scaleFSH43R
+param -unset BTSset=$BTScur*$sign*$scaleBTS
+param -unset COBRAset=1
 #########################################################################################

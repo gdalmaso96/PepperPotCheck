@@ -68,4 +68,37 @@ Two folders containing 2022 data are included:
   <li> Data_2022_MEG: contains the PepperPot scan, the MENT scans and the raster scan at COBRA center. Here I'm assuming that FSH41 doesn't affect the phase space </li>
 </ol>
 
+# First Simulation check
+Start by running Pepper Pot phase space backwards with:
+<code> g4bl scripts/MEGconfiguration.g4bl poszPILL=0 beamPositionZ=1250+1117-44 last=1e6 histoFile=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl/beam/USbeamRev.root QSK41cur=-18.1982 QSK42cur=40.7008 QSK43cur=-34.8 SML41cur=10 </code>
 
+# Fit to centroid and to longitudinal phase space
+Start fitting the longitudinal phase space and the centroid position. The objective is going to be the log Likelyhood: each data set is going to be interpolated with a spline and used as the likelyhood, to be applied to each particle transmitted in the g4bl model.
+
+For the moment don't consider any misalignment between MEG and Mu3e.
+
+MEG data are inverted in the horizontal direction, as the PILL detector is oriented oppositely than for Mu3e. Just take that into account when weighting every event.
+
+Start by finding a good parametrization for momentum distribution -> found:
+<ol>
+  <li>Convolute surface muon x^3.5 dependence times theta function between 0 and kinematic edge with a gaussian</li>
+  <li>Multiply by gaussian window</li>
+  <li>Convolute with gaussian</li>
+</ol>
+
+The free parameters are 4:
+<ol>
+  <li>the three sigmas</li>
+  <li>the average of the gaussian window</li>
+</ol>
+
+The Ptot parametrization fit to Felix is stored in momentumDistribtion.cpp
+
+On top of these variables, 4 moree free parameters come from the centroids and 2 more from the relative alignment of the pepper-pots (probably the constraint can be very tight on these two).
+
+The complete optimization will run with 10 independent variables and one objective value (log likelihood).
+
+Start with 8: ignore relative alignment for the moment
+
+-- 19.10.2022 --
+Current status: now BeamData settings include system dipendent directories and commands. Works on laptop, needs to be tested on the cluster. I will run it on meg first and check how long it takes for it to run 1e5 particles
