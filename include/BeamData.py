@@ -10,7 +10,7 @@ import uproot
 import os
 
 class BeamData:
-	def __init__(self, configurationFile, g4bl = "docker exec -ti --workdir=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl g4bl /bin/bash -c 'source /home/developer/.bashrc && g4bl COMMAND'", workDir = "/Users/giovanni/PhD/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/", containerDir = "/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/"):
+	def __init__(self, configurationFile, g4bl = "docker exec -ti --workDir=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/g4bl g4bl /bin/bash -c 'source /home/developer/.bashrc && g4bl COMMAND'", workDir = "/Users/giovanni/PhD/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/", containerDir = "/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck/"):
 		with open(configurationFile) as f:
 			data = yaml.load(f, Loader=yaml.FullLoader)
 		self.datasets = data['datasets']
@@ -29,7 +29,7 @@ class BeamData:
 		# Set work directory path
 		self.workDir = workDir
 
-		# Set container folder, on cluster it corresponds to workdir
+		# Set container folder, on cluster it corresponds to workDir
 		self.containerDir = containerDir
 
 	divertOutput = 0
@@ -174,7 +174,7 @@ class BeamData:
 	# Beam parameters are: [0,3] - longitudinal parameters, [4, 7] - centroids
 	def RunTrial(self, beam, nEvents, histoFile, beamFile):
 		# Generate beamfile
-		commandBeam = "root -q -b \"" + self.workdir + "include/genBeam.cpp(\\\"" + self.workDir + "g4bl/beam/" + "DS" + beamFile +  "\\\", %f, %f, %f, %f, %f, %f, %f, %f, %d)\"" %(beam[0], beam[1], beam[2], beam[3], beam[4], beam[5], beam[6], beam[7], nEvents)
+		commandBeam = "root -q -b \"" + self.workDir + "include/genBeam.cpp(\\\"" + self.workDir + "g4bl/beam/" + "DS" + beamFile +  "\\\", %f, %f, %f, %f, %f, %f, %f, %f, %d)\"" %(beam[0], beam[1], beam[2], beam[3], beam[4], beam[5], beam[6], beam[7], nEvents)
 		print(commandBeam)
 		subprocess.call(commandBeam, shell=True)
 
@@ -199,7 +199,7 @@ class BeamData:
 		subprocess.call(self.g4bl.replace("COMMAND", commandBeam), shell=True)
 
 		# Invert beam
-		commandBeam = "root -q -b \"" + self.workdir + "include/genBeam.cpp(\\\"" + self.workDir + "g4bl/beam/" + "USI" + beamFile +  "\\\", \\\"" + self.workDir + "g4bl/beam/" + "US" + beamFile  +  "\\\")\""
+		commandBeam = "root -q -b \"" + self.workDir + "include/genBeam.cpp(\\\"" + self.workDir + "g4bl/beam/" + "USI" + beamFile +  "\\\", \\\"" + self.workDir + "g4bl/beam/" + "US" + beamFile  +  "\\\")\""
 		print(commandBeam)
 		subprocess.call(commandBeam, shell=True)
 
@@ -297,7 +297,7 @@ class BeamData:
 		for data in self.datasets:
 			if data['Simulation n.'] == run:
 				# Set command to run plotComparison.cpp
-				command = "root -q -b \"" + self.workdir + "include/plotComparison.cpp(\\\"" + self.workdir + data['fileName'] + "\\\", \\\"" + "" + self.workDir + "g4bl/scores/" + data['Beamline'] + "_run%05d.root" %(run) +  "\\\", 1)\""
+				command = "root -q -b \"" + self.workDir + "include/plotComparison.cpp(\\\"" + self.workDir + data['fileName'] + "\\\", \\\"" + "" + self.workDir + "g4bl/scores/" + data['Beamline'] + "_run%05d.root" %(run) +  "\\\", 1)\""
 
 				# Run command
 				print(command)
