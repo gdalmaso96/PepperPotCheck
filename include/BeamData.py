@@ -179,12 +179,14 @@ class BeamData:
 		subprocess.call(commandBeam, shell=True)
 
 		# Back propagate
-		commandBeam = " " + self.workDir + "/g4bl/scripts/" + self.simulations['Invert']['Beamline']
+		commandBeam = " " + self.containerDir + "/g4bl/scripts/" + self.simulations['Invert']['Beamline']
 		params = self.simulations['Invert'].copy()
 		params.pop('Beamline')
 
 		for par in params:
 			commandBeam = commandBeam + " " + par + "=%f" %(params[par])
+		
+		commandBeam = commandBeam + " workDir=" + self.containerDir
 
 		# Set beamfile
 		commandBeam = commandBeam + " " + "beamFile=" + self.containerDir + "g4bl/beam/DS" + beamFile
@@ -206,7 +208,7 @@ class BeamData:
 		test = []
 		for data in self.datasets:
 			if data['LL'] == 1:
-				command= " " + self.workDir + "/g4bl/scripts/" + self.simulations[data['Beamline']]
+				command= " " + self.containerDir + "/g4bl/scripts/" + self.simulations[data['Beamline']]
 
 
 				# Copy dataset and extract g4bl parameters
@@ -222,6 +224,7 @@ class BeamData:
 
 				for par in params:
 					command = command + " " + par + "=%f" %(params[par])
+				command = command + " workDir=" + self.containerDir
 				
 				# Set beamfile
 				command = command + " " + "beamFile=" + self.containerDir + "g4bl/beam/US" + beamFile
@@ -258,7 +261,7 @@ class BeamData:
 		for data in self.datasets:
 			if data['Simulation n.'] == run:
 				# Set simulation script
-				command= " " + self.workDir + "/g4bl/scripts/" + self.simulations[data['Beamline']]
+				command= " " + self.containerDir + "/g4bl/scripts/" + self.simulations[data['Beamline']]
 				
 				# Copy dataset and extract g4bl parameters
 				# In the future might want to copy and pop while getting information about what simulatio to run
@@ -272,6 +275,7 @@ class BeamData:
 
 				for par in params:
 					command = command + " " + par + "=%f" %(params[par])
+				command = command + " workDir=" + self.containerDir
 
 				# Set beamfile
 				command = command + " " + "beamFile=" + self.containerDir + "g4bl/beam/" + self.simulations['USbeam']
