@@ -4,7 +4,7 @@ from numpy import sqrt as sqrt
 import subprocess
 import time
 import sys
-sys.path.insert(1, '/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/include')
+sys.path.insert(1, "/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/include/")
 from BeamData import BeamData
 import os
 import warnings
@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore")
 nTrials = 3
 nJobs = 1
 
-G4BL = "singularity exec /data/project/general/muonGroup/simulations/giovanni/g4bl/g4beamline-3.06_3.06.sif /data/project/general/muonGroup/simulations/giovanni/g4bl/bash_g4bl.sh COMMAND"
+G4BL = 'singularity run --bind /data/project/general/muonGroup/simulations/giovanni/:/data/project/general/muonGroup/simulations/giovanni /data/project/general/muonGroup/programs/containers/g4beamline-3.06_3.06.sif /data/project/general/muonGroup/simulations/giovanni/g4bl/bash_g4bl.sh COMMAND'
 CONFIGURATION_FILE = "/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/configurations.yaml"
 WORKDIR = "/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/"
 CONTAINERDIR = "/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/"
