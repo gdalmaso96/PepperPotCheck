@@ -34,7 +34,7 @@ for i in range(nRuns):
 	slurm_file.write("echo ###################################################################\n")
 	slurm_file.write("echo # End of Running Environement     #\n")
 	slurm_file.write("echo ###################################################################\n")
-	slurm_file.write("source /data/project/general/muonGroup/simulations/giovanni/.bashrc\n"
+	slurm_file.write("source /data/project/general/muonGroup/simulations/giovanni/.bashrc\n")
 	slurm_file.write(commands)
 	slurm_file.write("echo Exit status: $?\n")
 	slurm_file.write("echo Start Time: ${TIMESTART}\n")
