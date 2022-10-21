@@ -46,7 +46,7 @@ def objective(trial):
 if __name__ == '__main__':
     args = sys.argv[1:]
     
-    study = optuna.create_study(study_name="LL", storage='sqlite:////data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/DBs/LL.db', direction='maximize', load_if_exists=True)
+    study = optuna.create_study(study_name="LL", storage='sqlite:////data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/DBs/LL.db', direction='minimize', load_if_exists=True)
     
     study.optimize(objective, n_trials=nTrials, n_jobs=nJobs)
 
