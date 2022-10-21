@@ -30,7 +30,7 @@ names = ['a', 'b', 'c', 'd', 'x', 'xp', 'y', 'yp']
 
 def objective(trial):
     a = trial.suggest_uniform('a', 0.01, 5)
-    a = trial.suggest_uniform('b', 25, 35)
+    b = trial.suggest_uniform('b', 25, 35)
     c = trial.suggest_uniform('c', 0.01, 5)
     d = trial.suggest_uniform('d', 0.01, 5)
     x = trial.suggest_uniform('x', -100, 100)
