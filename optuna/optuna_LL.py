@@ -1,11 +1,11 @@
+import sys
+sys.path.insert(1, "/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/include/")
+from BeamData import BeamData
 import optuna
 import numpy as np
 from numpy import sqrt as sqrt
 import subprocess
 import time
-import sys
-sys.path.insert(1, "/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/include/")
-from BeamData import BeamData
 import os
 import warnings
 start_time = time.time()
