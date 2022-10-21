@@ -39,7 +39,7 @@ def objective(trial):
     yp = trial.suggest_uniform('yp', -100, 100)
     beam = [a, b, c, d, x, xp, y, yp]
     
-    result0 = DATA.RunTrial(beam, 100000, "out_%d_" %(trial.number), "beam_%d" %(trial.number))
+    result0 = DATA.RunTrial(beam, 100000, "out_%d_" %(trial.number), "beam_%d.root" %(trial.number))
     
     return result0
 
