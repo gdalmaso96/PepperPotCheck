@@ -34,9 +34,9 @@ def objective(trial):
     c = trial.suggest_uniform('c', 0.01, 5)
     d = trial.suggest_uniform('d', 0.01, 5)
     x = trial.suggest_uniform('x', -100, 100)
-    xp = trial.suggest_uniform('xp', -100, 100)
+    xp = trial.suggest_uniform('xp', -500, 500)
     y = trial.suggest_uniform('y', -100, 100)
-    yp = trial.suggest_uniform('yp', -100, 100)
+    yp = trial.suggest_uniform('yp', -500, 500)
     beam = [a, b, c, d, x, xp, y, yp]
     
     result0 = DATA.RunTrial(beam, 100000, "out_%d_" %(trial.number), "beam_%d.root" %(trial.number))
