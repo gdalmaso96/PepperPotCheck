@@ -4,7 +4,7 @@ from numpy import sqrt as sqrt
 import subprocess
 import time
 import sys
-sys.path.insert(1, '/meg/home/dalmaso_g/PepperPotCheck/include')
+sys.path.insert(1, '/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/include')
 from BeamData import BeamData
 import os
 import warnings
@@ -18,10 +18,10 @@ warnings.filterwarnings("ignore")
 nTrials = 3
 nJobs = 1
 
-G4BL = "singularity exec /meg/home/dalmaso_g/g4bl/g4beamline-3.06_3.06.sif /meg/home/dalmaso_g/g4bl/bash_g4bl.sh COMMAND"
-CONFIGURATION_FILE = "/meg/home/dalmaso_g/PepperPotCheck/configurations.yaml"
-WORKDIR = "/meg/home/dalmaso_g/PepperPotCheck/"
-CONTAINERDIR = "/meg/home/dalmaso_g/PepperPotCheck/"
+G4BL = "singularity exec /data/project/general/muonGroup/simulations/giovanni/g4bl/g4beamline-3.06_3.06.sif /data/project/general/muonGroup/simulations/giovanni/g4bl/bash_g4bl.sh COMMAND"
+CONFIGURATION_FILE = "/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/configurations.yaml"
+WORKDIR = "/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/"
+CONTAINERDIR = "/data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/"
     
 # Load BeamData:
 DATA = BeamData(CONFIGURATION_FILE, G4BL, WORKDIR, CONTAINERDIR)
@@ -46,7 +46,7 @@ def objective(trial):
 if __name__ == '__main__':
     args = sys.argv[1:]
     
-    study = optuna.create_study(study_name="LL", storage='sqlite:////meg/home/dalmaso_g/PepperPotCheck/DBs/LL.db', direction='maximize', load_if_exists=True)
+    study = optuna.create_study(study_name="LL", storage='sqlite:////data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/DBs/LL.db', direction='maximize', load_if_exists=True)
     
     study.optimize(objective, n_trials=nTrials, n_jobs=nJobs)
 
