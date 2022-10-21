@@ -135,12 +135,12 @@ class BeamData:
 	def InitInterp(self, profile):
 		# if raster scan prepare 2d cubic spline
 		if profile['direction'] == 'xy':
-			f = interp2d(profile['profile'][0], profile['profile'][1], profile['profile'][2], kind='cubic', fill_value=1e-12)
+			f = interp2d(profile['profile'][0], profile['profile'][1], profile['profile'][2], kind='cubic', fill_value=1e-12, bounds_error=False)
 			profile['interpolation'] = f
 			# Evaluate normalization once
 			profile['norm'] = integrate.dblquad(profile['interpolation'], profile['profile'][0][0], profile['profile'][0][-1], profile['profile'][1][0], profile['profile'][1][-1])[0]
 		else:
-			f = interp1d(profile['profile'][0], profile['profile'][1], kind='cubic', fill_value=1e-12)
+			f = interp1d(profile['profile'][0], profile['profile'][1], kind='cubic', fill_value=1e-12, bounds_error=False)
 			profile['interpolation'] = f
 			# Evaluate normalization once
 			profile['norm'] = integrate.quad(profile['interpolation'], profile['profile'][0][0], profile['profile'][0][-1])[0]
