@@ -172,7 +172,7 @@ class BeamData:
 	
 	# Run simulation trial for LL evaluation
 	# Beam parameters are: [0,3] - longitudinal parameters, [4, 7] - centroids
-	def RunTrial(self, beam, nEvents, histoFile, beamFile):
+	def RunTrial(self, beam, nEvents, histoFile, beamFile, DELETEFILES = True):
 		# Generate beamfile
 		commandBeam = "root -q -b \"" + self.workDir + "include/genBeam.cpp(\\\"" + self.workDir + "g4bl/beam/" + "DS" + beamFile +  "\\\", %f, %f, %f, %f, %f, %f, %f, %f, %d," %(beam[0], beam[1], beam[2], beam[3], beam[4], beam[5], beam[6], beam[7], nEvents) + "\\\"" + self.workDir + "g4bl/PepperPotPhaseSpace.root\\\")\""
 		print(commandBeam)
@@ -245,10 +245,12 @@ class BeamData:
 				print("%f\n" %(self.LL))
 
 				# Remove histoFile
-				os.remove("" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."]))
+				if DELETEFILES:
+					os.remove("" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."]))
 		
 		# Remove beamfile
-		os.remove("" + self.workDir + "g4bl/beam/US" + beamFile)
+		if DELETEFILES:
+			os.remove("" + self.workDir + "g4bl/beam/US" + beamFile)
 
 		print(test)
 		return self.LL
