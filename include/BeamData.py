@@ -6,6 +6,7 @@ import subprocess
 from scipy.interpolate import interp1d, interp2d
 from scipy import integrate
 import numpy as np
+import optuna
 import uproot
 import os
 
@@ -157,17 +158,17 @@ class BeamData:
 					s = pill.arrays(['x'], 'abs(y) < 1', library = 'np')['x']
 					if(data['Beamline'] == 'MEG'):
 						s = -s
-					LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)
+					LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)/len(s)
 				elif(profile['direction'] == 'y'):
 					s = pill.arrays(['y'], 'abs(x) < 1', library = 'np')['y']
-					LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)
+					LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)/len(s)
 				elif(profile['direction'] == 'xy'):
 					s = pill.arrays(['x', 'y'], library = 'np')
 					for i in range(s['x'].size):
 						if(data['Beamline'] == 'MEGCOBRA'):
-							LL += (-2*np.log(profile['interpolation'](-s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size
+							LL += (-2*np.log(profile['interpolation'](-s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
 						else:
-							LL += (-2*np.log(profile['interpolation'](s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size
+							LL += (-2*np.log(profile['interpolation'](s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
 		return LL
 	
 	# Run simulation trial for LL evaluation
@@ -255,7 +256,12 @@ class BeamData:
 		print(test)
 		return self.LL
 
-
+	def RunBestTrial(self, study, nEvents):
+		best = study.best_trial
+		beam = []
+		for par in best.params:
+			beam.append(best.params[par])
+		self.RunTrial(beam, nEvents, "best_", "bestBeam.root", False)
 	
 	# Run simulation with default settings
 	def RunSimulation(self, run, nEvents):
