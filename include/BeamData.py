@@ -158,17 +158,33 @@ class BeamData:
 					s = pill.arrays(['x'], 'abs(y) < 1', library = 'np')['x']
 					if(data['Beamline'] == 'MEG'):
 						s = -s
-					LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)/len(s)
+					# Check if any particle is transmitted
+					if(len(s) < 1):
+						LL += 1000
+					else:
+						LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)/len(s)
 				elif(profile['direction'] == 'y'):
 					s = pill.arrays(['y'], 'abs(x) < 1', library = 'np')['y']
-					LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)/len(s)
+					# Check if any particle is transmitted
+					if(len(s) < 1):
+						LL += 1000
+					else:
+						LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)/len(s)
 				elif(profile['direction'] == 'xy'):
 					s = pill.arrays(['x', 'y'], library = 'np')
 					for i in range(s['x'].size):
 						if(data['Beamline'] == 'MEGCOBRA'):
-							LL += (-2*np.log(profile['interpolation'](-s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
+							# Check if any particle is transmitted
+							if(s['x'].size < 1):
+								LL += 1000
+							else:
+								LL += (-2*np.log(profile['interpolation'](-s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
 						else:
-							LL += (-2*np.log(profile['interpolation'](s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
+							# Check if any particle is transmitted
+							if(s['x'].size < 1):
+								LL += 1000
+							else:
+								LL += (-2*np.log(profile['interpolation'](s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
 		return LL
 	
 	# Run simulation trial for LL evaluation
