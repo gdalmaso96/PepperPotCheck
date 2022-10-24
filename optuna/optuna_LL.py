@@ -30,7 +30,7 @@ names = ['a', 'b', 'c', 'd', 'x', 'xp', 'y', 'yp']
 
 def objective(trial):
     a = trial.suggest_uniform('a', 0.01, 5)
-    b = trial.suggest_uniform('b', 25, 35)
+    b = trial.suggest_uniform('b', 25, 29.79)
     c = trial.suggest_uniform('c', 0.01, 5)
     d = trial.suggest_uniform('d', 0.01, 5)
     x = trial.suggest_uniform('x', -100, 100)
@@ -47,7 +47,9 @@ if __name__ == '__main__':
     args = sys.argv[1:]
     
     study = optuna.create_study(study_name="LL", storage='sqlite:////data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/DBs/LL.db', direction='minimize', load_if_exists=True)
-    
+    if len(args) == 1:
+    	{'a' : 0.0812462, 'b' : 27.8995, 'c' : 1.23719, 'd' : 0.05, 'x' : 0, 'xp' : 0, 'y' : 0, 'yp' : 0}
+    	study.enqueue_trial(firstTry)
     study.optimize(objective, n_trials=nTrials, n_jobs=nJobs)
 
     print("--- %s seconds ---" % (time.time() - start_time))
