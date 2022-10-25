@@ -64,7 +64,7 @@ class BeamData:
 							profile = np.delete(profile, 3, 0)
 							profile = np.delete(profile, 2, 0)
 							profile = np.delete(profile, 0, 0)
-							profDict = {'profile' : profile, 'direction' : 'y'}
+							profDict = {'profile' : profile, 'direction' : 'y', 'run' : data['Simulation n.']}
 							profDict = self.InitInterp(profDict)
 							data['profileLL'].append(profDict)
 							profilesLL.append(profDict)
@@ -79,7 +79,7 @@ class BeamData:
 							profile = np.delete(profile, 3, 0)
 							profile = np.delete(profile, 2, 0)
 							profile = np.delete(profile, 1, 0)
-							profDict = {'profile' : profile, 'direction' : 'x'}
+							profDict = {'profile' : profile, 'direction' : 'x', 'run' : data['Simulation n.']}
 							profDict = self.InitInterp(profDict)
 							data['profileLL'].append(profDict)
 							profilesLL.append(profDict)
@@ -98,7 +98,7 @@ class BeamData:
 						profileX = np.delete(profileX, 3, 0)
 						profileX = np.delete(profileX, 2, 0)
 						profileX = np.delete(profileX, 1, 0)
-						profDict = {'profile' : profileX, 'direction' : 'x'}
+						profDict = {'profile' : profileX, 'direction' : 'x', 'run' : data['Simulation n.']}
 						profDict = self.InitInterp(profDict)
 						data['profileLL'].append(profDict)
 						profilesLL.append(profDict)
@@ -113,7 +113,7 @@ class BeamData:
 						profileY = np.delete(profileY, 3, 0)
 						profileY = np.delete(profileY, 2, 0)
 						profileY = np.delete(profileY, 0, 0)
-						profDict = {'profile' : profileY, 'direction' : 'y'}
+						profDict = {'profile' : profileY, 'direction' : 'y', 'run' : data['Simulation n.']}
 						profDict = self.InitInterp(profDict)
 						data['profileLL'].append(profDict)
 						profilesLL.append(profDict)
@@ -127,7 +127,7 @@ class BeamData:
 					profile = np.delete(profile, 5, 0)
 					profile = np.delete(profile, 3, 0)
 					profile = np.delete(profile, 2, 0)
-					profDict = {'profile' : profile, 'direction' : 'xy'}
+					profDict = {'profile' : profile, 'direction' : 'xy', 'run' : data['Simulation n.']}
 					profDict = self.InitInterp(profDict)
 					data['profileLL'].append(profDict)
 					profilesLL.append(profDict)
@@ -320,6 +320,38 @@ class BeamData:
 				else:
 					subprocess.call(self.g4bl.replace("COMMAND", command), shell=True)
 		return 0
+	
+	def PlotBest(self, fileName):
+		# Cycle over all profilesLL
+		for profile in data['profileLL']:
+			histoFile =  self.workDir + "g4bl/scores/" + fileName + "%03d.root" %(profile['run'])
+			with uproot.open(histoFile + ":VirtualDetector/PILL") as pill:
+                        	# Check what kind of profile it is
+                                if(profile['direction'] == 'x'):
+                                        s = pill.arrays(['x'], 'abs(y) < 1', library = 'np')['x']
+                                        if(data['Beamline'] == 'MEG'):
+                                                s = -s
+                                        # Plot
+					x = np.linspace(-80, 80, 1000)
+					y = a['profileLL'][0]['interpolation'](x)/profile['norm']
+
+					plt.plot(x, y, label='Likelihood')
+					plt.hist(s, density=True, label='MC')
+					plt.savefig(histoFile.replace(".root", "_x.png")
+					plt.clf()
+
+                                elif(profile['direction'] == 'y'):
+                                        s = pill.arrays(['y'], 'abs(x) < 1', library = 'np')['y']
+                                        # Plot
+					x = np.linspace(-80, 80, 1000)
+					y = a['profileLL'][0]['interpolation'](x)/profile['norm']
+
+					plt.plot(x, y, label='Likelihood')
+					plt.hist(s, density=True, label='MC')
+					plt.savefig(histoFile.replace(".root", "_y.png")
+					plt.clf()
+		return 0
+	
 	def PlotComparison(self, run):
 		# Find wanted run
 		for data in self.datasets:
