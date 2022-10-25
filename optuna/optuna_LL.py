@@ -29,10 +29,14 @@ DATA = BeamData(CONFIGURATION_FILE, G4BL, WORKDIR, CONTAINERDIR)
 names = ['a', 'b', 'c', 'd', 'x', 'xp', 'y', 'yp']
 
 def objective(trial):
-    a = trial.suggest_uniform('a', 0.01, 5)
-    b = trial.suggest_uniform('b', 25, 29.79)
-    c = trial.suggest_uniform('c', 0.01, 5)
-    d = trial.suggest_uniform('d', 0.01, 5)
+    #a = trial.suggest_uniform('a', 0.01, 5)
+    #b = trial.suggest_uniform('b', 25, 29.79)
+    #c = trial.suggest_uniform('c', 0.01, 5)
+    #d = trial.suggest_uniform('d', 0.01, 5)
+    a = 0.0812462
+    b = 27.8995
+    c = 1.23719
+    d = 0.05
     x = trial.suggest_uniform('x', -100, 100)
     xp = trial.suggest_uniform('xp', -500, 500)
     y = trial.suggest_uniform('y', -100, 100)
