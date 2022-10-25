@@ -102,3 +102,7 @@ Start with 8: ignore relative alignment for the moment
 
 -- 19.10.2022 --
 Current status: now BeamData settings include system dipendent directories and commands. Works on laptop, needs to be tested on the cluster. I will run it on meg first and check how long it takes for it to run 1e5 particles
+
+-- 24.10.2022 --
+Added weight to LL: it is further divided by the number of transmitted perticles to favour high transmission. Now Runs with no particles get a low LL instead of returning a nan.
+
