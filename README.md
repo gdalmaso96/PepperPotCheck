@@ -106,3 +106,5 @@ Current status: now BeamData settings include system dipendent directories and c
 -- 24.10.2022 --
 Added weight to LL: it is further divided by the number of transmitted perticles to favour high transmission. Now Runs with no particles get a low LL instead of returning a nan.
 
+-- 26.10.2022 --
+The fit to centroid only excluding COBRA data is not too bad. Vertical profiles seem reasonable, main issues arise on the horizontal. The SSL magnet might have had different settings for MEG and Mu3e. I'm running on MEG only data both the centroid only fit and the fit to the momentum distribution. A different center in the horizontal might explain the tendency to go to higher momenta: with a lower focusing the distribution becomes broader

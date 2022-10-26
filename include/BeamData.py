@@ -6,6 +6,7 @@ import subprocess
 from scipy.interpolate import interp1d, interp2d
 from scipy import integrate
 import numpy as np
+import matplotlib.pyplot as plt
 import optuna
 import uproot
 import os
@@ -322,34 +323,39 @@ class BeamData:
 		return 0
 	
 	def PlotBest(self, fileName):
-		# Cycle over all profilesLL
-		for profile in data['profileLL']:
-			histoFile =  self.workDir + "g4bl/scores/" + fileName + "%03d.root" %(profile['run'])
-			with uproot.open(histoFile + ":VirtualDetector/PILL") as pill:
-                        	# Check what kind of profile it is
-                                if(profile['direction'] == 'x'):
-                                        s = pill.arrays(['x'], 'abs(y) < 1', library = 'np')['x']
-                                        if(data['Beamline'] == 'MEG'):
-                                                s = -s
-                                        # Plot
-					x = np.linspace(-80, 80, 1000)
-					y = a['profileLL'][0]['interpolation'](x)/profile['norm']
-
-					plt.plot(x, y, label='Likelihood')
-					plt.hist(s, density=True, label='MC')
-					plt.savefig(histoFile.replace(".root", "_x.png")
-					plt.clf()
-
-                                elif(profile['direction'] == 'y'):
-                                        s = pill.arrays(['y'], 'abs(x) < 1', library = 'np')['y']
-                                        # Plot
-					x = np.linspace(-80, 80, 1000)
-					y = a['profileLL'][0]['interpolation'](x)/profile['norm']
-
-					plt.plot(x, y, label='Likelihood')
-					plt.hist(s, density=True, label='MC')
-					plt.savefig(histoFile.replace(".root", "_y.png")
-					plt.clf()
+		# Cycle over data
+		for data in self.datasets:
+			if data['LL'] == 1:
+				# Cycle over all profilesLL
+				for profile in data['profileLL']:
+					histoFile =  self.workDir + "g4bl/scores/" + fileName + "%03d.root" %(profile['run'])
+					with uproot.open(histoFile + ":VirtualDetector/PILL") as pill:
+						# Check what kind of profile it is
+						if(profile['direction'] == 'x'):
+							s = pill.arrays(['x'], 'abs(y) < 1', library = 'np')['x']
+							if(data['Beamline'] == 'MEG'):
+								s = -s
+							
+							# Plot
+							x = np.linspace(-80, 80, 1000)
+							y = data['profileLL'][0]['interpolation'](x)/profile['norm']
+							
+							plt.plot(x, y, label='Likelihood')
+							plt.hist(s, density=True, label='MC', range=(-80, 80), bins=100, color='orange', alpha=0.5)
+							plt.savefig(histoFile.replace(".root", "_x.png"))
+							plt.clf()
+		
+						elif(profile['direction'] == 'y'):
+							s = pill.arrays(['y'], 'abs(x) < 1', library = 'np')['y']
+							
+							# Plot
+							x = np.linspace(-80, 80, 1000)
+							y = data['profileLL'][0]['interpolation'](x)/profile['norm']
+							
+							plt.plot(x, y, label='Likelihood')
+							plt.hist(s, density=True, label='MC', range=(-80, 80), bins=100, color='orange', alpha=0.5)
+							plt.savefig(histoFile.replace(".root", "_y.png"))
+							plt.clf()
 		return 0
 	
 	def PlotComparison(self, run):
