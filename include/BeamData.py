@@ -17,6 +17,7 @@ class BeamData:
 			data = yaml.load(f, Loader=yaml.FullLoader)
 		self.datasets = data['datasets']
 		self.simulations = data['simulations']
+		self.pepperpot = data['pepperpot']
 
 		# Initialise likelihoods:
 		#  -> evaluate likelyhood using python only (if too slow switch to ROOT)
@@ -132,7 +133,20 @@ class BeamData:
 					profDict = self.InitInterp(profDict)
 					data['profileLL'].append(profDict)
 					profilesLL.append(profDict)
-
+	
+	# Slice function
+	def sliceFunction(self, x, pepperpot):
+		A = pepperpot['A']
+		mu = pepperpot['mu']
+		s1 = pepperpot['s1']
+		l1 = pepperpot['l1']
+		s2 = pepperpot['s2']
+		l2 = pepperpot['l2']
+		return A*((x < mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))) + (x > mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))))
+	# Build phase space
+	def buildPhaseSpace(self):
+		return 0
+	
 	# Init interpolation
 	def InitInterp(self, profile):
 		# if raster scan prepare 2d cubic spline

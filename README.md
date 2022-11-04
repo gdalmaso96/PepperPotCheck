@@ -109,7 +109,14 @@ Added weight to LL: it is further divided by the number of transmitted perticles
 -- 26.10.2022 --
 The fit to centroid only excluding COBRA data is not too bad. Vertical profiles seem reasonable, main issues arise on the horizontal. The SSL magnet might have had different settings for MEG and Mu3e. I'm running on MEG only data both the centroid only fit and the fit to the momentum distribution. A different center in the horizontal might explain the tendency to go to higher momenta: with a lower focusing the distribution becomes broader.
 
--- 27.19.2022 --
+-- 27.10.2022 --
 Might have realized the issue: it could be that the mismodeling of the center in the horizontal profiles is due to the lack of a pepperpot point close to the horizontal peak. The idea is to let the parametrization of the slices be part of the BeamData settings and add a method that samples the phase space by adding a slice. Still need to figure out wheather it is worth it or not to create a TGraph2D with python and then sample with the usual sampler or to prefer to sample it at python level again. This would bring 6 more parameters (added slice parametrization).
 
 This is probably the reason why higher momenta are favored by the likelihood: a higher momentum results in lower deviation from the quadrupolar fields and therefore more particles at the horizontal center.
+
+-- 04.11.2022 --
+Started testing 2D splines on python3. Seem to have found a reasonable spline with an easy way to add slices. Add 2 slices set to 0 at both sides of space distribution and set to 0 negative values. Can think of includin two more slices on the sides in the fit (+12 params). 
+
+I will go on and see how fast it is to sample the obtained phase space: could integrate in one direction and build a 2D cumulative function. Still need to find a smart way to do so.
+
+For the moment only horizontal space is included. Will do the same for vertical phase space.

@@ -67,13 +67,23 @@ datasets.append({'fileName' : 'Data_2022_Mu3e/Collimator/QSK43_41A_180kV_fastSca
 simulations = []
 simulations = {'USbeam' : 'USbeam.root', 'USbeamName' : 'beam', 'DSbeam' : 'PepperPotPhaseSpace.root', 'DSbeamName' : 'beam', 'MEG' : 'MEGconfiguration.g4bl', 'MEGCOBRA' : 'MEGCOBRAconfiguration.g4bl', 'Mu3e' : 'Mu3econfiguration.g4bl'}
 
+# Pepperpot parametrisation
+pepperpot = []
+pepperpot.append({'x' : -37.5, 'A' : 0.305025, 'mu' : -7.61315,  's1' : 47.6013, 'l1' : 21.3552, 's2' : 59.2614, 'l2' : 0.000606746})
+pepperpot.append({'x' : -25,   'A' : 1.25203,  'mu' : 17.5435,   's1' : 71.0772, 'l1' : -13.8584, 's2' : 79.4099, 'l2' : 0.000208319})
+pepperpot.append({'x' : -12.5, 'A' : 2.21984,  'mu' : -3.37802,  's1' : 74.0407, 'l1' : -10.0195, 's2' : 83.4557, 'l2' : -1.43565})
+pepperpot.append({'x' :   0,   'A' : 2.27543,  'mu' : -0.708914, 's1' : 69.8991, 'l1' : 11.4565, 's2' : 84.0871, 'l2' : -9.79076})
+pepperpot.append({'x' :  12.5, 'A' : 1.71837,  'mu' : -11.2332,  's1' : 77.5932, 'l1' : 4.24545, 's2' : 81.6965, 'l2' : -8.52998})
+pepperpot.append({'x' :  25,   'A' : 0.842063, 'mu' : -5.04023,  's1' : 87.4775, 'l1' : -0.0166016, 's2' : 76.8209, 'l2' : 17.7025})
+pepperpot.append({'x' :  37.5, 'A' : 0.276368, 'mu' : -36.5828,  's1' : 56.2147, 'l1' : 0.0178001, 's2' : 80.8401, 'l2' : 8.48725})
+
 # ------------------------------------------------------------------------------------ #
 # Invert beam simulation settings
 invert = {'Beamline' : 'MEGconfiguration.g4bl', 'QSK41cur' : -18.1982, 'QSK42cur' : 40.7008, 'QSK43cur' : -34.8, 'SML41cur' : 10, 'beamPositionZ' : 1250+1117-44, 'poszPILL' : 0}
 simulations['Invert'] = invert
 # ------------------------------------------------------------------------------------ #
 # Configurations settingsi
-configurations = {'datasets' : datasets, 'simulations' : simulations}
+configurations = {'datasets' : datasets, 'simulations' : simulations, 'pepperpot' : pepperpot}
 
 # ------------------------------------------------------------------------------------ #
 with open('configurations_MEGonly.yaml', 'w') as f: 
