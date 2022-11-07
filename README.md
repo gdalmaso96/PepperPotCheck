@@ -120,3 +120,8 @@ Started testing 2D splines on python3. Seem to have found a reasonable spline wi
 I will go on and see how fast it is to sample the obtained phase space: could integrate in one direction and build a 2D cumulative function. Still need to find a smart way to do so.
 
 For the moment only horizontal space is included. Will do the same for vertical phase space.
+
+-- 07.11.2022 --
+Managed to sample the 2d distribution using python3 only in a reasonable amount of time. To build from the slices and sample one phase space 1e6 times the function requires 44-46 seconds, while executing ones the genBeam.C rquires ~90 seconds.
+
+Looks reasonable. Now need to implement it inside BeamData

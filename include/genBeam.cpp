@@ -181,3 +181,6 @@ void genBeam(TString fileName, TString newFileName){
 	invertBeam(fileName, newFileName);
 }
 
+void genBeam(){
+	genBeam("example.root", 0.0812462, 27.8995, 1.23719, 0.05, 0, 0, 0, 0, 1000000);
+}
