@@ -29,7 +29,7 @@ param -unset workDir=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCh
 
 ################################# Elements Strengths ####################################
 param -unset sign=1 		# sign=-1 for backtracking ::: sign=1 for normal DS tracking
-include $workDir/g4bl/Settings/Currents.txt
+include $workDir/g4bl/Settings/CurrentsQSM.txt
 include $workDir/g4bl/Settings/Scalefactors.txt 	# scaling factors for fieldmaps/generic elements/fieldexpressions
 #########################################################################################
 ######################################## Beam ###########################################
