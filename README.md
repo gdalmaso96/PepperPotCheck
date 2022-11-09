@@ -153,3 +153,7 @@ The standard phase space is built and sampled in 119 seconds
 
 Next step, to test adding a slice in both transverse spaces: done, it's working smoothly. One more slice on x builds and samples in 115 seconds, on y in 116 seconds, on both in 118 seconds. To be compared with 93 seconds of sampling only in include/genBeam.cpp 
 
+
+Next step: add CMBL model and data. Model added successfully: alerady with beam parameter in final configuration the final focus is quite good.
+
+Next step: check parameter consistency for running optuna trials and test one run. Then can move to the fit
