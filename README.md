@@ -136,15 +136,17 @@ Still need to add longitudinal momentum function. Done -> less then 2 seconds to
 -- 09.11.2022 --
 2d sampling fixed. Issue with cancellation found out to be an issue with the interpolation class: the issue arises if one samples r and uses inverse cumulant to evaluate Irand:
 
-<code> r = np.random.rand(1000000) <code\>
-<code> Irand = fi(r) <code\>
-<code> dxint = f(Irand.astype(int)+1) - f(Irand.astype(int)) <code\>
-<code> ddx = dx\*(r - f(Irand.astype(int)))/dxint <code\>
+<code> r = np.random.rand(1000000) </code>
+<code> Irand = fi(r) </code>
+<code> dxint = f(Irand.astype(int)+1) - f(Irand.astype(int)) </code>
+<code> ddx = dx\*(r - f(Irand.astype(int)))/dxint </code>
 
 The last line arises the issue: fixed by changing it to:
-<code> ddx = dx\*(f(Irand) - f(Irand.astype(int)))/dxint <code\>
+<code> ddx = dx\*(f(Irand) - f(Irand.astype(int)))/dxint </code>
 
 So that everything depends on the Irand only.
+
+The standard phase space is built and sampled in 167 seconds
 
 Next step, to test adding a slice in both transverse spaces
 
