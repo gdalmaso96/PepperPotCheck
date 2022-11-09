@@ -294,6 +294,8 @@ class BeamData:
 				while True:
 					if(Ix >= len(slicex)):
 						break
+					if(slicex[Ix]['x'] >= self.pepperpot[i]['x']):
+						break
 					if(slicex[Ix]['x'] < self.pepperpot[i]['x']):
 						pepperpotx.append(slicex[Ix])
 						Ix += 1
@@ -304,8 +306,10 @@ class BeamData:
 				while True:
 					if(Iy >= len(slicey)):
 						break
+					if(slicey[Iy]['y'] >= self.pepperpot[i]['y']):
+						break
 					if(slicey[Iy]['y'] < self.pepperpot[i]['y']):
-						pepperpoty.append(slicex[Iy])
+						pepperpoty.append(slicey[Iy])
 						Iy += 1
 				# Add data slice
 				pepperpoty.append(self.pepperpot[i])
@@ -342,16 +346,16 @@ class BeamData:
 		# Problems:
 		#  1 - when Irand.astype(int)%lx = 499 dx = 100 (to effectively have 500 cells I need 501 points?) <- Should still be ok, would only make the sampling range between -50 and 50.2 mm
 		#  2 - cancellation errors: ddx is affected by cancellation. Need a smarter way of doing that -> Maybe after sampling r forget about it and use Irand only? It works
-		for i in range(len(x)):
-			if abs(x[i]) > 50 or ddx[i] > 1:
-				print(r[i], Irand[i], xmin, dx, lx, ddx[i])
-		np.save("testx.npy", np.array((cumulative1d, I, x, xp)))
+		#for i in range(len(x)):
+		#	if abs(x[i]) > 50 or ddx[i] > 1:
+		#		print(r[i], Irand[i], xmin, dx, lx, ddx[i])
+		#np.save("testx.npy", np.array((cumulative1d, I, x, xp)))
 
 
 		# Create vertical cumulative
 		print("Interpolate vertical")
 		cumulative1d, I, dx, lx, xmin, dy, ly, ymin = self.prepare2dCumulative(pepperpoty, 'y')
-		np.save("testy.npy", np.array((cumulative1d, I)))
+		#np.save("testy.npy", np.array((cumulative1d, I)))
 		
 		# Sample vertical phase space
 		print("Sample vertical")

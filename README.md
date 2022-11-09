@@ -149,7 +149,7 @@ The last line arises the issue: fixed by changing it to:
 
 So that everything depends on the Irand only.
 
-The standard phase space is built and sampled in 167 seconds
+The standard phase space is built and sampled in 119 seconds
 
-Next step, to test adding a slice in both transverse spaces
+Next step, to test adding a slice in both transverse spaces: done, it's working smoothly. One more slice on x builds and samples in 115 seconds, on y in 116 seconds, on both in 118 seconds. To be compared with 93 seconds of sampling only in include/genBeam.cpp 
 
