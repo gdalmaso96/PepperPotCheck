@@ -137,8 +137,11 @@ Still need to add longitudinal momentum function. Done -> less then 2 seconds to
 2d sampling fixed. Issue with cancellation found out to be an issue with the interpolation class: the issue arises if one samples r and uses inverse cumulant to evaluate Irand:
 
 <code> r = np.random.rand(1000000) </code>
+
 <code> Irand = fi(r) </code>
+
 <code> dxint = f(Irand.astype(int)+1) - f(Irand.astype(int)) </code>
+
 <code> ddx = dx\*(r - f(Irand.astype(int)))/dxint </code>
 
 The last line arises the issue: fixed by changing it to:
