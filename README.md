@@ -125,3 +125,26 @@ For the moment only horizontal space is included. Will do the same for vertical 
 Managed to sample the 2d distribution using python3 only in a reasonable amount of time. To build from the slices and sample one phase space 1e6 times the function requires 44-46 seconds, while executing ones the genBeam.C rquires ~90 seconds.
 
 Looks reasonable. Now need to implement it inside BeamData
+
+-- 08.11.2022 --
+Start implementation of new sampler. Methods needed:
+ - interpolation to evaluate global cumulant
+ - cumulant sampler
+
+Still need to add longitudinal momentum function. Done -> less then 2 seconds to sample
+
+-- 09.11.2022 --
+2d sampling fixed. Issue with cancellation found out to be an issue with the interpolation class: the issue arises if one samples r and uses inverse cumulant to evaluate Irand:
+
+<code> r = np.random.rand(1000000) <code\>
+<code> Irand = fi(r) <code\>
+<code> dxint = f(Irand.astype(int)+1) - f(Irand.astype(int)) <code\>
+<code> ddx = dx\*(r - f(Irand.astype(int)))/dxint <code\>
+
+The last line arises the issue: fixed by changing it to:
+<code> ddx = dx\*(f(Irand) - f(Irand.astype(int)))/dxint <code\>
+
+So that everything depends on the Irand only.
+
+Next step, to test adding a slice in both transverse spaces
+

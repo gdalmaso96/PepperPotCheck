@@ -3,7 +3,7 @@
 
 import yaml
 import subprocess
-from scipy.interpolate import interp1d, interp2d
+from scipy.interpolate import interp1d, interp2d, RectBivariateSpline
 from scipy import integrate
 import numpy as np
 import matplotlib.pyplot as plt
@@ -143,8 +143,303 @@ class BeamData:
 		s2 = pepperpot['s2']
 		l2 = pepperpot['l2']
 		return A*((x < mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))) + (x > mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))))
-	# Build phase space
-	def buildPhaseSpace(self):
+	
+	# Prepare 2d cumulative function
+	# Takes as an argument a list of slice parameters to then sample the transverse phase space
+	# The idea is that it is not directly dependent on the data to make it easier to add any number of slices
+	def prepare2dCumulative(self, pepperpot, key):
+		y = np.linspace(-500, 500, 100)
+		x = []
+		# Add one slice at the begining to set 0 boundary conditions
+		x.append(pepperpot[0][key] - (pepperpot[1][key] - pepperpot[0][key]))
+		for i in range(len(pepperpot)):
+			x.append(pepperpot[i][key])
+		# Add one slice at the end to set 0 boundary conditions
+		x.append(pepperpot[-1][key] + (pepperpot[-1][key] - pepperpot[-2][key]))
+
+		X = []
+		for i in range(len(y)):
+			X.append(x)
+		X = np.array(X)
+
+		Y = []
+		for i in range(len(x)):
+			Y.append(y)
+		Y = np.transpose(Y)
+
+		Z = []
+		# Add zero values on the boundaries in the space direction
+		Z.append(np.zeros(len(y)))
+		for i in range(len(pepperpot)):
+			Z.append(self.sliceFunction(y, pepperpot[i]))
+		Z.append(np.zeros(len(y)))
+
+		# Interpolate
+		f = RectBivariateSpline(x, y, Z, kx=3, ky=3)
+		x = np.linspace(-50, 50, 500)
+		y = np.linspace(-300, 300, 500)
+		Z = f(x,y)
+		# RectBivariateSpline has a strange indexing
+		Z = np.transpose(Z)
+		Z = Z*(Z>0)
+		Z = Z.flatten()
+
+		cumulative1d = np.cumsum(Z)
+		I = np.linspace(0, len(Z) - 1, len(Z))
+
+		# Remove points with the same value
+		while True:
+			if(np.abs(cumulative1d[0] - cumulative1d[1]) < 1e-6):
+				cumulative1d = np.delete(cumulative1d, 0)
+				I = np.delete(I, 0)
+			else:
+				break
+		ind = 0
+		while True:
+			if(np.abs(cumulative1d[ind] - cumulative1d[ind+1]) < 1e-6):
+				cumulative1d = np.delete(cumulative1d, ind+1)
+				I = np.delete(I, ind+1)
+			else:
+				ind += 1
+
+			if(ind+1 >= len(cumulative1d)):
+				break
+
+		cumulative1d = cumulative1d/cumulative1d[-1]
+		dx = x[1]-x[0]
+		lx = len(x)
+		xmin = x[0]
+		dy = y[1]-y[0]
+		ly = len(y)
+		ymin = y[0]
+		return cumulative1d, I, dx, lx, xmin, dy, ly, ymin
+	
+	def surface(self, x):
+		return 1e5*(np.abs(x)/29.79)**3.5*(x>0)*(x<29.79)
+	
+	def gaus(self, x, a, mu, s):
+		return a*np.exp(-(x-mu)**2/2./s**2)
+	# Prepare the 1d cumulative function 
+	# The output array can be used to sample the longitudinal momentum distribution
+	# The momentum distribution is modeled as follows:
+	#  - surface muon momentum spectrum is assumed to be x**3.5 from 0 to 29.79  (no parameters)
+	#  - a gaussian smearing is included to account for cloud muons and energy losses (pars[0] = sigma)
+	#  - a gaussian window is applied to account for beamline acceptance up to QSK41 (pars[1] = selected momentum, pars[2] = sigma)
+	#  - a gaussian smearing is applied again to take into accaount possible other effects (pars[3] = sigma)
+	def prepare1dCumulative(self, pars):
+		x = np.linspace(-35, 35, 10000)
+		surfacey = self.surface(x)
+		surfacey = surfacey/surfacey.max()
+		gaussy = self.gaus(x, 1, 0, pars[0])
+		
+		# First convolution
+		surfacey = np.convolve(surfacey, gaussy, "same")
+		surfacey = surfacey/surfacey.max()
+
+		# Apply window
+		gaussy = self.gaus(x, 1, pars[1], pars[2])
+		surfacey = surfacey*gaussy
+		surfacey = surfacey/surfacey.max()
+
+		# Second convolution
+		gaussy = self.gaus(x, 1, 0, pars[3])
+		surfacey = np.convolve(surfacey, gaussy, "same")
+		surfacey = surfacey/surfacey.max()
+		
+		# Build cumulative
+		cumulative1d = np.cumsum(surfacey)
+		while True:
+			if(np.abs(cumulative1d[0] - cumulative1d[1]) < 1e-6):
+				cumulative1d = np.delete(cumulative1d, 0)
+				x = np.delete(x, 0)
+			else:
+				break
+
+		ind = 0
+		while True:
+			if(np.abs(cumulative1d[ind] - cumulative1d[ind+1]) < 1e-6):
+				cumulative1d = np.delete(cumulative1d, ind+1)
+				x = np.delete(x, ind+1)
+			else:
+				ind += 1
+
+			if(ind+1 >= len(cumulative1d)):
+				break
+
+		cumulative1d = cumulative1d - cumulative1d[0]
+		cumulative1d = cumulative1d/cumulative1d[-1]
+		return cumulative1d, x
+
+	# Sample phase space
+	# Beam is a list containing the parameters of the beam to be varied
+	# - beam[0-3] = pars in prepare1dCumulative
+	# - beam[4] = megx
+	# - beam[5] = megxp
+	# - beam[6] = mu3ex
+	# - beam[7] = mu3exp
+	# - beam[8] = y
+	# - beam[9] = yp
+	# slicex and slicey are lists with the same structure as BeamData.pepperpot, and contain the info about any additional slice to the pepperpot
+	# nEvents is the number of particles to be added to the beam file
+	# fileName is the name of the beam output
+	def samplePhaseSpace(self, beam, slicex, slicey, nEvents, fileName):
+		# Create the pepperpot list
+		pepperpotx = []
+		pepperpoty = []
+		Ix = 0
+		Iy = 0
+		for i in range(len(self.pepperpot)):
+			if(list(self.pepperpot[i].keys())[-1] == 'x'):
+				# Check if slicex or data
+				while True:
+					if(Ix >= len(slicex)):
+						break
+					if(slicex[Ix]['x'] < self.pepperpot[i]['x']):
+						pepperpotx.append(slicex[Ix])
+						Ix += 1
+				# Add data slice
+				pepperpotx.append(self.pepperpot[i])
+			elif(list(self.pepperpot[i].keys())[-1] == 'y'):
+				# Check if slicex or data
+				while True:
+					if(Iy >= len(slicey)):
+						break
+					if(slicey[Iy]['y'] < self.pepperpot[i]['y']):
+						pepperpoty.append(slicex[Iy])
+						Iy += 1
+				# Add data slice
+				pepperpoty.append(self.pepperpot[i])
+
+		# Sample momentum distribution
+		# Create cumulative function: it's fine to do it every time it is sampled. It doesn't take too much time
+		print("Interpolate longitudinal")
+		cumulative1d, Ptot = self.prepare1dCumulative(beam[0:4])
+		
+		# Create interpolation
+		print("Sample longitudinal")
+		f = interp1d(cumulative1d, Ptot, kind='cubic')
+		Ptot = f(np.random.rand(nEvents))
+		
+		# Sample transverse phase space
+		# Create horizontal cumulative
+		print("Interpolate horizontal")
+		cumulative1d, I, dx, lx, xmin, dy, ly, ymin = self.prepare2dCumulative(pepperpotx, 'x')
+		# Sample horizontal phase space
+		print("Sample horizontal")
+		fi = interp1d(cumulative1d, I, kind='cubic')
+		f = interp1d(I, cumulative1d, kind='cubic')
+		r = np.random.rand(1000000)
+		Irand = fi(r)
+		dxint = f(Irand.astype(int)+1) - f(Irand.astype(int))
+		ddx = dx*(f(Irand) - f(Irand.astype(int)))/dxint
+		ddx = ddx*(ddx>0)*(dxint > 0)
+		ddy = np.random.rand(1000000)*dy
+
+		x = xmin + dx*(Irand.astype(int)%lx) + ddx
+		xp = ymin + dy*(Irand.astype(int)/ly) + ddy
+
+		# PRINT OUT IRAND IF X OUTSIDE GIVEN RANGE
+		# Problems:
+		#  1 - when Irand.astype(int)%lx = 499 dx = 100 (to effectively have 500 cells I need 501 points?) <- Should still be ok, would only make the sampling range between -50 and 50.2 mm
+		#  2 - cancellation errors: ddx is affected by cancellation. Need a smarter way of doing that -> Maybe after sampling r forget about it and use Irand only? It works
+		for i in range(len(x)):
+			if abs(x[i]) > 50 or ddx[i] > 1:
+				print(r[i], Irand[i], xmin, dx, lx, ddx[i])
+		np.save("testx.npy", np.array((cumulative1d, I, x, xp)))
+
+
+		# Create vertical cumulative
+		print("Interpolate vertical")
+		cumulative1d, I, dx, lx, xmin, dy, ly, ymin = self.prepare2dCumulative(pepperpoty, 'y')
+		np.save("testy.npy", np.array((cumulative1d, I)))
+		
+		# Sample vertical phase space
+		print("Sample vertical")
+		fi = interp1d(cumulative1d, I, kind='cubic')
+		f = interp1d(I, cumulative1d, kind='cubic')
+		r = np.random.rand(1000000)
+		Irand = fi(r)
+		Itest1 = (Irand.astype(int))*(Irand.astype(int) > I[0]) + I[0]*(Irand.astype(int) <= I[0])
+		Itest2 = (Irand.astype(int)+1)*(Irand.astype(int)+1 < I[-1]) + I[-1]*(Irand.astype(int)+1 >= I[-1])
+		dxint = f(Itest2) - f(Itest1)
+		dxint = f(Irand.astype(int)+1) - f(Irand.astype(int))
+		ddx = dx*(f(Irand) - f(Irand.astype(int)))/dxint
+		ddx = ddx*(ddx>0)*(dxint > 0)
+		ddy = np.random.rand(1000000)*dy
+
+		y = xmin + dx*(Irand.astype(int)%lx) + ddx
+		yp = ymin + dy*(Irand.astype(int)/ly) + ddy
+
+		# Create beam trees
+		print("Create tree")
+		xmeg = x + beam[4]
+		xpmeg = (xp + beam[5])*1e-3
+		xmu3e = x + beam[6]
+		xpmu3e = (xp + beam[7])*1e-3
+		ytot = y + beam[8]
+		yptot = (yp + beam[9])*1e-3
+
+		z = np.zeros(len(x))
+		t = np.zeros(len(x))
+
+		Pzmeg = -Ptot/np.sqrt(1 + xpmeg**2 + yptot**2)
+		Pxmeg = xpmeg*Pzmeg
+		Pymeg = yptot*Pzmeg
+
+		Pzmu3e = -Ptot/np.sqrt(1 + xpmu3e**2 + yptot**2)
+		Pxmu3e = xpmu3e*Pzmu3e
+		Pymu3e = yptot*Pzmu3e
+		
+		PDGid = np.zeros(len(x)) - 13
+		EventID = np.linspace(1, len(x), len(x))
+		TrackID = np.zeros(len(x))
+		ParentID = np.zeros(len(x))
+		Weight = np.zeros(len(x)) + 1
+
+		# Create file MEG
+		fileNameT = self.workDir + '/g4bl/beam/DS' + fileName + 'MEG.root'
+		with uproot.recreate(fileNameT) as file:
+			tree = {}
+			tree['x'] = xmeg.astype('float32')
+			tree['y'] = ytot.astype('float32')
+			tree['z'] = z.astype('float32')
+			tree['Px'] = Pxmeg.astype('float32')
+			tree['Py'] = Pymeg.astype('float32')
+			tree['Pz'] = Pzmeg.astype('float32')
+			tree['t'] = t.astype('float32')
+			tree['PDGid'] = PDGid.astype('float32')
+			tree['EventID'] = EventID.astype('float32')
+			tree['TrackID'] = TrackID.astype('float32')
+			tree['ParentID'] = ParentID.astype('float32')
+			tree['Weight'] = Weight.astype('float32')
+
+			file['beam'] = tree
+			file.close()
+		# Convert to tuple
+		command =  "root -q -b \"" + self.workDir + "include/convertToNTuple.cpp(\\\"" + fileNameT + "\\\")\""
+		subprocess.call(command, shell=True)
+		# Create file Mu3e
+		fileNameT = self.workDir + '/g4bl/beam/DS' + fileName +'Mu3e.root'
+		with uproot.recreate(fileNameT) as file:
+			tree = {}
+			tree['x'] = xmu3e.astype('float32')
+			tree['y'] = ytot.astype('float32')
+			tree['z'] = z.astype('float32')
+			tree['Px'] = Pxmu3e.astype('float32')
+			tree['Py'] = Pymu3e.astype('float32')
+			tree['Pz'] = Pzmu3e.astype('float32')
+			tree['t'] = t.astype('float32')
+			tree['PDGid'] = PDGid.astype('float32')
+			tree['EventID'] = EventID.astype('float32')
+			tree['TrackID'] = TrackID.astype('float32')
+			tree['ParentID'] = ParentID.astype('float32')
+			tree['Weight'] = Weight.astype('float32')
+
+			file['beam'] = tree
+			file.close()
+		# Convert to tuple
+		command =  "root -q -b \"" + self.workDir + "include/convertToNTuple.cpp(\\\"" + fileNameT + "\\\")\""
+		subprocess.call(command, shell=True)
 		return 0
 	
 	# Init interpolation
