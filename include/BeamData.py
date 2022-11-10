@@ -332,12 +332,12 @@ class BeamData:
 		print("Sample horizontal")
 		fi = interp1d(cumulative1d, I, kind='cubic')
 		f = interp1d(I, cumulative1d, kind='cubic')
-		r = np.random.rand(1000000)
+		r = np.random.rand(nEvents)
 		Irand = fi(r)
 		dxint = f(Irand.astype(int)+1) - f(Irand.astype(int))
 		ddx = dx*(f(Irand) - f(Irand.astype(int)))/dxint
 		ddx = ddx*(ddx>0)*(dxint > 0)
-		ddy = np.random.rand(1000000)*dy
+		ddy = np.random.rand(nEvents)*dy
 
 		x = xmin + dx*(Irand.astype(int)%lx) + ddx
 		xp = ymin + dy*(Irand.astype(int)/ly) + ddy
@@ -361,7 +361,7 @@ class BeamData:
 		print("Sample vertical")
 		fi = interp1d(cumulative1d, I, kind='cubic')
 		f = interp1d(I, cumulative1d, kind='cubic')
-		r = np.random.rand(1000000)
+		r = np.random.rand(nEvents)
 		Irand = fi(r)
 		Itest1 = (Irand.astype(int))*(Irand.astype(int) > I[0]) + I[0]*(Irand.astype(int) <= I[0])
 		Itest2 = (Irand.astype(int)+1)*(Irand.astype(int)+1 < I[-1]) + I[-1]*(Irand.astype(int)+1 >= I[-1])
@@ -369,7 +369,7 @@ class BeamData:
 		dxint = f(Irand.astype(int)+1) - f(Irand.astype(int))
 		ddx = dx*(f(Irand) - f(Irand.astype(int)))/dxint
 		ddx = ddx*(ddx>0)*(dxint > 0)
-		ddy = np.random.rand(1000000)*dy
+		ddy = np.random.rand(nEvents)*dy
 
 		y = xmin + dx*(Irand.astype(int)%lx) + ddx
 		yp = ymin + dy*(Irand.astype(int)/ly) + ddy
@@ -470,7 +470,7 @@ class BeamData:
 			# Check what kind of profile it is
 				if(profile['direction'] == 'x'):
 					s = pill.arrays(['x'], 'abs(y) < 1', library = 'np')['x']
-					if(data['Beamline'] == 'MEG'):
+					if(data['Beamline'].find('MEG') >= 0):
 						s = -s
 					# Check if any particle is transmitted
 					if(len(s) < 1):
@@ -500,6 +500,121 @@ class BeamData:
 							else:
 								LL += (-2*np.log(profile['interpolation'](s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
 		return LL
+	
+	# Run simulation trial for LL evaluation including beam interpolation
+	# - beam[0-3] = pars in prepare1dCumulative
+	# - beam[4] = megx
+	# - beam[5] = megxp
+	# - beam[6] = mu3ex
+	# - beam[7] = mu3exp
+	# - beam[8] = y
+	# - beam[9] = yp
+	# slicex and slicey are lists with the same structure as BeamData.pepperpot, and contain the info about any additional slice to the pepperpot
+	def RunTrialSlice(self, beam, nEvents, histoFile, beamFile, DELETEFILES = True):
+		# Generate beamfile
+		self.samplePhaseSpace(beam['beam'], beam['slicex'], beam['slicey'], nEvents, beamFile)
+
+		# Back propagate
+		commandBeam = " " + self.containerDir + "/g4bl/scripts/" + self.simulations['Invert']['Beamline']
+		params = self.simulations['Invert'].copy()
+		params.pop('Beamline')
+
+		for par in params:
+			commandBeam = commandBeam + " " + par + "=%f" %(params[par])
+		
+		commandBeam = commandBeam + " workDir=" + self.containerDir
+
+		# Set number of particles to be propagated
+		commandBeam = commandBeam + " " + "last=%d" %(nEvents)
+
+		# MEG
+		# Set beamfile
+		beamFileMEG = beamFile + "MEG.root"
+		commandBeamMEG = commandBeam + " " + "beamFile=" + self.containerDir + "g4bl/beam/DS" + beamFileMEG
+
+		# Set histoFile
+		commandBeamMEG = commandBeamMEG + " " + "histoFile=" + self.containerDir + "g4bl/beam/USI" + beamFileMEG
+
+		# Execute
+		print(self.g4bl.replace("COMMAND", commandBeamMEG))
+		subprocess.call(self.g4bl.replace("COMMAND", commandBeamMEG), shell=True)
+		
+		# Mu3e
+		# Set beamfile
+		beamFileMu3e = beamFile + "Mu3e.root"
+		commandBeamMu3e = commandBeam + " " + "beamFile=" + self.containerDir + "g4bl/beam/DS" + beamFileMu3e
+
+		# Set histoFile
+		commandBeamMu3e = commandBeamMu3e + " " + "histoFile=" + self.containerDir + "g4bl/beam/USI" + beamFileMu3e
+
+		# Execute
+		print(self.g4bl.replace("COMMAND", commandBeamMu3e))
+		subprocess.call(self.g4bl.replace("COMMAND", commandBeamMu3e), shell=True)
+
+		# Invert beam MEG
+		commandBeam = "root -q -b \"" + self.workDir + "include/genBeam.cpp(\\\"" + self.workDir + "g4bl/beam/" + "USI" + beamFileMEG +  "\\\", \\\"" + self.workDir + "g4bl/beam/" + "US" + beamFileMEG  +  "\\\")\""
+		print(commandBeam)
+		subprocess.call(commandBeam, shell=True)
+
+
+		# Invert beam Mu3e
+		commandBeam = "root -q -b \"" + self.workDir + "include/genBeam.cpp(\\\"" + self.workDir + "g4bl/beam/" + "USI" + beamFileMu3e +  "\\\", \\\"" + self.workDir + "g4bl/beam/" + "US" + beamFileMu3e  +  "\\\")\""
+		print(commandBeam)
+		subprocess.call(commandBeam, shell=True)
+
+		test = []
+		for data in self.datasets:
+			if data['LL'] == 1:
+				command= " " + self.containerDir + "/g4bl/scripts/" + self.simulations[data['Beamline']]
+
+
+				# Copy dataset and extract g4bl parameters
+				# In the future might want to copy and pop while getting information about what simulatio to run
+				params = data.copy()
+				params.pop('fileName')
+				params.pop('Data type - 1')
+				params.pop('Data type - 2')
+				params.pop('Simulation n.')
+				beamLine = params.pop('Beamline')
+				params.pop('PILL position')
+				params.pop('profileLL')
+
+				for par in params:
+					command = command + " " + par + "=%f" %(params[par])
+				command = command + " workDir=" + self.containerDir
+				
+				# Set beamfile
+				if(beamLine.find("MEG") >= 0):
+					command = command + " " + "beamFile=" + self.containerDir + "g4bl/beam/US" + beamFileMEG
+				elif(beamLine.find("Mu3e") >= 0):
+					command = command + " " + "beamFile=" + self.containerDir + "g4bl/beam/US" + beamFileMu3e
+
+				# Set number of particles to be propagated
+				command = command + " " + "last=%d" %(nEvents)
+
+				# Set histoFile
+				command = command + " " + "histoFile=" + self.containerDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."]) # ADD suffix for different data sets
+
+				print(self.g4bl.replace("COMMAND", command))
+				subprocess.call(self.g4bl.replace("COMMAND", command), shell=True)
+
+				# Evaluate LL
+				#self.LL += self.EvaluateLL(data, "" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."]))
+				test.append(self.EvaluateLL(data, "" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."])))
+				self.LL += test[-1]
+				print("%f\n" %(self.LL))
+
+				# Remove histoFile
+				if DELETEFILES:
+					os.remove("" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."]))
+		
+		# Remove beamfile
+		if DELETEFILES:
+			os.remove("" + self.workDir + "g4bl/beam/US" + beamFileMEG)
+			os.remove("" + self.workDir + "g4bl/beam/US" + beamFileMu3e)
+
+		print(test)
+		return self.LL
 	
 	# Run simulation trial for LL evaluation
 	# Beam parameters are: [0,3] - longitudinal parameters, [4, 7] - centroids
@@ -543,7 +658,7 @@ class BeamData:
 
 
 				# Copy dataset and extract g4bl parameters
-                                # In the future might want to copy and pop while getting information about what simulatio to run
+				# In the future might want to copy and pop while getting information about what simulatio to run
 				params = data.copy()
 				params.pop('fileName')
 				params.pop('Data type - 1')
@@ -592,6 +707,28 @@ class BeamData:
 		for par in best.params:
 			beam.append(best.params[par])
 		self.RunTrial(beam, nEvents, "best_", "bestBeam.root", False)
+	
+	def RunBestTrialSlice(self, study, nEvents):
+		best = study.best_trial
+		beam = []
+		slicex = []
+		slicey = []
+		tempx = {}
+		tempx['x'] = -6.25
+		tempy = {}
+		tempy['y'] = 6.25
+		for par in best.params:
+			if(par.find('_x') >= 0):
+				tempx[par[0:par.find('_x')]] = best.params[par]
+			elif(par.find('_y') >= 0):
+				tempy[par[0:par.find('_y')]] = best.params[par]
+			else:
+				beam.append(best.params[par])
+		slicex.append(tempx)
+		#print(slicex[0])
+		#slicey.append(tempy)
+		beam = {'beam' : beam, 'slicex': slicex, 'slicey': slicey}
+		self.RunTrialSlice(beam, nEvents, "best_", "bestBeam", False)
 	
 	# Run simulation with default settings
 	def RunSimulation(self, run, nEvents):
@@ -650,11 +787,11 @@ class BeamData:
 								s = -s
 							
 							# Plot
-							x = np.linspace(-80, 80, 1000)
+							x = np.linspace(s.min(), s.max(), 1000)
 							y = data['profileLL'][0]['interpolation'](x)/profile['norm']
 							
 							plt.plot(x, y, label='Likelihood')
-							plt.hist(s, density=True, label='MC', range=(-80, 80), bins=100, color='orange', alpha=0.5)
+							plt.hist(s, density=True, label='MC', range=(s.min(), s.max()), bins=100, color='orange', alpha=0.5)
 							plt.savefig(histoFile.replace(".root", "_x.png"))
 							plt.clf()
 		
@@ -662,11 +799,11 @@ class BeamData:
 							s = pill.arrays(['y'], 'abs(x) < 1', library = 'np')['y']
 							
 							# Plot
-							x = np.linspace(-80, 80, 1000)
+							x = np.linspace(s.min(), s.max(), 1000)
 							y = data['profileLL'][0]['interpolation'](x)/profile['norm']
 							
 							plt.plot(x, y, label='Likelihood')
-							plt.hist(s, density=True, label='MC', range=(-80, 80), bins=100, color='orange', alpha=0.5)
+							plt.hist(s, density=True, label='MC', range=(s.min(), s.max()), bins=100, color='orange', alpha=0.5)
 							plt.savefig(histoFile.replace(".root", "_y.png"))
 							plt.clf()
 		return 0

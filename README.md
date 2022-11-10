@@ -157,3 +157,6 @@ Next step, to test adding a slice in both transverse spaces: done, it's working 
 Next step: add CMBL model and data. Model added successfully: alerady with beam parameter in final configuration the final focus is quite good.
 
 Next step: check parameter consistency for running optuna trials and test one run. Then can move to the fit
+
+-- 10.11.2022 --
+New optuna file added and tested. best.py and plotBest updated as well
