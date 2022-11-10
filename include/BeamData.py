@@ -173,6 +173,7 @@ class BeamData:
 		for i in range(len(pepperpot)):
 			Z.append(self.sliceFunction(y, pepperpot[i]))
 		Z.append(np.zeros(len(y)))
+		Z = np.array(Z)
 
 		# Interpolate
 		f = RectBivariateSpline(x, y, Z, kx=3, ky=3)
