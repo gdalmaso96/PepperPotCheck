@@ -477,14 +477,14 @@ class BeamData:
 					if(len(s) < 1):
 						LL += 1000
 					else:
-						LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)/len(s)
+						LL += (-2*np.log(np.abs(profile['interpolation'](s))/profile['norm'])).sum()/len(s)/len(s)
 				elif(profile['direction'] == 'y'):
 					s = pill.arrays(['y'], '(abs(x) < 1) & (y > %f) & (y < %f)' %(data['profileLL'][0]['profile'][0][0], data['profileLL'][0]['profile'][0][-1]), library = 'np')['y']
 					# Check if any particle is transmitted
 					if(len(s) < 1):
 						LL += 1000
 					else:
-						LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)/len(s)
+						LL += (-2*np.log(np.abs(profile['interpolation'](s))/profile['norm'])).sum()/len(s)/len(s)
 				elif(profile['direction'] == 'xy'):
 					s = pill.arrays(['x', 'y'], library = 'np')
 					for i in range(s['x'].size):
