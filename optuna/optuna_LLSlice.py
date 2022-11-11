@@ -16,7 +16,7 @@ warnings.filterwarnings("ignore")
 # Fits the phase space centroids, longitudinal phase space and the Peper Pot horixontal slice in x = -6.25mm
 # 8 parameters: 4 centroids + 4 parameters of the momentum spectrum parametrization + 6 paramters of the slice
 
-nTrials = 10 #3
+nTrials = 1 #3
 nJobs = 1
 slicex_X = [{'x': -6.25, 'Amin': 2.2, 'Amax': 3.0}]
 slicey_Y = []
