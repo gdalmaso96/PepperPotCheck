@@ -167,3 +167,7 @@ Issues to run it on the cluster
 Managed to try the optimization, but by chance I left the Bayesian optimizer. I'm now repeting with NSGAII with 50 individuals.
 
 There is still an error in the evaluation of the LL: it happens frequently that the LL gives nan as a result. Need to further explore, not trivial: I'm checking whether fixing the range on LL evaluation is enough
+
+Found issue: run 47 gets to negative values. Current fix: absolute value of PDE. THe values are always small, so it should be fine. In alternative in the future will truncate it.
+
+Testing first run and then launch fit.
