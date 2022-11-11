@@ -84,7 +84,11 @@ if __name__ == '__main__':
 	if len(args) == 1:
 		firstTry = {'a' : 0.0812462, 'b' : 27.8995, 'c' : 1.23719, 'd' : 0.05, 'megx' : 0, 'megxp' : 0, 'mu3ex' : 0, 'mu3exp' : 0, 'y' : 0, 'yp' : 0, 'A_x0' : 2.4, 'mu_x0' : -1, 's1_x0' : 72, 'l1_x0' : 0, 's2_x0' : 83, 'l2_x0' : -9}
 		study.enqueue_trial(firstTry)
+	
 	study.optimize(objective, n_trials=nTrials, n_jobs=nJobs)
+
+	while(time.time() -start.time() < 1200):
+		study.optimize(objective, n_trials=nTrials, n_jobs=nJobs)
 
 	print("--- %s seconds ---" % (time.time() - start_time))
 	
