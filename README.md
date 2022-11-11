@@ -162,3 +162,8 @@ Next step: check parameter consistency for running optuna trials and test one ru
 New optuna file added and tested. best.py and plotBest updated as well
 
 Issues to run it on the cluster
+
+-- 11.11.2022 --
+Managed to try the optimization, but by chance I left the Bayesian optimizer. I'm now repeting with NSGAII with 50 individuals.
+
+There is still an error in the evaluation of the LL: it happens frequently that the LL gives nan as a result. Need to further explore, not trivial: I'm checking whether fixing the range on LL evaluation is enough
