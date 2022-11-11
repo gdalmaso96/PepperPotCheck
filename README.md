@@ -160,3 +160,5 @@ Next step: check parameter consistency for running optuna trials and test one ru
 
 -- 10.11.2022 --
 New optuna file added and tested. best.py and plotBest updated as well
+
+Issues to run it on the cluster
