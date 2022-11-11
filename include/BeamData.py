@@ -470,7 +470,7 @@ class BeamData:
 			for profile in data['profileLL']:
 			# Check what kind of profile it is
 				if(profile['direction'] == 'x'):
-					s = pill.arrays(['x'], 'abs(y) < 1 & x > %f & x < %f' %(data['profileLL'][0]['profile'][0][0], data['profileLL'][0]['profile'][0][-1]), library = 'np')['x']
+					s = pill.arrays(['x'], '(abs(y) < 1) & (x > %f) & (x < %f)' %(data['profileLL'][0]['profile'][0][0], data['profileLL'][0]['profile'][0][-1]), library = 'np')['x']
 					if(data['Beamline'].find('MEG') >= 0):
 						s = -s
 					# Check if any particle is transmitted
@@ -479,7 +479,7 @@ class BeamData:
 					else:
 						LL += (-2*np.log(profile['interpolation'](s)/profile['norm'])).sum()/len(s)/len(s)
 				elif(profile['direction'] == 'y'):
-					s = pill.arrays(['y'], 'abs(x) < 1 & y > %f & y < %f' %(data['profileLL'][0]['profile'][0][0], data['profileLL'][0]['profile'][0][-1]), library = 'np')['y']
+					s = pill.arrays(['y'], '(abs(x) < 1) & (y > %f) & (y < %f)' %(data['profileLL'][0]['profile'][0][0], data['profileLL'][0]['profile'][0][-1]), library = 'np')['y']
 					# Check if any particle is transmitted
 					if(len(s) < 1):
 						LL += 1000
