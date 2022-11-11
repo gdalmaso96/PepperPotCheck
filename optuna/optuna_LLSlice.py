@@ -87,7 +87,7 @@ if __name__ == '__main__':
 	
 	study.optimize(objective, n_trials=nTrials, n_jobs=nJobs)
 
-	while(time.time() -start.time() < 1200):
+	while(time.time() -start_time < 1200):
 		study.optimize(objective, n_trials=nTrials, n_jobs=nJobs)
 
 	print("--- %s seconds ---" % (time.time() - start_time))
