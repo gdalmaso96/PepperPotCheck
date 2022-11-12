@@ -55,8 +55,10 @@ beam root file=$beamFile firstEvent=$first lastEvent=$last beamZ=$beamPositionZ 
 
 ######################################### QSK ###########################################
 fieldmap QSK file=$workDir/g4bl/FieldMaps/feldqsk.dat
-#genericquad QSKDUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 poleTipRadius=125 coilRadius=160 coilHalfwidth=55
-genericquad QSKDUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 apertureRadius=125
+genericquad QSK41DUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 poleTipRadius=125 coilRadius=190 coilHalfwidth=55
+genericquad QSK42DUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 poleTipRadius=125 coilRadius=190 coilHalfwidth=55
+genericquad QSK43DUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 poleTipRadius=125 coilRadius=190 coilHalfwidth=55
+#genericquad QSKDUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 apertureRadius=125
 #########################################################################################
 
 ######################################### SML ###########################################
@@ -105,11 +107,11 @@ endif
 
 #####################################################
 place QSK rename=QSK41 current=$QSK41set z=$poszQSK41
-place QSKDUMMY z=$poszQSK41 rename=QSK41DUMMY
+place QSK41DUMMY z=$poszQSK41 rename=QSK41DUMMY
 place QSK rename=QSK42 current=$QSK42set z=$poszQSK42
-place QSKDUMMY z=$poszQSK42 rename=QSK42DUMMY
+place QSK42DUMMY z=$poszQSK42 rename=QSK42DUMMY
 place QSK rename=QSK43 current=$QSK43set z=$poszQSK43
-place QSKDUMMY z=$poszQSK43 rename=QSK43DUMMY
+place QSK43DUMMY z=$poszQSK43 rename=QSK43DUMMY
 
 place SML41 z=$poszSML41
 place SML41DUMMY z=$poszSML41
