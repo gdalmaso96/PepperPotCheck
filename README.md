@@ -174,3 +174,5 @@ Testing first run and then launch fit.
 
 -- 12.11.2022 --
 Need to check the current LL evaluation, might not be using the right interpolation class for cross profiles: check if it is always dumbly using 0 in data.datasets[run]['profileLL'][]. In that case need to include a check on the length of the profile array -> fixed PlotBests method: wrong indexing to profiles
+
+-> fixed EvaluateLL limits
