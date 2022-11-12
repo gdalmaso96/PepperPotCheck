@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore")
 
 nTrials = 1 #3
 nJobs = 1
-slicex_X = [{'x': -6.25, 'Amin': 2.2, 'Amax': 3.0}]
+slicex_X = [{'x': -6.25, 'Amin': 2.28, 'Amax': 3.0}]
 slicey_Y = []
 
 

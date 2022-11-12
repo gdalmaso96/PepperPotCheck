@@ -182,3 +182,5 @@ Need to repeat the fit: the modeling of the tails worsened, might need to add a 
 There was an error in the plotBest method: fixed sign change in MEG data
 
 Fixed aperture of QSK magnets and removed inner collimator from CMBL simulation.
+
+Increased lower limit of addiction slice to 2.8
