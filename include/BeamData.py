@@ -800,11 +800,11 @@ class BeamData:
 							s = pill.arrays(['y'], 'abs(x) < 1', library = 'np')['y']
 							
 							# Plot
-							x = np.linspace(data['profileLL'][0]['profile'][0][0], data['profileLL'][0]['profile'][0][-1], 1000)
-							y = data['profileLL'][0]['interpolation'](x)/profile['norm']
+							x = np.linspace(data['profileLL'][1]['profile'][0][0], data['profileLL'][1]['profile'][0][-1], 1000)
+							y = data['profileLL'][1]['interpolation'](x)/profile['norm']
 							
 							plt.plot(x, y, label='Likelihood')
-							plt.hist(s, density=True, label='MC', range=(data['profileLL'][0]['profile'][0][0], data['profileLL'][0]['profile'][0][-1]), bins=100, color='orange', alpha=0.5)
+							plt.hist(s, density=True, label='MC', range=(data['profileLL'][1]['profile'][0][0], data['profileLL'][1]['profile'][0][-1]), bins=100, color='orange', alpha=0.5)
 							plt.savefig(histoFile.replace(".root", "_y.png"))
 							plt.clf()
 		return 0

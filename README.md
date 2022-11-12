@@ -171,3 +171,6 @@ There is still an error in the evaluation of the LL: it happens frequently that 
 Found issue: run 47 gets to negative values. Current fix: absolute value of PDE. THe values are always small, so it should be fine. In alternative in the future will truncate it.
 
 Testing first run and then launch fit.
+
+-- 12.11.2022 --
+Need to check the current LL evaluation, might not be using the right interpolation class for cross profiles: check if it is always dumbly using 0 in data.datasets[run]['profileLL'][]. In that case need to include a check on the length of the profile array
