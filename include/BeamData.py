@@ -784,7 +784,7 @@ class BeamData:
 						# Check what kind of profile it is
 						if(profile['direction'] == 'x'):
 							s = pill.arrays(['x'], 'abs(y) < 1', library = 'np')['x']
-							if(data['Beamline'] == 'MEG'):
+							if(data['Beamline'].find('MEG') >= 0):
 								s = -s
 							
 							# Plot
