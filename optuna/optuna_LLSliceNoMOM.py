@@ -14,7 +14,7 @@ warnings.filterwarnings("ignore")
 
 # Bayesian optimiser for log likelihood
 # Fits the phase space centroids, longitudinal phase space and the Peper Pot horixontal slice in x = -6.25mm
-# 14 parameters: 4 centroids + 4 parameters of the momentum spectrum parametrization + 6 paramters of the slice
+# 10 parameters: 4 centroids + 6 paramters of the slice
 
 nTrials = 1 #3
 nJobs = 1
@@ -31,14 +31,14 @@ CONTAINERDIR = "/data/project/general/muonGroup/simulations/giovanni/PepperPotCh
 DATA = BeamData(CONFIGURATION_FILE, G4BL, WORKDIR, CONTAINERDIR)
 
 def objective(trial):
-	a = trial.suggest_uniform('a', 0.01, 5)
-	b = trial.suggest_uniform('b', 25, 29.79)
-	c = trial.suggest_uniform('c', 0.01, 5)
-	d = trial.suggest_uniform('d', 0.01, 5)
-	#a = 0.0812462
-	#b = 27.8995
-	#c = 1.23719
-	#d = 0.05
+	#a = trial.suggest_uniform('a', 0.01, 5)
+	#b = trial.suggest_uniform('b', 25, 29.79)
+	#c = trial.suggest_uniform('c', 0.01, 5)
+	#d = trial.suggest_uniform('d', 0.01, 5)
+	a = 0.0812462
+	b = 27.8995
+	c = 1.23719
+	d = 0.05
 	megx = trial.suggest_uniform('megx', -100, 100)
 	megxp = trial.suggest_uniform('megxp', -500, 500)
 	mu3ex = trial.suggest_uniform('mu3ex', -100, 100)
@@ -79,10 +79,10 @@ if __name__ == '__main__':
 	args = sys.argv[1:]
 	
 	sampler = NSGAIISampler(population_size=50)
-	storage = optuna.storages.RDBStorage(url='sqlite:////data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/DBs/LLSlice.db', engine_kwargs={"connect_args": {"timeout": 1000}})
-	study = optuna.create_study(study_name="LLSlice", storage=storage, sampler=sampler, direction='minimize', load_if_exists=True)
+	storage = optuna.storages.RDBStorage(url='sqlite:////data/project/general/muonGroup/simulations/giovanni/PepperPotCheck/DBs/LLSliceNoMOM.db', engine_kwargs={"connect_args": {"timeout": 1000}})
+	study = optuna.create_study(study_name="LLSliceNoMOM", storage=storage, sampler=sampler, direction='minimize', load_if_exists=True)
 	if len(args) == 1:
-		firstTry = {'a' : 0.0812462, 'b' : 27.8995, 'c' : 1.23719, 'd' : 0.05, 'megx' : 0, 'megxp' : 0, 'mu3ex' : 0, 'mu3exp' : 0, 'y' : 0, 'yp' : 0, 'A_x0' : 2.4, 'mu_x0' : -1, 's1_x0' : 72, 'l1_x0' : 0, 's2_x0' : 83, 'l2_x0' : -9}
+		firstTry = {'megx' : 0, 'megxp' : 0, 'mu3ex' : 0, 'mu3exp' : 0, 'y' : 0, 'yp' : 0, 'A_x0' : 2.4, 'mu_x0' : -1, 's1_x0' : 72, 'l1_x0' : 0, 's2_x0' : 83, 'l2_x0' : -9}
 		study.enqueue_trial(firstTry)
 	
 	study.optimize(objective, n_trials=nTrials, n_jobs=nJobs)
