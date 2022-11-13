@@ -702,12 +702,12 @@ class BeamData:
 		print(test)
 		return self.LL
 
-	def RunBestTrial(self, study, nEvents):
+	def RunBestTrial(self, study, nEvents, fileName = "best_", beamName = "bestBeam.root"):
 		best = study.best_trial
 		beam = []
 		for par in best.params:
 			beam.append(best.params[par])
-		self.RunTrial(beam, nEvents, "best_", "bestBeam.root", False)
+		self.RunTrial(beam, nEvents, fileName, beamName, False)
 	
 	def RunBestTrialSlice(self, study, nEvents, firstPars=[]):
 		best = study.best_trial
