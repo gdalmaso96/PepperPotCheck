@@ -709,7 +709,7 @@ class BeamData:
 			beam.append(best.params[par])
 		self.RunTrial(beam, nEvents, fileName, beamName, False)
 	
-	def RunBestTrialSlice(self, study, nEvents, firstPars=[]):
+	def RunBestTrialSlice(self, study, nEvents, firstPars=[], fileName = "best_", beamName = "bestBeam.root"):
 		best = study.best_trial
 		beam = []
 		for par in firstPars:
@@ -732,7 +732,7 @@ class BeamData:
 		#print(slicex[0])
 		#slicey.append(tempy)
 		beam = {'beam' : beam, 'slicex': slicex, 'slicey': slicey}
-		self.RunTrialSlice(beam, nEvents, "best_", "bestBeam", False)
+		self.RunTrialSlice(beam, nEvents, fileName, beamName, False)
 	
 	# Run simulation with default settings
 	def RunSimulation(self, run, nEvents):
