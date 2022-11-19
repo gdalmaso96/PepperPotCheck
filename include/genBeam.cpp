@@ -158,8 +158,9 @@ void invertBeam(TString fileName = "/Users/giovanni/PhD/Simulazioni/BeamTimeMEG/
 	for(int i = 0; i < beam->GetEntries(); i++){
 		beam->GetEntry(i);
 		EventID = i+1;
-		x *= -1;
-		//Px *= -1;
+		// TEST
+		x *= 1;
+		Px *= -1;
 		Py *= -1;
 		Pz *= -1;
 
