@@ -339,9 +339,11 @@ class BeamData:
 		ddx = dx*(f(Irand) - f(Irand.astype(int)))/dxint
 		ddx = ddx*(ddx>0)*(dxint > 0)
 		ddy = np.random.rand(nEvents)*dy
-
+		# TEST negative signs
 		x = xmin + dx*(Irand.astype(int)%lx) + ddx
 		xp = ymin + dy*(Irand.astype(int)/ly) + ddy
+		x = -x
+		xp = -xp
 
 		# PRINT OUT IRAND IF X OUTSIDE GIVEN RANGE
 		# Problems:
@@ -728,9 +730,11 @@ class BeamData:
 				tempy[par[0:par.find('_y')]] = best.params[par]
 			else:
 				beam.append(best.params[par])
-		slicex.append(tempx)
+		if(len(tempx) > 1):
+			slicex.append(tempx)
 		#print(slicex[0])
-		#slicey.append(tempy)
+		if(len(tempy) >1 ):
+			slicey.append(tempy)
 		beam = {'beam' : beam, 'slicex': slicex, 'slicey': slicey}
 		self.RunTrialSlice(beam, nEvents, fileName, beamName, False)
 	
