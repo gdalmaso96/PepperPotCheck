@@ -184,3 +184,13 @@ There was an error in the plotBest method: fixed sign change in MEG data
 Fixed aperture of QSK magnets and removed inner collimator from CMBL simulation.
 
 Increased lower limit of addiction slice to 2.8
+
+-- 15.11.2022 --
+Performed fit to centroids. Testing same fit with inverted horizontal axis at generation and inverted genbeam.c::Invert
+
+-- 19.11.2022 --
+Performed fit to centroids only in QSM focus. Then will propagate beam to HULK center at different HULK fields. 
+
+Still need to implement Chi2.
+
+Might manage to include gaussian tails by using curve_fit
