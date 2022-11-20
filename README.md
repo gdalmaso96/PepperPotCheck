@@ -194,3 +194,6 @@ Performed fit to centroids only in QSM focus. Then will propagate beam to HULK c
 Still need to implement Chi2.
 
 Might manage to include gaussian tails by using curve_fit
+
+-- 20.11.2022 --
+Now gaussian tails are included in prepare2dCumulative.

@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import optuna
 import uproot
+from scipy.optimize import curve_fit
 import os
 
 class BeamData:
@@ -36,6 +37,25 @@ class BeamData:
 		self.containerDir = containerDir
 
 	divertOutput = 0
+	
+	# General functions
+	def surface(self, x):
+		return 1e5*(np.abs(x)/29.79)**3.5*(x>0)*(x<29.79)
+	
+	def gaus(self, x, a, mu, s):
+		return a*np.exp(-(x-mu)**2/2./s**2)
+	
+	def getGausPars(self, x, y, side):
+		tmpMu = (y*x).sum()/y.sum()
+		tmpSleft  = np.sqrt((y*(x-tmpMu)**2*(x<tmpMu)).sum()/(y*(x<tmpMu)).sum())
+		tmpSright = np.sqrt((y*(x-tmpMu)**2*(x>tmpMu)).sum()/(y*(x>tmpMu)).sum())
+		
+		# Fit tail to 0 n.d.o.f.
+		if side == 'left':
+			popt, pcov = curve_fit(self.gaus, [x[0], x[1], x[2]], [y[0], y[1], y[2]], p0=[y.max(), tmpMu, tmpSleft], bounds = [[y.max()*0.8, x[0], tmpSleft*0.8], [y.max()*1.2, x[-1], tmpSleft*1.2]])
+		elif side == 'right':
+			popt, pcov = curve_fit(self.gaus, [x[-1], x[-2], x[-3]], [y[-1], y[-2], y[-3]], p0=[y.max(), tmpMu, tmpSright], bounds = [[y.max()*0.8, x[0], tmpSright*0.8], [y.max()*1.2, x[-1], tmpSright*1.2]])
+		return popt
 	
 	# List of likelyhood splines
 	def initializeLL(self):
@@ -144,10 +164,100 @@ class BeamData:
 		l2 = pepperpot['l2']
 		return A*((x < mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))) + (x > mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))))
 	
-	# Prepare 2d cumulative function
+	# Prepare 2d cumulative function with gaussian tails
 	# Takes as an argument a list of slice parameters to then sample the transverse phase space
 	# The idea is that it is not directly dependent on the data to make it easier to add any number of slices
 	def prepare2dCumulative(self, pepperpot, key):
+		y = np.linspace(-500, 500, 100)
+		x = []
+		# Add one slice at the begining to set 0 boundary conditions
+		x.append(pepperpot[0][key] - (pepperpot[1][key] - pepperpot[0][key]))
+		for i in range(len(pepperpot)):
+			x.append(pepperpot[i][key])
+		# Add one slice at the end to set 0 boundary conditions
+		x.append(pepperpot[-1][key] + (pepperpot[-1][key] - pepperpot[-2][key]))
+
+		X = []
+		for i in range(len(y)):
+			X.append(x)
+		X = np.array(X)
+
+		Y = []
+		for i in range(len(x)):
+			Y.append(y)
+		Y = np.transpose(Y)
+
+		Z = []
+		# Add zero values on the boundaries in the space direction
+		Z.append(np.zeros(len(y)))
+		for i in range(len(pepperpot)):
+			Z.append(self.sliceFunction(y, pepperpot[i]))
+		Z.append(np.zeros(len(y)))
+		Z = np.array(Z)
+
+		# Interpolate
+		f = RectBivariateSpline(x, y, Z, kx=3, ky=3)
+		x = np.linspace(x[1], x[-2], 50)
+		y = np.linspace(-300, 300, 50)
+
+		Z = f(x,y)
+		# RectBivariateSpline has a strange indexing
+		Z = np.transpose(Z)
+		X, Y = np.meshgrid(x, y)
+		xtot = []
+		ytot = []
+		ztot = []
+		for (x, y, z) in zip(X, Y, Z):
+			a, mu, s = self.getGausPars(x, z, 'right')
+			tailXright = np.linspace(x[-1] + (x[1]-x[0]), x[-1] + (x[1]-x[0])*30, 30)
+			tailYright = np.zeros(30) + y[0]
+			tailZright = self.gaus(tailXright, a, mu, s)
+			a, mu, s = self.getGausPars(x, z, 'left')
+			tailXleft = np.linspace(x[0] - (x[1]-x[0])*30, x[0] - (x[1]-x[0]), 30)
+			tailYleft = np.zeros(30) + y[0]
+			tailZleft = self.gaus(tailXleft, a, mu, s)
+			xtot.append(np.concatenate((tailXleft, x, tailXright)))
+			ytot.append(np.concatenate((tailYleft, y, tailYright)))
+			ztot.append(np.concatenate((tailZleft, z, tailZright)))
+		xtot = np.array(xtot)
+		ytot = np.array(ytot)
+		ztot = np.array(ztot)
+		Z = ztot.flatten()
+
+		cumulative1d = np.cumsum(Z)
+		I = np.linspace(0, len(Z) - 1, len(Z))
+
+		# Remove points with the same value
+		while True:
+			if(np.abs(cumulative1d[0] - cumulative1d[1]) < 1e-6):
+				cumulative1d = np.delete(cumulative1d, 0)
+				I = np.delete(I, 0)
+			else:
+				break
+		ind = 0
+		while True:
+			if(np.abs(cumulative1d[ind] - cumulative1d[ind+1]) < 1e-6):
+				cumulative1d = np.delete(cumulative1d, ind+1)
+				I = np.delete(I, ind+1)
+			else:
+				ind += 1
+
+			if(ind+1 >= len(cumulative1d)):
+				break
+
+		cumulative1d = cumulative1d/cumulative1d[-1]
+		dx = xtot[0][1]-xtot[0][0]
+		lx = len(xtot[0])
+		xmin = xtot[0][0]
+		dy = ytot[1][0]-ytot[0][0]
+		ly = len(ytot[0])
+		ymin = ytot[0][0]
+		return cumulative1d, I, dx, lx, xmin, dy, ly, ymin
+	
+	# Prepare 2d cumulative function without gaussian tails
+	# Takes as an argument a list of slice parameters to then sample the transverse phase space
+	# The idea is that it is not directly dependent on the data to make it easier to add any number of slices
+	def prepare2dCumulativeNoTails(self, pepperpot, key):
 		y = np.linspace(-500, 500, 100)
 		x = []
 		# Add one slice at the begining to set 0 boundary conditions
@@ -215,11 +325,6 @@ class BeamData:
 		ymin = y[0]
 		return cumulative1d, I, dx, lx, xmin, dy, ly, ymin
 	
-	def surface(self, x):
-		return 1e5*(np.abs(x)/29.79)**3.5*(x>0)*(x<29.79)
-	
-	def gaus(self, x, a, mu, s):
-		return a*np.exp(-(x-mu)**2/2./s**2)
 	# Prepare the 1d cumulative function 
 	# The output array can be used to sample the longitudinal momentum distribution
 	# The momentum distribution is modeled as follows:
