@@ -1,0 +1,243 @@
+#########################################################################################
+#																					   #
+#					Script for Pepper Pot emittance measurement tests				  #
+#																					   #
+#########################################################################################
+
+#########################################################################################
+# Commands
+# g4bl scripts/pepperpot.g4bl last=1e7 spacing=25 holeR=0.5 L=100 nRows=9 ALUMINUM=1
+
+#################################### Global Settings ####################################
+physics QGSP_BIC_HP_EMX disable=Decay
+reference particle=mu+ referenceMomentum=28 beamX=0 beamY=0 beamZ=0
+param -unset histoFile=g4beamline
+param -unset first=1
+param -unset last=10000
+param -unset killer=1
+particlecolor pi+=0,0,1 mu+=1,0,0 e+=0,1,0 reference=1,0,0
+#########################################################################################
+
+######################################### Seed ##########################################
+param -unset SEED=0
+if $SEED>0
+	randomseed Set $SEED
+endif
+
+################################### Work directory ######################################
+param -unset workDir=/home/developer/Simulazioni/BeamTimeMEG/2022_06/PepperPotCheck
+
+################################# Elements Strengths ####################################
+param -unset sign=1 		# sign=-1 for backtracking ::: sign=1 for normal DS tracking
+include $workDir/g4bl/Settings/CurrentsHULK.txt
+include $workDir/g4bl/Settings/Scalefactors.txt 	# scaling factors for fieldmaps/generic elements/fieldexpressions
+#########################################################################################
+######################################## Beam ###########################################
+
+param -unset beamFile=$workDir/g4bl/beam/PepperPotPhaseSpace.root
+param -unset beamName="beam"
+param -unset PILLdist1=1108.5 # QSK43 center to PILL distance (MEG 2022 is 1117)
+param -unset PILLdist2=448.5 # QSM41 center to PILL distance
+param -unset poszQSK41=250
+param -unset poszQSK42=$poszQSK41+500
+param -unset poszQSK43=$poszQSK42+500
+param -unset poszSML41=$poszQSK43+250+32+149+200+411*0.5+6*3 # halfQSK + QSKpipe extrusion + flange + flange + halfSML + 3 O-rings
+# MEG param -unset poszSML41=$poszQSK43+250+32+149+411*0.5+6*2 # halfQSK + QSKpipe extrusion + flange + halfSML + 2 O-rings
+param -unset poszCOL=$poszSML41+155 # Guessed from Felix CMBL
+# 2022 measurement gives Triplet II 41.06 mm DS w.r.t. 2016 survey
+# Positions here based on 2016 survey minus 41.06 mm b/w ASL and QSK
+param -unset posxASL41=346.70
+param -unset poszASL41=3308.41
+param -unset poszfrontarcASL41=$poszASL41-707.11*0.5
+param -unset bendindRadius1=707.11
+param -unset poszQSO41=$poszfrontarcASL41+$bendindRadius1*pi*90./180.+963.87
+param -unset poszQSO42=$poszQSO41+601
+param -unset posxASK41=145.90
+param -unset poszASK41=$poszQSO42+1113.19
+param -unset bendindRadius2=465.29
+param -unset poszfrontarcASK41=$poszQSO42+902.34
+param -unset poszQSM41=$poszfrontarcASK41+$bendindRadius2*pi*65./180+887.15
+
+param -unset poszmu3esol=$poszQSM41+2226.8050
+
+param -unset poszMU3ESOLTUBI1=$poszmu3esol-1233.74
+param -unset poszMU3ESOLTUBI2=$poszmu3esol-999.24
+param -unset poszMU3ESOLTUBI3=$poszmu3esol-951.93
+param -unset poszMU3ESOLTUBI4=$poszmu3esol-536.135
+param -unset poszMU3ESOLTUBI5=$poszmu3esol-110.15
+param -unset poszMU3ESOLTUBO5=$poszmu3esol+110.15
+param -unset poszMU3ESOLTUBO4=$poszmu3esol+536.135
+param -unset poszMU3ESOLTUBO3=$poszmu3esol+951.93
+param -unset poszMU3ESOLTUBO2=$poszmu3esol+999.24
+param -unset poszMU3ESOLTUBO1=$poszmu3esol+1233.74
+
+param -unset poszPILL=$poszQSM41+$PILLdist2
+param -unset L=44
+param -unset poszGrid=$poszQSK43+$PILLdist1-$L
+
+param -unset beamPositionZ=$poszQSK41-250
+
+beam root file=$beamFile firstEvent=$first lastEvent=$last beamZ=$beamPositionZ name=$beamName
+
+#########################################################################################
+
+######################################### QSK ###########################################
+fieldmap QSK file=$workDir/g4bl/FieldMaps/feldqsk.dat
+genericquad QSK41DUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 poleTipRadius=125 coilRadius=190 coilHalfwidth=55
+genericquad QSK42DUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 poleTipRadius=125 coilRadius=190 coilHalfwidth=55
+genericquad QSK43DUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 poleTipRadius=125 coilRadius=190 coilHalfwidth=55
+
+#genericquad QSKDUMMY kill=1 ironRadius=500 ironLength=400 ironColor=1,0,0,0.6 fieldLength=1 apertureRadius=125
+#########################################################################################
+
+######################################### SML ###########################################
+fieldexpr SML41 height=320 width=320 length=398 By=$SML41set
+tubs SML41DUMMY innerRadius=160 outerRadius=162 length=398 material=Vacuum color=0,0,1,0.6
+box wide height=160 width=160 length=160
+tubs MEGCOLtemp innerRadius=65 outerRadius=159 length=50 material=Pb color=1,0,1,0.8
+boolean op=subtraction MEGCOL MEGCOLtemp wide material=Pb color=1,0,1,0.8
+#########################################################################################
+
+######################################### PILL ##########################################
+virtualdetector PILL radius=1000 length=1 color=0,1,0,0.5 material=Vacuum format=Extended require=(PDGid==-13) #(PDGid!=14&&PDGid!=-14&&PDGid!=12&&PDGid!=-12)
+#########################################################################################
+
+######################################### ASL ###########################################
+fieldmap ASL41 file=$workDir/g4bl/FieldMaps/feldasl330.dat current=$ASL41set #*1.07 # From TOSCA generated end of 2014
+genericbend ASL41DUMMY fieldWidth=1000 fieldHeight=320 By=0 fieldLength=1 ironWidth=1780 ironHeight=1000 ironLength=1000 ironColor=0,0,1,0.3 kill=1
+#########################################################################################
+
+######################################### QSO ###########################################
+fieldmap QSO file=$workDir/g4bl/FieldMaps/feldqsoextended.dat # measured fieldmap from Vjeran -     x=+-9cm    y=+-10cm
+tubs QSODUMMY innerRadius=126 outerRadius=1000 length=400 material=STAINLESS-STEEL kill=$killer color=1,0,0,0.5
+tubs QSOTUBE innerRadius=121 outerRadius=125 length=1280 material=STAINLESS-STEEL kill=$killer color=1,1,1,0.6
+#########################################################################################
+
+######################################### ASK ###########################################
+fieldmap ASK41 file=$workDir/g4bl/FieldMaps/feldask330.dat current=$ASK41set #*1.07 # From TOSCA generated end of 2014
+genericbend ASK41DUMMY fieldWidth=800 fieldHeight=320 By=0 fieldLength=1 ironWidth=1780 ironHeight=1000 ironLength=500 ironColor=0,0,1,0.6 kill=1
+#########################################################################################
+
+######################################### QSM ###########################################
+fieldmap QSM41 file=$workDir/g4bl/FieldMaps/feldqsm.dat
+genericquad QSM41DUMMY gradient=0 kill=1 ironRadius=1000 ironLength=500 ironColor=1,0,0,0.6 fieldLength=1 poleTipRadius=200 coilRadius=250 coilHalfwidth=80
+#########################################################################################
+
+####################################### Moderator #######################################
+tubs ENTRANCEw innerRadius=0 radius=20  length=0.035 material=G4_MYLAR color=0.5,0.5,0.5,0.6
+tubs MODERATOR innerRadius=0 radius=30  length=0.6 material=G4_MYLAR color=0.5,0.5,0.5,0.6
+tubs ATMOSPHER innerRadius=0 radius=100 length=2*($poszmu3esol-$poszMU3ESOLTUBI5-17.01) #material=He color=0,1,1,0.2
+tubs ATMOSPHERw innerRadius=0 radius=20 length=5.965 material=He color=0,1,1,0.2
+virtualdetector TRACKER innerRadius=23.7 radius=23.75 length=124.7 material=G4_Si color=0.5,0.5,0.5,0.4
+tubs trackerV innerRadius=23.65 radius=23.8 length=124.75 #material=Vacuum color=0.5,0.5,0.5,0.4
+tubs COLLIMATOR innerRadius=20 radius=29.9999 length=20 material=Al color=0.5,0.5,0.5,0.3
+
+boolean op=subtraction ATMOSPHERb ATMOSPHER trackerV material=He color=0,1,1,0.2
+#########################################################################################
+
+######################################### HULK ##########################################
+param -unset deltaLength=0
+tubs MU3ESOLTUBI1 innerRadius=160 radius=200 length=388-$deltaLength material=Al kill=0 color=0,1,1,0.6
+tubs MU3ESOLTUBI2 innerRadius=78 radius=200 length=81 material=STAINLESS-STEEL kill=0 color=0,1,0,0.6
+tubs MU3ESOLTUBI3 innerRadius=33 radius=200 length=13.62 material=STAINLESS-STEEL kill=0 color=1,1,0.1,0.6
+tubs MU3ESOLTUBI4 innerRadius=30 radius=200 length=817.97+$deltaLength material=Al kill=0 color=1,1,0,0.6
+tubs MU3ESOLTUBI5 innerRadius=20 radius=200 length=34 material=Al kill=0 color=1,0.5,0,0.6
+tubs MU3ESOLTUBO5 innerRadius=20 radius=200 length=34 material=STAINLESS-STEEL kill=0 color=1,0.5,0,0.6
+tubs MU3ESOLTUBO4 innerRadius=30 radius=200 length=817.97+$deltaLength material=STAINLESS-STEEL kill=0 color=1,1,0,0.6
+tubs MU3ESOLTUBO3 innerRadius=33 radius=200 length=13.62 material=STAINLESS-STEEL kill=0 color=1,1,0.1,0.6
+tubs MU3ESOLTUBO2 innerRadius=78 radius=200 length=81 material=STAINLESS-STEEL kill=0 color=0,1,0,0.6
+tubs MU3ESOLTUBO1 innerRadius=160 radius=200 length=388-$deltaLength material=STAINLESS-STEEL kill=0 color=0,1,1,0.6
+fieldmap mu3esol file=$workDir/g4bl/FieldMaps/fieldMap.dat
+#########################################################################################
+
+######################################### GRID ##########################################
+param -unset holeR=1
+param -unset spacing=25
+param -unset nRows=9
+
+param -unset POLY=0
+param -unset LEAD=0
+param -unset ALUMINUM=0
+param -unset thick=3
+material POLYVINYLTOLUENE H,0.5243 C,0.4757 density=1.023
+
+tubs hole innerRadius=0 outerRadius=$holeR initialPhi=0 finalPhi=360 length=$thick*1.5
+box house height=$spacing*0.9999 width=$spacing*0.9999 length=$thick
+tubs frame innerRadius=0 outerRadius=250 initialPhi=0 finalPhi=360 length=$thick
+box iframe height=$nRows*$spacing width=$nRows*$spacing length=$thick*1.5
+
+
+if $POLY
+	boolean op=subtraction oFRAME frame iframe material=POLYVINYLTOLUENE color=1,1,0
+	boolean op=subtraction GRID house hole material=POLYVINYLTOLUENE color=1,1,0
+elseif $LEAD
+	boolean op=subtraction oFRAME frame iframe material=Pb color=1,1,0
+	boolean op=subtraction GRID house hole material=Pb color=1,1,0
+elseif $ALUMINUM
+	boolean op=subtraction oFRAME frame iframe material=Al color=0.5,0.5,0.5,0.8
+	boolean op=subtraction GRID house hole material=Al color=0.5,0.5,0.5,0.8
+else
+	boolean op=subtraction oFRAME frame iframe kill=1 color=1,1,0
+	boolean op=subtraction GRID house hole kill=1 color=1,1,0
+endif
+#########################################################################################
+
+####################################### BEAMLINE ########################################
+
+#####################################################
+place QSK rename=QSK41 current=$QSK41set z=$poszQSK41
+place QSK41DUMMY z=$poszQSK41 rename=QSK41DUMMY
+place QSK rename=QSK42 current=$QSK42set z=$poszQSK42
+place QSK42DUMMY z=$poszQSK42 rename=QSK42DUMMY
+place QSK rename=QSK43 current=$QSK43set z=$poszQSK43
+place QSK43DUMMY z=$poszQSK43 rename=QSK43DUMMY
+
+place SML41 z=$poszSML41
+place SML41DUMMY z=$poszSML41
+place MEGCOL z=$poszCOL
+
+place ASL41 x=$posxASL41 z=$poszASL41 rotation=Y45 current=$ASL41set
+place ASL41DUMMY x=$posxASL41 z=$poszASL41 rotation=Y45
+cornerarc C1 z=$poszfrontarcASL41 angle=90 centerRadius=$bendindRadius1 radiusCut=400
+place QSO rename=QSO41 z=$poszQSO41 current=$QSO41set
+place QSODUMMY rename=QSO41DUMMY z=$poszQSO41
+place QSO rename=QSO42 z=$poszQSO42 current=$QSO42set
+place QSODUMMY rename=QSO42DUMMY z=$poszQSO42
+place ASK41 x=$posxASK41 z=$poszASK41 rotation=Y32.5 current=$ASK41set
+place ASK41DUMMY x=$posxASK41 z=$poszASK41 rotation=Y32.5
+cornerarc C2 z=$poszfrontarcASK41 angle=65 centerRadius=$bendindRadius2 radiusCut=400
+place QSM41 z=$poszQSM41 current=$QSM41set
+place QSM41DUMMY z=$poszQSM41
+
+place MU3ESOLTUBI1 z=$poszMU3ESOLTUBI1-$deltaLength*0.5
+place MU3ESOLTUBI2 z=$poszMU3ESOLTUBI2-$deltaLength
+place MU3ESOLTUBI3 z=$poszMU3ESOLTUBI3-$deltaLength
+place MU3ESOLTUBI4 z=$poszMU3ESOLTUBI4-$deltaLength*0.5
+place MU3ESOLTUBI5 z=$poszMU3ESOLTUBI5
+place mu3esol z=$poszmu3esol current=$MU3ESOLset
+place MU3ESOLTUBO5 z=$poszMU3ESOLTUBO5
+place MU3ESOLTUBO4 z=$poszMU3ESOLTUBO4+$deltaLength*0.5
+place MU3ESOLTUBO3 z=$poszMU3ESOLTUBO3+$deltaLength
+place MU3ESOLTUBO2 z=$poszMU3ESOLTUBO2+$deltaLength
+place MU3ESOLTUBO1 z=$poszMU3ESOLTUBO1+$deltaLength*0.5
+
+place TRACKER z=$poszmu3esol
+place ATMOSPHERw z=$poszMU3ESOLTUBI5+14.0175
+place ATMOSPHERb z=$poszmu3esol
+place ENTRANCEw z=$poszMU3ESOLTUBI5+11
+place MODERATOR z=9780
+place COLLIMATOR z=9955
+
+zntuple z=$poszmu3esol
+
+param -unset placePepperPot=0
+if $placePepperPot
+	place oFRAME z=$poszGrid
+	#place PILL z=$poszGrid-$thick*0.5-0.5 rename=PILLgrid
+
+	do i 1 $nRows
+		do j 1 $nRows
+			place GRID z=$poszGrid x=($i-$nRows*0.5-0.5)*$spacing  y=($j-$nRows*0.5-0.5)*$spacing
+		enddo
+	enddo
+endif

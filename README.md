@@ -197,3 +197,10 @@ Might manage to include gaussian tails by using curve_fit
 
 -- 20.11.2022 --
 Now gaussian tails are included in prepare2dCumulative.
+
+-- 21.11.2022 --
+Fixed sign at COBRA center: there the horizontal axis is consistent with Mu3e.
+
+Added HULK center raster scan: I'll use this to perform the fit to the centroids for Gavin by imploying the Chi2. If it works out I'll include a slice and then the momentum distribution
+
+Started implementation of the Chi2 evaluation method for BeamData.py. Need to test it first on a run

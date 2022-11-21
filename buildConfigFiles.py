@@ -81,10 +81,13 @@ datasets.append({'fileName' : 'Data_2022_Mu3e/QSM41/QSM41_-090.txt', 'QSK41cur' 
 datasets.append({'fileName' : 'Data_2022_Mu3e/QSM41/QSM41_-150.txt', 'QSK41cur' : 11, 'QSK42cur' : -35.5, 'QSK43cur' : 30, 'SML41cur' : 0, 'ASL41cur' : -74.7, 'QSO41cur' : 56, 'QSO42cur': -23, 'ASK41cur' : -92, 'QSM41cur' : -150, 'Data type - 1' : 'QuadScan', 'Data type - 2' : '', 'Simulation n.' : 53, 'Beamline': 'Mu3eQSM', 'PILL position' : 'QSM41', 'LL' : 1})
 datasets.append({'fileName' : 'Data_2022_Mu3e/QSM41/QSM41_-250.txt', 'QSK41cur' : 11, 'QSK42cur' : -35.5, 'QSK43cur' : 30, 'SML41cur' : 0, 'ASL41cur' : -74.7, 'QSO41cur' : 56, 'QSO42cur': -23, 'ASK41cur' : -92, 'QSM41cur' : -250, 'Data type - 1' : 'QuadScan', 'Data type - 2' : '', 'Simulation n.' : 54, 'Beamline': 'Mu3eQSM', 'PILL position' : 'QSM41', 'LL' : 1})
 
+# HULK
+datasets.append({'fileName' : 'Data_2022_Mu3e/HULK/scan_2022-05-20-22-31_PILL.txt', 'QSK41cur' : 4.80, 'QSK42cur' : -31.8, 'QSK43cur' : 28.80, 'SML41cur' : -14, 'ASL41cur' : -74.00, 'QSO41cur' : 53.50, 'QSO42cur': -15, 'ASK41cur' : -90.50, 'QSM41cur' : 92, 'Data type - 1' : 'RasterScan', 'Data type - 2' : '', 'Simulation n.' : 55, 'Beamline': 'Mu3eHULK', 'PILL position' : 'HULK', 'LL' : 0})
+
 # ------------------------------------------------------------------------------------ #
 # Simulation settings
 simulations = []
-simulations = {'USbeam' : 'USbeam.root', 'USbeamName' : 'beam', 'DSbeam' : 'PepperPotPhaseSpace.root', 'DSbeamName' : 'beam', 'MEG' : 'MEGconfiguration.g4bl', 'MEGCOBRA' : 'MEGCOBRAconfiguration.g4bl', 'Mu3e' : 'Mu3econfiguration.g4bl', 'Mu3eQSM' : 'Mu3eQSMconfiguration.g4bl'}
+simulations = {'USbeam' : 'USbeam.root', 'USbeamName' : 'beam', 'DSbeam' : 'PepperPotPhaseSpace.root', 'DSbeamName' : 'beam', 'MEG' : 'MEGconfiguration.g4bl', 'MEGCOBRA' : 'MEGCOBRAconfiguration.g4bl', 'Mu3e' : 'Mu3econfiguration.g4bl', 'Mu3eQSM' : 'Mu3eQSMconfiguration.g4bl', 'Mu3eHULK' : 'Mu3eHULKconfiguration.g4bl'}
 
 # Pepperpot parametrisation
 pepperpot = []

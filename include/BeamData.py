@@ -595,19 +595,53 @@ class BeamData:
 				elif(profile['direction'] == 'xy'):
 					s = pill.arrays(['x', 'y'], library = 'np')
 					for i in range(s['x'].size):
-						if(data['Beamline'] == 'MEGCOBRA'):
-							# Check if any particle is transmitted
-							if(s['x'].size < 1):
-								LL += 1000
-							else:
-								LL += (-2*np.log(profile['interpolation'](-s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
+						# Check if any particle is transmitted
+						if(s['x'].size < 1):
+							LL += 1000
 						else:
-							# Check if any particle is transmitted
-							if(s['x'].size < 1):
-								LL += 1000
-							else:
-								LL += (-2*np.log(profile['interpolation'](s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
+							LL += (-2*np.log(profile['interpolation'](s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
 		return LL
+	
+	# Evaluate Chi2: like with the likelyhood the result is chi2 normalised to the number of particles to favor higher transmission
+	# In fact there is no need to include the degrees of freedom at this level: those are constanat for each optimization, so they are meaningful only for significance tests
+	def EvaluateChi2(self, data, histoFile):
+		Chi2 = 0
+		with uproot.open(histoFile + ":VirtualDetector/PILL") as pill:
+			# Cycle over all profilesLL
+			for profile in data['profileLL']:
+			# Check what kind of profile it is
+				if(profile['direction'] == 'x'):
+					s = pill.arrays(['x'], '(abs(y) < 1) & (x > %f) & (x < %f)' %(profile['profile'][0][0], profile['profile'][0][-1]), library = 'np')['x']
+					if(data['Beamline'].find('MEG') >= 0):
+						s = -s
+					# Check if any particle is transmitted
+					if(len(s) < 1):
+						Chi2 += 1000
+					else:
+						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
+							tmp = (np.abs(s-x) < 1).sum()//len(s)
+							Chi2 += (tmp-y)**2/len(s)
+				elif(profile['direction'] == 'y'):
+					s = pill.arrays(['y'], '(abs(x) < 1) & (y > %f) & (y < %f)' %(profile['profile'][0][0], profile['profile'][0][-1]), library = 'np')['y']
+					# Check if any particle is transmitted
+					if(len(s) < 1):
+						Chi2 += 1000
+					else:
+						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
+							tmp = (np.abs(s-x) < 1).sum()/len(s)
+							Chi2 += (tmp-y)**2/len(s)
+				elif(profile['direction'] == 'xy'):
+					sx, sy = pill.arrays(['x', 'y'], library = 'np')
+					# Check if any particle is transmitted
+					sx = sx.flatten()
+					sy = sy.flatten()
+					if(len(sx) < 1):
+						Chi2 += 1000
+					else:
+						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2])
+							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()//len(sx)
+							Chi2 += (tmp-z)**2/len(sx)
+		return Chi2
 	
 	# Run simulation trial for LL evaluation including beam interpolation
 	# - beam[0-3] = pars in prepare1dCumulative
