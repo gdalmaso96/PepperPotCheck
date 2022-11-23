@@ -204,6 +204,7 @@ class BeamData:
 		y = np.linspace(-300, 300, 50)
 
 		Z = f(x,y)
+		Z = Z*(Z>0)
 		# RectBivariateSpline has a strange indexing
 		Z = np.transpose(Z)
 		X, Y = np.meshgrid(x, y)
@@ -248,6 +249,7 @@ class BeamData:
 			if(ind+1 >= len(cumulative1d)):
 				break
 
+		cumulative1d = cumulative1d - cumulative1d[0]
 		cumulative1d = cumulative1d/cumulative1d[-1]
 		dx = xtot[0][1]-xtot[0][0]
 		lx = len(xtot[0])
@@ -319,6 +321,7 @@ class BeamData:
 			if(ind+1 >= len(cumulative1d)):
 				break
 
+		cumulative1d = cumulative1d - cumulative1d[0]
 		cumulative1d = cumulative1d/cumulative1d[-1]
 		dx = x[1]-x[0]
 		lx = len(x)
@@ -447,7 +450,8 @@ class BeamData:
 		ddx = dx*(f(Irand) - f(Irand.astype(int)))/dxint
 		ddx = ddx*(ddx>0)*(dxint > 0)
 		ddy = np.random.rand(nEvents)*dy
-		# TEST negative signs
+
+		# Need to flip signs on the horizontal as PILL's axis is inverted in MEG configuration
 		x = xmin + dx*(Irand.astype(int)%lx) + ddx
 		xp = ymin + dy*(Irand.astype(int)/ly) + ddy
 		x = -x
