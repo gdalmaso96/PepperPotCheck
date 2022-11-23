@@ -204,3 +204,6 @@ Fixed sign at COBRA center: there the horizontal axis is consistent with Mu3e.
 Added HULK center raster scan: I'll use this to perform the fit to the centroids for Gavin by imploying the Chi2. If it works out I'll include a slice and then the momentum distribution
 
 Started implementation of the Chi2 evaluation method for BeamData.py. Need to test it first on a run
+
+-- 23.11.2022 --
+Chi2 method tested on local machine. Will repeat on cluster with 1e6 events and then start the minimization
