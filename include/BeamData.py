@@ -27,6 +27,9 @@ class BeamData:
 		# Initialise complessive likelyhood
 		self.LL = 0
 
+		# Initialise complessive chi quares
+		self.Chi2 = 0
+
 		# Set g4bl command
 		self.g4bl = g4bl
 	
@@ -572,7 +575,12 @@ class BeamData:
 	# Evaluate LL
 	def EvaluateLL(self, data, histoFile):
 		LL = 0
-		with uproot.open(histoFile + ":VirtualDetector/PILL") as pill:
+		if data['Beamline'].find('HULK'):
+			treeName = 'NTuple/Z10175'
+		else:
+			treeName = 'VirtualDetector/PILL'
+
+		with uproot.open(histoFile + ':' + treeName) as pill:
 			# Cycle over all profilesLL
 			for profile in data['profileLL']:
 			# Check what kind of profile it is
@@ -594,6 +602,8 @@ class BeamData:
 						LL += (-2*np.log(np.abs(profile['interpolation'](s))/profile['norm'])).sum()/len(s)/len(s)
 				elif(profile['direction'] == 'xy'):
 					s = pill.arrays(['x', 'y'], library = 'np')
+					if data['Beamline'].find('HULK'):
+						s['x'] = -s['x']
 					for i in range(s['x'].size):
 						# Check if any particle is transmitted
 						if(s['x'].size < 1):
@@ -606,7 +616,12 @@ class BeamData:
 	# In fact there is no need to include the degrees of freedom at this level: those are constanat for each optimization, so they are meaningful only for significance tests
 	def EvaluateChi2(self, data, histoFile):
 		Chi2 = 0
-		with uproot.open(histoFile + ":VirtualDetector/PILL") as pill:
+		if data['Beamline'].find('HULK'):
+			treeName = 'NTuple/Z10175'
+		else:
+			treeName = 'VirtualDetector/PILL'
+
+		with uproot.open(histoFile + ':' + treeName) as pill:
 			# Cycle over all profilesLL
 			for profile in data['profileLL']:
 			# Check what kind of profile it is
@@ -631,14 +646,16 @@ class BeamData:
 							tmp = (np.abs(s-x) < 1).sum()/len(s)
 							Chi2 += (tmp-y)**2/len(s)
 				elif(profile['direction'] == 'xy'):
-					sx, sy = pill.arrays(['x', 'y'], library = 'np')
+					s = pill.arrays(['x', 'y'], library = 'np')
 					# Check if any particle is transmitted
-					sx = sx.flatten()
-					sy = sy.flatten()
+					sx = s['x']
+					sy = s['y']
+					if data['Beamline'].find('HULK'):
+						sx = -sx
 					if(len(sx) < 1):
 						Chi2 += 1000
 					else:
-						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2])
+						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]):
 							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()//len(sx)
 							Chi2 += (tmp-z)**2/len(sx)
 		return Chi2
@@ -652,7 +669,7 @@ class BeamData:
 	# - beam[8] = y
 	# - beam[9] = yp
 	# slicex and slicey are lists with the same structure as BeamData.pepperpot, and contain the info about any additional slice to the pepperpot
-	def RunTrialSlice(self, beam, nEvents, histoFile, beamFile, DELETEFILES = True):
+	def RunTrialSlice(self, beam, nEvents, histoFile, beamFile, DELETEFILES = True, method = 'LL'):
 		# Generate beamfile
 		self.samplePhaseSpace(beam['beam'], beam['slicex'], beam['slicey'], nEvents, beamFile)
 
@@ -706,7 +723,7 @@ class BeamData:
 
 		test = []
 		for data in self.datasets:
-			if data['LL'] == 1:
+			if data[method] == 1:
 				command= " " + self.containerDir + "/g4bl/scripts/" + self.simulations[data['Beamline']]
 
 
@@ -740,11 +757,15 @@ class BeamData:
 				print(self.g4bl.replace("COMMAND", command))
 				subprocess.call(self.g4bl.replace("COMMAND", command), shell=True)
 
-				# Evaluate LL
-				#self.LL += self.EvaluateLL(data, "" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."]))
-				test.append(self.EvaluateLL(data, "" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."])))
-				self.LL += test[-1]
-				print("%f\n" %(self.LL))
+				# Evaluate fit
+				if method == 'LL':
+					test.append(self.EvaluateLL(data, "" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."])))
+					self.LL += test[-1]
+					print("%f\n" %(self.LL))
+				elif method == 'Chi2':
+					test.append(self.EvaluateChi2(data, "" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."])))
+					self.Chi2 += test[-1]
+					print("%f\n" %(self.Chi2))
 
 				# Remove histoFile
 				if DELETEFILES:
@@ -756,11 +777,16 @@ class BeamData:
 			os.remove("" + self.workDir + "g4bl/beam/US" + beamFileMu3e)
 
 		print(test)
-		return self.LL
+		if method == 'LL':
+			return self.LL
+		elif method == 'Chi2':
+			return self.Chi2
+		else:
+			return -1
 	
 	# Run simulation trial for LL evaluation
 	# Beam parameters are: [0,3] - longitudinal parameters, [4, 7] - centroids
-	def RunTrial(self, beam, nEvents, histoFile, beamFile, DELETEFILES = True):
+	def RunTrial(self, beam, nEvents, histoFile, beamFile, DELETEFILES = True, method = 'LL'):
 		# Generate beamfile
 		commandBeam = "root -q -b \"" + self.workDir + "include/genBeam.cpp(\\\"" + self.workDir + "g4bl/beam/" + "DS" + beamFile +  "\\\", %f, %f, %f, %f, %f, %f, %f, %f, %d," %(beam[0], beam[1], beam[2], beam[3], beam[4], beam[5], beam[6], beam[7], nEvents) + "\\\"" + self.workDir + "g4bl/PepperPotPhaseSpace.root\\\")\""
 		print(commandBeam)
@@ -795,7 +821,7 @@ class BeamData:
 
 		test = []
 		for data in self.datasets:
-			if data['LL'] == 1:
+			if data[method] == 1:
 				command= " " + self.containerDir + "/g4bl/scripts/" + self.simulations[data['Beamline']]
 
 
@@ -826,11 +852,16 @@ class BeamData:
 				print(self.g4bl.replace("COMMAND", command))
 				subprocess.call(self.g4bl.replace("COMMAND", command), shell=True)
 
-				# Evaluate LL
+				# Evaluate fit
 				#self.LL += self.EvaluateLL(data, "" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."]))
-				test.append(self.EvaluateLL(data, "" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."])))
-				self.LL += test[-1]
-				print("%f\n" %(self.LL))
+				if method == 'LL':
+					test.append(self.EvaluateLL(data, "" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."])))
+					self.LL += test[-1]
+					print("%f\n" %(self.LL))
+				elif method == 'Chi2':
+					test.append(self.EvaluateChi2(data, "" + self.workDir + "g4bl/scores/" + histoFile + "%03d.root" %(data["Simulation n."])))
+					self.Chi2 += test[-1]
+					print("%f\n" %(self.Chi2))
 
 				# Remove histoFile
 				if DELETEFILES:
@@ -841,7 +872,12 @@ class BeamData:
 			os.remove("" + self.workDir + "g4bl/beam/US" + beamFile)
 
 		print(test)
-		return self.LL
+		if method == 'LL':
+			return self.LL
+		elif method == 'Chi2':
+			return self.Chi2
+		else:
+			return -1
 
 	def RunBestTrial(self, study, nEvents, fileName = "best_", beamName = "bestBeam.root"):
 		best = study.best_trial
