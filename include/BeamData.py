@@ -1047,8 +1047,11 @@ class BeamData:
 							x = np.linspace(profile['profile'][0][0], profile['profile'][0][-1], 1000)
 							y = profile['interpolation'](x)/profile['norm']
 							
-							plt.plot(x, y, label='Likelihood')
-							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color='orange', alpha=0.5)
+							plt.plot(x, y, label='Data', '-', color=cm.coolwarm(0))
+							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), alpha=0.4, label='Simulation')
+							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), histtype='step')
+							plt.xlabel("x [mm]")
+							plt.legend()
 							plt.savefig(histoFile.replace(".root", "_x.png"))
 							plt.clf()
 		
@@ -1059,8 +1062,11 @@ class BeamData:
 							x = np.linspace(profile['profile'][0][0], profile['profile'][0][-1], 1000)
 							y = profile['interpolation'](x)/profile['norm']
 							
-							plt.plot(x, y, label='Likelihood')
-							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color='orange', alpha=0.5)
+							plt.plot(x, y, label='Data', '-', color=cm.coolwarm(0))
+							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), alpha=0.4, label='Simulation')
+							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), histtype='step')
+							plt.xlabel("y [mm]")
+							plt.legend()
 							plt.savefig(histoFile.replace(".root", "_y.png"))
 							plt.clf()
 						elif(profile['direction'] == 'xy'):
@@ -1098,19 +1104,21 @@ class BeamData:
 
 							ax = fig.add_subplot(223)
 							plt.title("Marginal x distribution")
-							plt.plot(x[0], zIn_x, '-', color=cm.coolwarm(0))
-							plt.hist(s['x'], bins=100, color=cm.coolwarm(0.9), alpha=0.4, density=True)
+							plt.plot(x[0], zIn_x, '-', color=cm.coolwarm(0), label='Data')
+							plt.hist(s['x'], bins=100, color=cm.coolwarm(0.9), alpha=0.4, density=True, label='Simulation')
 							plt.hist(s['x'], bins=100, color=cm.coolwarm(0.9), histtype='step', density=True)
 							plt.xlabel("x [mm]")
 							plt.xlim(x[0].min(), x[0].max())
+							plt.legend()
 
 							ax = fig.add_subplot(224)
 							plt.title("Marginal y distribution")
-							plt.plot(y[:, 0], zIn_y, '-', color=cm.coolwarm(0))
-							plt.hist(s['y'], bins=100, color=cm.coolwarm(0.9), alpha=0.4, density=True)
+							plt.plot(y[:, 0], zIn_y, '-', color=cm.coolwarm(0), label='Data')
+							plt.hist(s['y'], bins=100, color=cm.coolwarm(0.9), alpha=0.4, density=True, label='Simulation')
 							plt.hist(s['y'], bins=100, color=cm.coolwarm(0.9), histtype='step', density=True)
 							plt.xlabel("y [mm]")
 							plt.xlim(y.min(), y.max())
+							plt.legend()
 
 							plt.savefig(histoFile.replace(".root", "_y.png"))
 							plt.clf()
