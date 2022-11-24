@@ -1096,7 +1096,7 @@ class BeamData:
 
 							ax = fig.add_subplot(222)
 							plt.title("Fit")
-							plt.hist2d(s['x'], s['y'], bins=[50,50], cmap=cm.coolwarm)
+							plt.hist2d(s['x'], s['y'], bins=[100,100], cmap=cm.coolwarm)
 							plt.xlabel("x [mm]")
 							plt.ylabel("y [mm]")
 							plt.xlim(x.min(), x.max())
