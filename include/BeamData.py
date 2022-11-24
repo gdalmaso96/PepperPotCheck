@@ -171,7 +171,7 @@ class BeamData:
 	# Prepare 2d cumulative function with gaussian tails
 	# Takes as an argument a list of slice parameters to then sample the transverse phase space
 	# The idea is that it is not directly dependent on the data to make it easier to add any number of slices
-	def prepare2dCumulative(self, pepperpot, key):
+	def prepare2dCumulative(self, pepperpot, key, scale=1):
 		y = np.linspace(-500, 500, 100)
 		x = []
 		# Add one slice at the begining to set 0 boundary conditions
@@ -195,7 +195,7 @@ class BeamData:
 		# Add zero values on the boundaries in the space direction
 		Z.append(np.zeros(len(y)))
 		for i in range(len(pepperpot)):
-			Z.append(self.sliceFunction(y, pepperpot[i]))
+			Z.append(self.sliceFunction(y*scale, pepperpot[i]))
 		Z.append(np.zeros(len(y)))
 		Z = np.array(Z)
 
@@ -392,9 +392,11 @@ class BeamData:
 	# - beam[7] = mu3exp
 	# - beam[8] = y
 	# - beam[9] = yp
+	# - beam[10] = scaleDiv
 	# slicex and slicey are lists with the same structure as BeamData.pepperpot, and contain the info about any additional slice to the pepperpot
 	# nEvents is the number of particles to be added to the beam file
 	# fileName is the name of the beam output
+	# scaleDiv is a scaling factor for the divergences of x and y to take into account the uncertainty on the distance between the PILL and PepperPot plate
 	def samplePhaseSpace(self, beam, slicex, slicey, nEvents, fileName):
 		# Create the pepperpot list
 		pepperpotx = []
@@ -440,7 +442,7 @@ class BeamData:
 		# Sample transverse phase space
 		# Create horizontal cumulative
 		print("Interpolate horizontal")
-		cumulative1d, I, dx, lx, xmin, dy, ly, ymin = self.prepare2dCumulative(pepperpotx, 'x')
+		cumulative1d, I, dx, lx, xmin, dy, ly, ymin = self.prepare2dCumulative(pepperpotx, 'x', scale=beam[10])
 		# Sample horizontal phase space
 		print("Sample horizontal")
 		fi = interp1d(cumulative1d, I, kind='cubic')
@@ -470,7 +472,7 @@ class BeamData:
 
 		# Create vertical cumulative
 		print("Interpolate vertical")
-		cumulative1d, I, dx, lx, xmin, dy, ly, ymin = self.prepare2dCumulative(pepperpoty, 'y')
+		cumulative1d, I, dx, lx, xmin, dy, ly, ymin = self.prepare2dCumulative(pepperpoty, 'y', scale=beam[10])
 		#np.save("testy.npy", np.array((cumulative1d, I)))
 		
 		# Sample vertical phase space
