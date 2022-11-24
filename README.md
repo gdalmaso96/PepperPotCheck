@@ -212,3 +212,7 @@ Chi2 method tested on local machine. Will repeat on cluster with 1e6 events and 
 Added raster scans to PlotBest and fixed 2d interpolation.
 
 Idea: maybe the issue with the tails is due to the precision on the distance between the pepperpot and the detector. I will add a common scaling factor to both x and y divergences and fit that together with the center and the momentu distribution with no slices 
+
+The scaling factor does improve the Chi2. For the moment is not yet clear whether it is only a matter of transmission improvement or if it really matches the beam spot at the center
+
+Need probably to add the horizontal slice or to limit the number of particles that can be transmitted
