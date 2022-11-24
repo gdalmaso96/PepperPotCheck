@@ -1048,8 +1048,8 @@ class BeamData:
 							y = profile['interpolation'](x)/profile['norm']
 							
 							plt.plot(x, y, label='Data', color=cm.coolwarm(0))
-							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), alpha=0.4, label='Simulation')
-							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), histtype='step')
+							plt.hist(s, density=True, range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), alpha=0.4, label='Simulation')
+							plt.hist(s, density=True, range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), histtype='step')
 							plt.xlabel("x [mm]")
 							plt.legend()
 							plt.savefig(histoFile.replace(".root", "_x.png"))
@@ -1063,8 +1063,8 @@ class BeamData:
 							y = profile['interpolation'](x)/profile['norm']
 							
 							plt.plot(x, y, label='Data', color=cm.coolwarm(0))
-							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), alpha=0.4, label='Simulation')
-							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), histtype='step')
+							plt.hist(s, density=True, range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), alpha=0.4, label='Simulation')
+							plt.hist(s, density=True, range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), histtype='step')
 							plt.xlabel("y [mm]")
 							plt.legend()
 							plt.savefig(histoFile.replace(".root", "_y.png"))
