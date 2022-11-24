@@ -960,11 +960,9 @@ class BeamData:
 			beam.append(best.params[par])
 		self.RunTrial(beam, nEvents, fileName, beamName, False)
 	
-	def RunBestTrialSlice(self, study, nEvents, firstPars=[], fileName = "best_", beamName = "bestBeam", method='LL'):
+	def RunBestTrialSlice(self, study, nEvents, firstPars={}, fileName = "best_", beamName = "bestBeam", method='LL'):
 		best = study.best_trial
 		beam = []
-		for par in firstPars:
-			beam.append(par)
 		slicex = []
 		slicey = []
 		tempx = {}
@@ -978,7 +976,8 @@ class BeamData:
 			elif(par.find('_y') >= 0):
 				tempy[par[0:par.find('_y')]] = best.params[par]
 			else:
-				beam.append(best.params[par])
+				firstPars[par] = best.params[par]
+		beam = [firstPars['a'], firstPars['b'], firstPars['c'], firstPars['d'], firstPars['megx'], firstPars['megxp'], firstPars['mu3ex'], firstPars['mu3exp'], firstPars['y'], firstPars['yp']]
 		if(len(tempx) > 1):
 			slicex.append(tempx)
 		#print(slicex[0])

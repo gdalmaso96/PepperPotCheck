@@ -207,3 +207,8 @@ Started implementation of the Chi2 evaluation method for BeamData.py. Need to te
 
 -- 23.11.2022 --
 Chi2 method tested on local machine. Will repeat on cluster with 1e6 events and then start the minimization
+
+-- 24.11.2022 --
+Added raster scans to PlotBest and fixed 2d interpolation.
+
+Idea: maybe the issue with the tails is due to the precision on the distance between the pepperpot and the detector. I will add a common scaling factor to both x and y divergences and fit that together with the center and the momentu distribution with no slices 
