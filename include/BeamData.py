@@ -7,6 +7,7 @@ from scipy.interpolate import interp1d, interp2d, RectBivariateSpline
 from scipy import integrate
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import optuna
 import uproot
 from scipy.optimize import curve_fit
@@ -561,11 +562,80 @@ class BeamData:
 		subprocess.call(command, shell=True)
 		return 0
 	
+	# This method rearranges the points of rasterscans in a grid
+	def MakeGrid(self, x, y, z):
+		X = []
+		Y = []
+		Z = []
+		nPerRow = 0
+		tempY = -100
+		for y1 in y:
+			if(np.abs(y1-tempY) > 0.2):
+				nPerRow += 1
+				tempY = y1
+		nPerColumn = int(len(y)/nPerRow)
+		for i in range(nPerRow):
+			X.append(x[i*nPerColumn:(i+1)*nPerColumn])
+			Y.append(y[i*nPerColumn:(i+1)*nPerColumn])
+			Z.append(z[i*nPerColumn:(i+1)*nPerColumn])
+		X = np.array(X)
+		Y = np.array(Y)
+		Z = np.array(Z)
+
+		return X,Y,Z
+
+	def AddTails(self, X, Y, Z, nPoints = 5):
+		xtot = []
+		ytot = []
+		ztot = []
+		#Horizontal tails
+		for (x, y, z) in zip(X, Y, Z):
+			a, mu, s = self.getGausPars(x, z, 'right')
+			tailXright = np.linspace(x[-1] + (x[1]-x[0]), x[-1] + (x[1]-x[0])*nPoints, nPoints)
+			tailYright = np.zeros(nPoints) + y[0]
+			tailZright = self.gaus(tailXright, a, mu, s)
+			a, mu, s = self.getGausPars(x, z, 'left')
+			tailXleft = np.linspace(x[0] - (x[1]-x[0])*nPoints, x[0] - (x[1]-x[0]), nPoints)
+			tailYleft = np.zeros(nPoints) + y[0]
+			tailZleft = self.gaus(tailXleft, a, mu, s)
+			xtot.append(np.concatenate((tailXleft, x, tailXright)))
+			ytot.append(np.concatenate((tailYleft, y, tailYright)))
+			ztot.append(np.concatenate((tailZleft, z, tailZright)))
+		
+		# Vertical tails
+		xtemp = np.transpose(np.array(xtot))
+		ytemp = np.transpose(np.array(ytot))
+		ztemp = np.transpose(np.array(ztot))
+		xtot = []
+		ytot = []
+		ztot = []
+		for (x, y, z) in zip(ytemp, xtemp, ztemp):
+			a, mu, s = self.getGausPars(x, z, 'right')
+			tailXright = np.linspace(x[-1] + (x[1]-x[0]), x[-1] + (x[1]-x[0])*nPoints, nPoints)
+			tailYright = np.zeros(nPoints) + y[0]
+			tailZright = self.gaus(tailXright, a, mu, s)
+			a, mu, s = self.getGausPars(x, z, 'left')
+			tailXleft = np.linspace(x[0] - (x[1]-x[0])*nPoints, x[0] - (x[1]-x[0]), nPoints)
+			tailYleft = np.zeros(nPoints) + y[0]
+			tailZleft = self.gaus(tailXleft, a, mu, s)
+			xtot.append(np.concatenate((tailYleft, y, tailYright)))
+			ytot.append(np.concatenate((tailXleft, x, tailXright)))
+			ztot.append(np.concatenate((tailZleft, z, tailZright)))
+		xtot = np.transpose(np.array(xtot))
+		ytot = np.transpose(np.array(ytot))
+		ztot = np.transpose(np.array(ztot))
+		return xtot, ytot, ztot
+
+
+		
+
 	# Init interpolation
 	def InitInterp(self, profile):
 		# if raster scan prepare 2d cubic spline
 		if profile['direction'] == 'xy':
-			f = interp2d(profile['profile'][0], profile['profile'][1], profile['profile'][2], kind='cubic', fill_value=1e-12, bounds_error=False)
+			x,y,z = self.MakeGrid(profile['profile'][0], profile['profile'][1], profile['profile'][2])
+			x,y,z = self.AddTails(x,y,z, 3)
+			f = RectBivariateSpline(y[:,0],x[0],z)
 			profile['interpolation'] = f
 			# Evaluate normalization once
 			profile['norm'] = integrate.dblquad(profile['interpolation'], profile['profile'][0][0], profile['profile'][0][-1], profile['profile'][1][0], profile['profile'][1][-1])[0]
@@ -613,7 +683,7 @@ class BeamData:
 						if(s['x'].size < 1):
 							LL += 1000
 						else:
-							LL += (-2*np.log(profile['interpolation'](s['x'][i], s['y'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
+							LL += (-2*np.log(profile['interpolation'](s['y'][i], s['x'][i])/profile['norm'])).sum()/s['x'].size/s['x'].size
 		return LL
 	
 	# Evaluate Chi2: like with the likelyhood the result is chi2 normalised to the number of particles to favor higher transmission
@@ -890,7 +960,7 @@ class BeamData:
 			beam.append(best.params[par])
 		self.RunTrial(beam, nEvents, fileName, beamName, False)
 	
-	def RunBestTrialSlice(self, study, nEvents, firstPars=[], fileName = "best_", beamName = "bestBeam"):
+	def RunBestTrialSlice(self, study, nEvents, firstPars=[], fileName = "best_", beamName = "bestBeam", method='LL'):
 		best = study.best_trial
 		beam = []
 		for par in firstPars:
@@ -915,7 +985,7 @@ class BeamData:
 		if(len(tempy) >1 ):
 			slicey.append(tempy)
 		beam = {'beam' : beam, 'slicex': slicex, 'slicey': slicey}
-		self.RunTrialSlice(beam, nEvents, fileName, beamName, False)
+		self.RunTrialSlice(beam, nEvents, fileName, beamName, False, method=method)
 	
 	# Run simulation with default settings
 	def RunSimulation(self, run, nEvents):
@@ -959,14 +1029,14 @@ class BeamData:
 					subprocess.call(self.g4bl.replace("COMMAND", command), shell=True)
 		return 0
 	
-	def PlotBest(self, fileName):
+	def PlotBest(self, fileName, treeName='VirtualDetector/PILL'):
 		# Cycle over data
 		for data in self.datasets:
 			if data['LL'] == 1:
 				# Cycle over all profilesLL
 				for profile in data['profileLL']:
 					histoFile =  self.workDir + "g4bl/scores/" + fileName + "%03d.root" %(profile['run'])
-					with uproot.open(histoFile + ":VirtualDetector/PILL") as pill:
+					with uproot.open(histoFile + ':' + treeName) as pill:
 						# Check what kind of profile it is
 						if(profile['direction'] == 'x'):
 							s = pill.arrays(['x'], 'abs(y) < 1', library = 'np')['x']
@@ -991,6 +1061,57 @@ class BeamData:
 							
 							plt.plot(x, y, label='Likelihood')
 							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color='orange', alpha=0.5)
+							plt.savefig(histoFile.replace(".root", "_y.png"))
+							plt.clf()
+						elif(profile['direction'] == 'xy'):
+							s = pill.arrays(['x', 'y'], library = 'np')
+							s['x'] = -s['x']
+							
+							# Plot
+							x,y,z = self.MakeGrid(profile['profile'][0], profile['profile'][1], profile['profile'][2])
+							x,y,z = self.AddTails(x,y,z)
+							x = np.linspace(x.min(), x.max(), 100)
+							y = np.linspace(x.min(), x.max(), 100)
+							zIn = profile['interpolation'](y, x)/profile['norm']
+							x, y = np.meshgrid(x,y)
+							dx = x[0][1] - x[0][0]
+							dy = y[1][0] - y[0][0]
+							zIn_x = zIn.sum(0)*dx # x integral
+							zIn_y = zIn.sum(1)*dy # y integral
+							
+							fig = plt.figure(figsize=[10,10], dpi=150)
+							ax = fig.add_subplot(221)
+							plt.title("Data")
+							plt.pcolormesh(x,y,zIn, cmap=cm.coolwarm)
+							plt.xlabel("x [mm]")
+							plt.ylabel("y [mm]")
+							plt.xlim(x.min(), x.max())
+							plt.ylim(y.min(), y.max())
+
+							ax = fig.add_subplot(222)
+							plt.title("Fit")
+							plt.hist2d(s['x'], s['y'], bins=[50,50], cmap=cm.coolwarm)
+							plt.xlabel("x [mm]")
+							plt.ylabel("y [mm]")
+							plt.xlim(x.min(), x.max())
+							plt.ylim(y.min(), y.max())
+
+							ax = fig.add_subplot(223)
+							plt.title("Marginal x distribution")
+							plt.plot(x[0], zIn_x, '-', color=cm.coolwarm(0))
+							plt.hist(s['x'], bins=100, color=cm.coolwarm(0.9), alpha=0.4, density=True)
+							plt.hist(s['x'], bins=100, color=cm.coolwarm(0.9), histtype='step', density=True)
+							plt.xlabel("x [mm]")
+							plt.xlim(x[0].min(), x[0].max())
+
+							ax = fig.add_subplot(224)
+							plt.title("Marginal y distribution")
+							plt.plot(y[:, 0], zIn_y, '-', color=cm.coolwarm(0))
+							plt.hist(s['y'], bins=100, color=cm.coolwarm(0.9), alpha=0.4, density=True)
+							plt.hist(s['y'], bins=100, color=cm.coolwarm(0.9), histtype='step', density=True)
+							plt.xlabel("y [mm]")
+							plt.xlim(y.min(), y.max())
+
 							plt.savefig(histoFile.replace(".root", "_y.png"))
 							plt.clf()
 		return 0
