@@ -1047,7 +1047,7 @@ class BeamData:
 							x = np.linspace(profile['profile'][0][0], profile['profile'][0][-1], 1000)
 							y = profile['interpolation'](x)/profile['norm']
 							
-							plt.plot(x, y, label='Data', '-', color=cm.coolwarm(0))
+							plt.plot(x, y, label='Data', color=cm.coolwarm(0))
 							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), alpha=0.4, label='Simulation')
 							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), histtype='step')
 							plt.xlabel("x [mm]")
@@ -1062,7 +1062,7 @@ class BeamData:
 							x = np.linspace(profile['profile'][0][0], profile['profile'][0][-1], 1000)
 							y = profile['interpolation'](x)/profile['norm']
 							
-							plt.plot(x, y, label='Data', '-', color=cm.coolwarm(0))
+							plt.plot(x, y, label='Data', color=cm.coolwarm(0))
 							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), alpha=0.4, label='Simulation')
 							plt.hist(s, density=True, label='MC', range=(profile['profile'][0][0], profile['profile'][0][-1]), bins=100, color=cm.coolwarm(0.9), histtype='step')
 							plt.xlabel("y [mm]")
