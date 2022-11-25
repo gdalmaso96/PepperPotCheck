@@ -1122,7 +1122,7 @@ class BeamData:
 							plt.xlim(y.min(), y.max())
 							plt.legend()
 
-							plt.savefig(histoFile.replace(".root", "_y.png"))
+							plt.savefig(histoFile.replace(".root", "_xy.png"))
 							plt.clf()
 		return 0
 	
