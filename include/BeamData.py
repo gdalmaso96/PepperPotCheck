@@ -710,11 +710,11 @@ class BeamData:
 						Chi2 += 1000
 					else:
 						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
-							tmp = (np.abs(s-x) < 1).sum()/len(s)
+							tmp = (np.abs(s-x) < 1).sum()
 							if tmp > 0:
-								Chi2 += (tmp-y)**2/len(s)/tmp
+								Chi2 += (tmp/len(s)-y)**2/len(s)/tmp
 							else:
-								Chi2 += (tmp-y)**2/len(s)
+								Chi2 += (tmp/len(s)-y)**2/len(s)
 				elif(profile['direction'] == 'y'):
 					s = pill.arrays(['y'], '(abs(x) < 1) & (y > %f) & (y < %f)' %(profile['profile'][0][0], profile['profile'][0][-1]), library = 'np')['y']
 					# Check if any particle is transmitted
@@ -722,11 +722,11 @@ class BeamData:
 						Chi2 += 1000
 					else:
 						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
-							tmp = (np.abs(s-x) < 1).sum()/len(s)
+							tmp = (np.abs(s-x) < 1).sum()
 							if tmp > 0:
-								Chi2 += (tmp-y)**2/len(s)/tmp
+								Chi2 += (tmp/len(s)-y)**2/len(s)/tmp
 							else:
-								Chi2 += (tmp-y)**2/len(s)
+								Chi2 += (tmp/len(s)-y)**2/len(s)
 				elif(profile['direction'] == 'xy'):
 					s = pill.arrays(['x', 'y'], library = 'np')
 					# Check if any particle is transmitted
@@ -738,11 +738,11 @@ class BeamData:
 						Chi2 += 1000
 					else:
 						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]):
-							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()/len(sx)
+							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()
 							if(tmp > 0):
-								Chi2 += (tmp-z)**2/len(sx)/tmp
+								Chi2 += (tmp/len(s)-z)**2/len(sx)/tmp
 							else:
-								Chi2 += (tmp-z)**2/len(sx)
+								Chi2 += (tmp/len(s)-z)**2/len(sx)
 		return Chi2
 	
 	# Run simulation trial for LL evaluation including beam interpolation
