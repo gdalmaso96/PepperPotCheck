@@ -712,7 +712,7 @@ class BeamData:
 						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
 							tmp = (np.abs(s-x) < 1).sum()
 							y1 = tmp/len(s)/2 # each bin is 2 mm wide
-							dy1 = sqrt(tmp)/len(s)/2
+							dy1 = np.sqrt(tmp)/len(s)/2
 							if dy1 > 0:
 								Chi2 += (y1 - y)**2/dy1**2/len(s)
 							else:
@@ -726,7 +726,7 @@ class BeamData:
 						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
 							tmp = (np.abs(s-x) < 1).sum()
 							y1 = tmp/len(s)/2 # each bin is 2 mm wide
-							dy1 = sqrt(tmp)/len(s)/2
+							dy1 = np.sqrt(tmp)/len(s)/2
 							if dy1 > 0:
 								Chi2 += (y1 - y)**2/dy1**2/len(s)
 							else:
@@ -744,7 +744,7 @@ class BeamData:
 						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]):
 							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()
 							z1 = tmp/len(sx)/4 # each bin is 2 mm wide
-							dz1 = sqrt(tmp)/len(sx)/4
+							dz1 = np.sqrt(tmp)/len(sx)/4
 							if dz1 > 0:
 								Chi2 += (z1 - z)**2/dz1**2/len(sx)
 							else:
