@@ -973,13 +973,14 @@ class BeamData:
 		tempy['y'] = 6.25
 		print("ciao")
 		for par in best.params:
+			print(par)
 			if(par.find('_x') >= 0):
 				tempx[par[0:par.find('_x')]] = best.params[par]
 			elif(par.find('_y') >= 0):
 				tempy[par[0:par.find('_y')]] = best.params[par]
 			else:
 				firstPars[par] = best.params[par]
-		beam = [firstPars['a'], firstPars['b'], firstPars['c'], firstPars['d'], firstPars['megx'], firstPars['megxp'], firstPars['mu3ex'], firstPars['mu3exp'], firstPars['y'], firstPars['yp'], firstPar['scale']]
+		beam = [firstPars['a'], firstPars['b'], firstPars['c'], firstPars['d'], firstPars['megx'], firstPars['megxp'], firstPars['mu3ex'], firstPars['mu3exp'], firstPars['y'], firstPars['yp'], firstPars['scale']]
 		if(len(tempx) > 1):
 			slicex.append(tempx)
 		#print(slicex[0])
@@ -1121,7 +1122,7 @@ class BeamData:
 							plt.xlim(y.min(), y.max())
 							plt.legend()
 
-							plt.savefig(histoFile.replace(".root", "_y.png"))
+							plt.savefig(histoFile.replace(".root", "_xy.png"))
 							plt.clf()
 		return 0
 	
