@@ -712,7 +712,7 @@ class BeamData:
 						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
 							tmp = (np.abs(s-x) < 1).sum()
 							if tmp > 0:
-								Chi2 += (tmp/len(s)-y)**2/len(s)/tmp
+								Chi2 += (tmp/len(s)-y)**2*len(s)/tmp
 							else:
 								Chi2 += (tmp/len(s)-y)**2/len(s)
 				elif(profile['direction'] == 'y'):
@@ -724,7 +724,7 @@ class BeamData:
 						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
 							tmp = (np.abs(s-x) < 1).sum()
 							if tmp > 0:
-								Chi2 += (tmp/len(s)-y)**2/len(s)/tmp
+								Chi2 += (tmp/len(s)-y)**2*len(s)/tmp
 							else:
 								Chi2 += (tmp/len(s)-y)**2/len(s)
 				elif(profile['direction'] == 'xy'):
@@ -740,7 +740,7 @@ class BeamData:
 						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]):
 							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()
 							if(tmp > 0):
-								Chi2 += (tmp/len(s)-z)**2/len(sx)/tmp
+								Chi2 += (tmp/len(s)-z)**2*len(sx)/tmp
 							else:
 								Chi2 += (tmp/len(s)-z)**2/len(sx)
 		return Chi2
