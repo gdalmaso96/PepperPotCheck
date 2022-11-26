@@ -127,13 +127,13 @@ genericquad QSM41DUMMY gradient=0 kill=1 ironRadius=1000 ironLength=500 ironColo
 ####################################### Moderator #######################################
 tubs ENTRANCEw innerRadius=0 radius=20  length=0.035 material=G4_MYLAR color=0.5,0.5,0.5,0.6
 tubs MODERATOR innerRadius=0 radius=30  length=0.6 material=G4_MYLAR color=0.5,0.5,0.5,0.6
-tubs ATMOSPHER innerRadius=0 radius=100 length=2*($poszmu3esol-$poszMU3ESOLTUBI5-17.01) #material=He color=0,1,1,0.2
-tubs ATMOSPHERw innerRadius=0 radius=20 length=5.965 material=He color=0,1,1,0.2
+tubs ATMOSPHER innerRadius=0 radius=100 length=2*($poszmu3esol-$poszMU3ESOLTUBI5-17.01) #material=Air color=0,1,1,0.2
+tubs ATMOSPHERw innerRadius=0 radius=20 length=5.965 material=Air color=0,1,1,0.2
 virtualdetector TRACKER innerRadius=23.7 radius=23.75 length=124.7 material=G4_Si color=0.5,0.5,0.5,0.4
 tubs trackerV innerRadius=23.65 radius=23.8 length=124.75 #material=Vacuum color=0.5,0.5,0.5,0.4
 tubs COLLIMATOR innerRadius=20 radius=29.9999 length=20 material=Al color=0.5,0.5,0.5,0.3
 
-boolean op=subtraction ATMOSPHERb ATMOSPHER trackerV material=He color=0,1,1,0.2
+boolean op=subtraction ATMOSPHERb ATMOSPHER trackerV material=Air color=0,1,1,0.2
 #########################################################################################
 
 ######################################### HULK ##########################################
