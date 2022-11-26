@@ -225,3 +225,5 @@ The momentum looks good, centering around 27.8, the slice parameter don't seem t
 Stopped simulations, now using air in HULK and increased scale range for Slice as well
 
 Reconstruction on the vertical is not bad at all. The horizontal seem to be too wide, maybe because of dispersion. Could be good to add a correlation between x and P together with MS deconvolution. I would do that removing the slice parameters. Let's first see whether using air improves anything in the fit.
+
+!!!! Guess: the scale factor is so high because of how wide the horizontal distribution at HULK center is in lack of correlation. It is a good idea to add correlation between P and x. An wasy way would be to sample (x, xp) and sample a uniform so that it is correlated to x with a certain correlation. Than P is obtained by transforming it through the CDF. It would be good to get a uniformly distributed variable from the (x,xp) pair: after sampling properly x one can use the margin cdf to get a uniformly distributed variable to correlate with the other. Cholesky should be enough for that.
