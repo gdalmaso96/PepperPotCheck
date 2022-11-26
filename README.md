@@ -216,3 +216,10 @@ Idea: maybe the issue with the tails is due to the precision on the distance bet
 The scaling factor does improve the Chi2. For the moment is not yet clear whether it is only a matter of transmission improvement or if it really matches the beam spot at the center
 
 Need probably to add the horizontal slice or to limit the number of particles that can be transmitted
+
+-- 25.11.2022 --
+Increased range of scale in Chi2_CentMOMScale_HULK, to 0.8 5 during optimization (around 2500th job) to check whether it would continue to shrink. At the moment it pushes to the limit (2): what if multiple scattering and hole size are not negligible at all?
+
+The momentum looks good, centering around 27.8, the slice parameter don't seem to be affecting the measurement too much. 
+
+Stopped simulations, now using air in HULK and increased scale range for Slice as well
