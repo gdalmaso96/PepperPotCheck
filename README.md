@@ -223,3 +223,6 @@ Increased range of scale in Chi2_CentMOMScale_HULK, to 0.8 5 during optimization
 The momentum looks good, centering around 27.8, the slice parameter don't seem to be affecting the measurement too much. 
 
 Stopped simulations, now using air in HULK and increased scale range for Slice as well
+
+-- 27.11.2022 --
+Added correlation between x and Ptot by ranking with Iman-Conover method.

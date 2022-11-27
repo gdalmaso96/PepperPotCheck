@@ -158,6 +158,38 @@ class BeamData:
 					data['profileLL'].append(profDict)
 					profilesLL.append(profDict)
 	
+	# This function introduces correlation between two vectors of data through Iman-Cover method
+	def ImanConover(self, x1, x2, rho):
+		N = len(x1)
+		# Sample gauss
+		r1 = np.random.normal(0,1,N)
+		r2 = np.random.normal(0,1,N)
+		# Build Cholesky
+		sigma = np.array([[1,rho],[rho,1]])
+		L = np.linalg.cholesky(sigma)
+
+		# Introduce correlation
+		r1, r2 = np.matmul(L, np.array([r1,r2]))
+
+		# Get sort index
+		i1 = np.argsort(r1)
+		i2 = np.argsort(r2)
+		ix1 = np.argsort(x1)
+		ix2 = np.argsort(x2)
+
+		# Ordered vectors
+		x2 = x2[ix2]
+
+		# Rank
+		I2 = np.argsort(i2)
+		x2 = x2[I2]
+		I1 = np.argsort(i1)
+		x2 = x2[i1]
+		Ix1 = np.argsort(ix1)
+		x2 = x2[Ix1]
+		return x1, x2
+
+	
 	# Slice function
 	def sliceFunction(self, x, pepperpot):
 		A = pepperpot['A']
@@ -459,6 +491,9 @@ class BeamData:
 		xp = ymin + dy*(Irand.astype(int)/ly) + ddy
 		x = -x
 		xp = -xp
+
+		# Introduce correlation between x and Ptot
+		x, Ptot = self.ImanConover(x,Ptot,beam[11])
 
 		# PRINT OUT IRAND IF X OUTSIDE GIVEN RANGE
 		# Problems:
