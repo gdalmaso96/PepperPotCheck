@@ -1033,7 +1033,7 @@ class BeamData:
 				tempy[par[0:par.find('_y')]] = best.params[par]
 			else:
 				firstPars[par] = best.params[par]
-		beam = [firstPars['a'], firstPars['b'], firstPars['c'], firstPars['d'], firstPars['megx'], firstPars['megxp'], firstPars['mu3ex'], firstPars['mu3exp'], firstPars['y'], firstPars['yp'], firstPars['scale']]
+		beam = [firstPars['a'], firstPars['b'], firstPars['c'], firstPars['d'], firstPars['megx'], firstPars['megxp'], firstPars['mu3ex'], firstPars['mu3exp'], firstPars['y'], firstPars['yp'], firstPars['scale'], firstPars['rho']]
 		if(len(tempx) > 1):
 			slicex.append(tempx)
 		#print(slicex[0])
