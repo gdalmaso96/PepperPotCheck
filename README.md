@@ -233,3 +233,5 @@ Added correlation between x and Ptot through Iman-Conover method
 
 -- 05.12.2022 --
 Now any correlation matrix can be sampled using the relative correlation method. The correlation matrix is 5d.
+
+Started fit including the centroids, the momentum distribution and the 7 correlations (15 parameters). The statistics in the single run has been halved from 1e6 to 5e5 to execute each trial faster. After a few trials needs to be checked.
