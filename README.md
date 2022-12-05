@@ -230,3 +230,6 @@ Reconstruction on the vertical is not bad at all. The horizontal seem to be too 
 
 -- 27.11.2022 --
 Added correlation between x and Ptot through Iman-Conover method
+
+-- 05.12.2022 --
+Now any correlation matrix can be sampled using the relative correlation method. The correlation matrix is 5d.

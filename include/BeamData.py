@@ -40,6 +40,9 @@ class BeamData:
 		# Set container folder, on cluster it corresponds to workDir
 		self.containerDir = containerDir
 
+		# Set to 1 if you want to sample the 5d phase space correlation matrix
+		self.FreeCorrelations = 0
+
 	divertOutput = 0
 	
 	# General functions
@@ -158,36 +161,97 @@ class BeamData:
 					data['profileLL'].append(profDict)
 					profilesLL.append(profDict)
 	
+	def SetFreeCorrelations(self, boolean):
+		self.FreeCorrelations = boolean
+	
+	def CreateCorrelation(self, tanhs, order):
+		# Method found in https://mc-stan.org/docs/2_26/reference-manual/correlation-matrix-transform-section.html
+		# Create z
+		z = np.zeros((order, order))
+		z[np.triu_indices(order, k=1)] = tanhs
+		print("Relative correlations:")
+		print(z)
+
+		# Create Cholesky
+		w = np.zeros((order, order))
+		for i in range(order):
+			for j in range(order):
+				if (i > j):
+					w[i,j] = 0
+				elif (i == 0 and j == 0):
+					w[i,j] = 1
+				elif (0 < i and i == j):
+					w[i,j] = 1
+					for i1 in range(0, i):
+						w[i,j] = w[i,j]*(1-z[i1,j]**2)**0.5
+				elif (i == 0 and i < j):
+					w[i,j] = z[i,j]
+				elif (0 < i and i < j):
+					w[i,j] = z[i,j]
+					for i1 in range(0, i):
+						w[i,j] = w[i,j]*(1-z[i1,j]**2)**0.5
+
+		x = w.transpose().dot(w)
+		print("Correlation matrix: yp, y, xp, x, P:")
+		print(x)
+		return x
+
 	# This function introduces correlation between two vectors of data through Iman-Cover method
-	def ImanConover(self, x1, x2, rho):
+	# At the moment the the transverse correlation matrix is fully sampled, while the only non-zero correlation on the momentum is with x
+	def ImanConover(self, x, xp, y, yp, Ptot, rhoxxp, rhoxy, rhoyyp, rhoxpy, rhoxyp, rhoxpyp, rhoxP):
+		x1 = yp
+		x2 = y
+		x3 = xp
+		x4 = x
+		x5 = Ptot
 		N = len(x1)
 		# Sample gauss
 		r1 = np.random.normal(0,1,N)
 		r2 = np.random.normal(0,1,N)
-		# Build Cholesky
-		sigma = np.array([[1,rho],[rho,1]])
+		r3 = np.random.normal(0,1,N)
+		r4 = np.random.normal(0,1,N)
+		r5 = np.random.normal(0,1,N)
+
+		# Build matrix
+		sigma = self.CreateCorrelation([rhoyyp, rhoxpyp, rhoxyp, 0, rhoxpy, rhoxy, 0, rhoxxp, 0, rhoxP], 5)
+		
 		L = np.linalg.cholesky(sigma)
 
 		# Introduce correlation
-		r1, r2 = np.matmul(L, np.array([r1,r2]))
+		r1, r2, r3, r4, r5 = np.matmul(L, np.array([r1,r2,r3,r4,r5]))
 
 		# Get sort index
 		i1 = np.argsort(r1)
 		i2 = np.argsort(r2)
+		i3 = np.argsort(r3)
+		i4 = np.argsort(r4)
+		i5 = np.argsort(r5)
 		ix1 = np.argsort(x1)
 		ix2 = np.argsort(x2)
+		ix3 = np.argsort(x3)
+		ix4 = np.argsort(x4)
+		ix5 = np.argsort(x5)
 
 		# Ordered vectors
+		x1 = x1[ix1]
 		x2 = x2[ix2]
+		x3 = x3[ix3]
+		x4 = x4[ix4]
+		x5 = x5[ix5]
 
 		# Rank
+		I1 = np.argsort(i1)
+		x1 = x1[I1]
 		I2 = np.argsort(i2)
 		x2 = x2[I2]
-		I1 = np.argsort(i1)
-		x2 = x2[i1]
-		Ix1 = np.argsort(ix1)
-		x2 = x2[Ix1]
-		return x1, x2
+		I3 = np.argsort(i3)
+		x3 = x3[I3]
+		I4 = np.argsort(i4)
+		x4 = x4[I4]
+		I5 = np.argsort(i5)
+		x5 = x5[I5]
+
+		return x4, x3, x2, x1, x5 # yp, y, xp, x, P
 
 	
 	# Slice function
@@ -492,9 +556,6 @@ class BeamData:
 		x = -x
 		xp = -xp
 
-		# Introduce correlation between x and Ptot
-		x, Ptot = self.ImanConover(x,Ptot,beam[11])
-
 		# PRINT OUT IRAND IF X OUTSIDE GIVEN RANGE
 		# Problems:
 		#  1 - when Irand.astype(int)%lx = 499 dx = 100 (to effectively have 500 cells I need 501 points?) <- Should still be ok, would only make the sampling range between -50 and 50.2 mm
@@ -526,6 +587,10 @@ class BeamData:
 
 		y = xmin + dx*(Irand.astype(int)%lx) + ddx
 		yp = ymin + dy*(Irand.astype(int)/ly) + ddy
+
+		# Introduce correlations
+		if self.FreeCorrelations == 1:
+			x, xp, y, yp, Ptot = self.ImanConover(x, xp, y, yp, Ptot, beam[11], beam[12], beam[13], beam[14], beam[15], beam[16], beam[17])
 
 		# Create beam trees
 		print("Create tree")
