@@ -809,7 +809,7 @@ class BeamData:
 					if(len(s) < 1):
 						Chi2 += 1e12
 					else:
-						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
+						for (x,y) in zip(profile['profile'][0], profile['profile'][1]/profile['norm']):
 							tmp = (np.abs(s-x) < 1).sum()
 							y1 = tmp/len(s)/2 # each bin is 2 mm wide
 							dy1 = np.sqrt(tmp)/len(s)/2
@@ -824,7 +824,7 @@ class BeamData:
 					if(len(s) < 1):
 						Chi2 += 1e12
 					else:
-						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
+						for (x,y) in zip(profile['profile'][0], profile['profile'][1]/profile['norm']):
 							tmp = (np.abs(s-x) < 1).sum()
 							y1 = tmp/len(s)/2 # each bin is 2 mm wide
 							dy1 = np.sqrt(tmp)/len(s)/2
@@ -843,7 +843,7 @@ class BeamData:
 					if(len(sx) < 1):
 						Chi2 += 1e12
 					else:
-						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]):
+						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]/profile['norm']):
 							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()
 							z1 = tmp/len(sx)/4 # each bin is 2 mm wide
 							dz1 = np.sqrt(tmp)/len(sx)/4
@@ -874,7 +874,7 @@ class BeamData:
 					if(len(s) < 1):
 						Chi2 += 1e12
 					else:
-						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
+						for (x,y) in zip(profile['profile'][0], profile['profile'][1]/profile['norm']):
 							tmp = (np.abs(s-x) < 1).sum()
 							y1 = tmp/2/len(s) # each bin is 2 mm wide
 							dy1 = np.sqrt(tmp)/2
@@ -889,7 +889,7 @@ class BeamData:
 					if(len(s) < 1):
 						Chi2 += 1e12
 					else:
-						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
+						for (x,y) in zip(profile['profile'][0], profile['profile'][1]/profile['norm']):
 							tmp = (np.abs(s-x) < 1).sum()
 							y1 = tmp/2/len(s) # each bin is 2 mm wide
 							dy1 = np.sqrt(tmp)/2
@@ -908,7 +908,7 @@ class BeamData:
 					if(len(sx) < 1):
 						Chi2 += 1e12
 					else:
-						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]):
+						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]/profile['norm']):
 							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()
 							z1 = tmp/4/len(s) # each bin is 2 mm wide
 							dz1 = np.sqrt(tmp)/4
