@@ -1107,6 +1107,34 @@ class BeamData:
 		beam = {'beam' : beam, 'slicex': slicex, 'slicey': slicey}
 		self.RunTrialSlice(beam, nEvents, fileName, beamName, False, method=method)
 	
+	def RunBestTrialCorr5d(self, study, nEvents, firstPars={}, fileName = "best_", beamName = "bestBeam", method='LL'):
+		best = study.best_trial
+		beam = []
+		slicex = []
+		slicey = []
+		tempx = {}
+		tempx['x'] = -6.25
+		tempy = {}
+		tempy['y'] = 6.25
+		print("ciao")
+		for par in best.params:
+			print(par)
+			if(par.find('_x') >= 0):
+				tempx[par[0:par.find('_x')]] = best.params[par]
+			elif(par.find('_y') >= 0):
+				tempy[par[0:par.find('_y')]] = best.params[par]
+			else:
+				firstPars[par] = best.params[par]
+		beam = [firstPars['a'], firstPars['b'], firstPars['c'], firstPars['d'], firstPars['megx'], firstPars['megxp'], firstPars['mu3ex'], firstPars['mu3exp'], firstPars['y'], firstPars['yp'], firstPars['scale'], firstPars['rhoxxp'], firstPars['rhoxy'], firstPars['rhoyyp'], firstPars['rhoxpy'], firstPars['rhoxyp'], firstPars['rhoxpyp'], firstPars['rhoxP']]
+		if(len(tempx) > 1):
+			slicex.append(tempx)
+		#print(slicex[0])
+		if(len(tempy) >1 ):
+			slicey.append(tempy)
+		beam = {'beam' : beam, 'slicex': slicex, 'slicey': slicey}
+		self.RunTrialSlice(beam, nEvents, fileName, beamName, False, method=method)
+	
+	
 	# Run simulation with default settings
 	def RunSimulation(self, run, nEvents):
 		# Find wanted run
