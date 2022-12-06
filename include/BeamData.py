@@ -790,7 +790,7 @@ class BeamData:
 	
 	# Evaluate Chi2: like with the likelyhood the result is chi2 normalised to the number of particles to favor higher transmission
 	# In fact there is no need to include the degrees of freedom at this level: those are constanat for each optimization, so they are meaningful only for significance tests
-	def EvaluateChi2(self, data, histoFile):
+	def EvaluateChi2Norm(self, data, histoFile):
 		Chi2 = 0
 		if data['Beamline'].find('HULK'):
 			treeName = 'NTuple/Z10175'
@@ -852,6 +852,71 @@ class BeamData:
 							#else:
 							#	Chi2 += (z1 - z)**2/len(sx)
 							Chi2 += (z1 - z)**2/len(sx)
+		return Chi2
+	# Evaluate Chi2: like with the likelyhood the result is chi2 normalised to the number of particles to favor higher transmission
+	# In fact there is no need to include the degrees of freedom at this level: those are constanat for each optimization, so they are meaningful only for significance tests
+	def EvaluateChi2(self, data, histoFile):
+		Chi2 = 0
+		if data['Beamline'].find('HULK'):
+			treeName = 'NTuple/Z10175'
+		else:
+			treeName = 'VirtualDetector/PILL'
+
+		with uproot.open(histoFile + ':' + treeName) as pill:
+			# Cycle over all profilesLL
+			for profile in data['profileLL']:
+			# Check what kind of profile it is
+				if(profile['direction'] == 'x'):
+					s = pill.arrays(['x'], '(abs(y) < 1) & (x > %f) & (x < %f)' %(profile['profile'][0][0], profile['profile'][0][-1]), library = 'np')['x']
+					if(data['Beamline'].find('MEG') >= 0):
+						s = -s
+					# Check if any particle is transmitted
+					if(len(s) < 1):
+						Chi2 += 1e12
+					else:
+						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
+							tmp = (np.abs(s-x) < 1).sum()
+							y1 = tmp/2 # each bin is 2 mm wide
+							dy1 = np.sqrt(tmp)/2
+							#if dy1 > 0:
+							#	Chi2 += (y1 - y)**2/dy1**2/len(s)
+							#else:
+							#	Chi2 += (y1 - y)**2/len(s)
+							Chi2 += (y1 - y)**2
+				elif(profile['direction'] == 'y'):
+					s = pill.arrays(['y'], '(abs(x) < 1) & (y > %f) & (y < %f)' %(profile['profile'][0][0], profile['profile'][0][-1]), library = 'np')['y']
+					# Check if any particle is transmitted
+					if(len(s) < 1):
+						Chi2 += 1e12
+					else:
+						for (x,y) in zip(profile['profile'][0], profile['profile'][1]):
+							tmp = (np.abs(s-x) < 1).sum()
+							y1 = tmp/2 # each bin is 2 mm wide
+							dy1 = np.sqrt(tmp)/2
+							#if dy1 > 0:
+							#	Chi2 += (y1 - y)**2/dy1**2/len(s)
+							#else:
+							#	Chi2 += (y1 - y)**2/len(s)
+							Chi2 += (y1 - y)**2
+				elif(profile['direction'] == 'xy'):
+					s = pill.arrays(['x', 'y'], library = 'np')
+					# Check if any particle is transmitted
+					sx = s['x']
+					sy = s['y']
+					if data['Beamline'].find('HULK'):
+						sx = -sx
+					if(len(sx) < 1):
+						Chi2 += 1e12
+					else:
+						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]):
+							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()
+							z1 = tmp/4 # each bin is 2 mm wide
+							dz1 = np.sqrt(tmp)/4
+							#if dz1 > 0:
+							#	Chi2 += (z1 - z)**2/dz1**2/len(sx)
+							#else:
+							#	Chi2 += (z1 - z)**2/len(sx)
+							Chi2 += (z1 - z)**2
 		return Chi2
 	
 	# Run simulation trial for LL evaluation including beam interpolation
