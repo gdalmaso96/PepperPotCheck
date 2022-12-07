@@ -93,6 +93,7 @@ class BeamData:
 							profile = np.delete(profile, 3, 0)
 							profile = np.delete(profile, 2, 0)
 							profile = np.delete(profile, 0, 0)
+							np.append(np.sqrt(profile[1]*2000)/2000)
 							profDict = {'profile' : profile, 'direction' : 'y', 'run' : data['Simulation n.']}
 							profDict = self.InitInterp(profDict)
 							data['profileLL'].append(profDict)
@@ -108,6 +109,7 @@ class BeamData:
 							profile = np.delete(profile, 3, 0)
 							profile = np.delete(profile, 2, 0)
 							profile = np.delete(profile, 1, 0)
+							np.append(np.sqrt(profile[1]*2000)/2000)
 							profDict = {'profile' : profile, 'direction' : 'x', 'run' : data['Simulation n.']}
 							profDict = self.InitInterp(profDict)
 							data['profileLL'].append(profDict)
@@ -127,6 +129,7 @@ class BeamData:
 						profileX = np.delete(profileX, 3, 0)
 						profileX = np.delete(profileX, 2, 0)
 						profileX = np.delete(profileX, 1, 0)
+						np.append(np.sqrt(profileX[1]*2000)/2000)
 						profDict = {'profile' : profileX, 'direction' : 'x', 'run' : data['Simulation n.']}
 						profDict = self.InitInterp(profDict)
 						data['profileLL'].append(profDict)
@@ -142,6 +145,7 @@ class BeamData:
 						profileY = np.delete(profileY, 3, 0)
 						profileY = np.delete(profileY, 2, 0)
 						profileY = np.delete(profileY, 0, 0)
+						np.append(np.sqrt(profileY[1]*2000)/2000)
 						profDict = {'profile' : profileY, 'direction' : 'y', 'run' : data['Simulation n.']}
 						profDict = self.InitInterp(profDict)
 						data['profileLL'].append(profDict)
@@ -156,6 +160,7 @@ class BeamData:
 					profile = np.delete(profile, 5, 0)
 					profile = np.delete(profile, 3, 0)
 					profile = np.delete(profile, 2, 0)
+					np.append(np.sqrt(profile[2]*2000)/2000)
 					profDict = {'profile' : profile, 'direction' : 'xy', 'run' : data['Simulation n.']}
 					profDict = self.InitInterp(profDict)
 					data['profileLL'].append(profDict)
@@ -871,7 +876,7 @@ class BeamData:
 					if(data['Beamline'].find('MEG') >= 0):
 						s = -s
 					# Check if any particle is transmitted
-					if(len(s) < 1):
+					if(len(s) < 100000):
 						Chi2 += 1e12
 					else:
 						for (x,y) in zip(profile['profile'][0], profile['profile'][1]/profile['norm']):
@@ -886,7 +891,7 @@ class BeamData:
 				elif(profile['direction'] == 'y'):
 					s = pill.arrays(['y'], '(abs(x) < 1) & (y > %f) & (y < %f)' %(profile['profile'][0][0], profile['profile'][0][-1]), library = 'np')['y']
 					# Check if any particle is transmitted
-					if(len(s) < 1):
+					if(len(s) < 100000):
 						Chi2 += 1e12
 					else:
 						for (x,y) in zip(profile['profile'][0], profile['profile'][1]/profile['norm']):
@@ -905,7 +910,7 @@ class BeamData:
 					sy = s['y']
 					if data['Beamline'].find('HULK'):
 						sx = -sx
-					if(len(sx) < 1):
+					if(len(sx) < 100000):
 						Chi2 += 1e12
 					else:
 						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]/profile['norm']):
