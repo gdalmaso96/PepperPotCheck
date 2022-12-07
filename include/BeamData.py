@@ -93,8 +93,7 @@ class BeamData:
 							profile = np.delete(profile, 3, 0)
 							profile = np.delete(profile, 2, 0)
 							profile = np.delete(profile, 0, 0)
-							np.append(np.sqrt(profile[1]*2000)/2000)
-							profDict = {'profile' : profile, 'direction' : 'y', 'run' : data['Simulation n.']}
+							profDict = {'profile' : profile, 'dProfile' : np.sqrt(profile[1]*2000)/2000, 'direction' : 'y', 'run' : data['Simulation n.']}
 							profDict = self.InitInterp(profDict)
 							data['profileLL'].append(profDict)
 							profilesLL.append(profDict)
@@ -109,8 +108,7 @@ class BeamData:
 							profile = np.delete(profile, 3, 0)
 							profile = np.delete(profile, 2, 0)
 							profile = np.delete(profile, 1, 0)
-							np.append(np.sqrt(profile[1]*2000)/2000)
-							profDict = {'profile' : profile, 'direction' : 'x', 'run' : data['Simulation n.']}
+							profDict = {'profile' : profile, 'dProfile' : np.sqrt(profile[1]*2000)/2000, 'direction' : 'x', 'run' : data['Simulation n.']}
 							profDict = self.InitInterp(profDict)
 							data['profileLL'].append(profDict)
 							profilesLL.append(profDict)
@@ -129,8 +127,7 @@ class BeamData:
 						profileX = np.delete(profileX, 3, 0)
 						profileX = np.delete(profileX, 2, 0)
 						profileX = np.delete(profileX, 1, 0)
-						np.append(np.sqrt(profileX[1]*2000)/2000)
-						profDict = {'profile' : profileX, 'direction' : 'x', 'run' : data['Simulation n.']}
+						profDict = {'profile' : profileX, 'dProfile' : np.sqrt(profileX[1]*2000)/2000, 'direction' : 'x', 'run' : data['Simulation n.']}
 						profDict = self.InitInterp(profDict)
 						data['profileLL'].append(profDict)
 						profilesLL.append(profDict)
@@ -145,8 +142,7 @@ class BeamData:
 						profileY = np.delete(profileY, 3, 0)
 						profileY = np.delete(profileY, 2, 0)
 						profileY = np.delete(profileY, 0, 0)
-						np.append(np.sqrt(profileY[1]*2000)/2000)
-						profDict = {'profile' : profileY, 'direction' : 'y', 'run' : data['Simulation n.']}
+						profDict = {'profile' : profileY, 'dProfile' : np.sqrt(profileY[1]*2000)/2000, 'direction' : 'y', 'run' : data['Simulation n.']}
 						profDict = self.InitInterp(profDict)
 						data['profileLL'].append(profDict)
 						profilesLL.append(profDict)
@@ -160,8 +156,7 @@ class BeamData:
 					profile = np.delete(profile, 5, 0)
 					profile = np.delete(profile, 3, 0)
 					profile = np.delete(profile, 2, 0)
-					np.append(np.sqrt(profile[2]*2000)/2000)
-					profDict = {'profile' : profile, 'direction' : 'xy', 'run' : data['Simulation n.']}
+					profDict = {'profile' : profile, 'dProfile' : np.sqrt(profile[2]*2000)/2000, 'direction' : 'xy', 'run' : data['Simulation n.']}
 					profDict = self.InitInterp(profDict)
 					data['profileLL'].append(profDict)
 					profilesLL.append(profDict)
@@ -879,30 +874,30 @@ class BeamData:
 					if(len(s) < 100000):
 						Chi2 += 1e12
 					else:
-						for (x,y) in zip(profile['profile'][0], profile['profile'][1]/profile['norm']):
+						for (x,y,dy) in zip(profile['profile'][0], profile['profile'][1]/profile['norm'], profile['dProfile']/profile['norm']):
 							tmp = (np.abs(s-x) < 1).sum()
 							y1 = tmp/2/len(s) # each bin is 2 mm wide
-							dy1 = np.sqrt(tmp)/2
+							dy1 = np.sqrt(tmp)/2/len(s)
 							#if dy1 > 0:
 							#	Chi2 += (y1 - y)**2/dy1**2/len(s)
 							#else:
 							#	Chi2 += (y1 - y)**2/len(s)
-							Chi2 += (y1 - y)**2
+							Chi2 += (y1 - y)**2/(dy**2+dy1**2)
 				elif(profile['direction'] == 'y'):
 					s = pill.arrays(['y'], '(abs(x) < 1) & (y > %f) & (y < %f)' %(profile['profile'][0][0], profile['profile'][0][-1]), library = 'np')['y']
 					# Check if any particle is transmitted
 					if(len(s) < 100000):
 						Chi2 += 1e12
 					else:
-						for (x,y) in zip(profile['profile'][0], profile['profile'][1]/profile['norm']):
+						for (x,y,dy) in zip(profile['profile'][0], profile['profile'][1]/profile['norm'], profile['dProfile']/profile['norm']):
 							tmp = (np.abs(s-x) < 1).sum()
 							y1 = tmp/2/len(s) # each bin is 2 mm wide
-							dy1 = np.sqrt(tmp)/2
+							dy1 = np.sqrt(tmp)/2/len(s)
 							#if dy1 > 0:
 							#	Chi2 += (y1 - y)**2/dy1**2/len(s)
 							#else:
 							#	Chi2 += (y1 - y)**2/len(s)
-							Chi2 += (y1 - y)**2
+							Chi2 += (y1 - y)**2/(dy**2+dy1**2)
 				elif(profile['direction'] == 'xy'):
 					s = pill.arrays(['x', 'y'], library = 'np')
 					# Check if any particle is transmitted
@@ -913,15 +908,15 @@ class BeamData:
 					if(len(sx) < 100000):
 						Chi2 += 1e12
 					else:
-						for (x,y,z) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]/profile['norm']):
+						for (x,y,z,dz) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]/profile['norm'], profile['dProfile']/profile['norm']):
 							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()
 							z1 = tmp/4/len(s) # each bin is 2 mm wide
-							dz1 = np.sqrt(tmp)/4
+							dz1 = np.sqrt(tmp)/4/len(s)
 							#if dz1 > 0:
 							#	Chi2 += (z1 - z)**2/dz1**2/len(sx)
 							#else:
 							#	Chi2 += (z1 - z)**2/len(sx)
-							Chi2 += (z1 - z)**2
+							Chi2 += (z1 - z)**2/(dz**2+dz1**2)
 		return Chi2
 	
 	# Run simulation trial for LL evaluation including beam interpolation
