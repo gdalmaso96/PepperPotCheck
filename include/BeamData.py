@@ -21,10 +21,6 @@ class BeamData:
 		self.simulations = data['simulations']
 		self.pepperpot = data['pepperpot']
 
-		# Initialise likelihoods:
-		#  -> evaluate likelyhood using python only (if too slow switch to ROOT)
-		self.initializeLL()
-
 		# Initialise complessive likelyhood
 		self.LL = 0
 
@@ -42,6 +38,10 @@ class BeamData:
 
 		# Set to 1 if you want to sample the 5d phase space correlation matrix
 		self.FreeCorrelations = 0
+
+		# Initialise likelihoods:
+		#  -> evaluate likelyhood using python only (if too slow switch to ROOT)
+		self.initializeLL()
 
 	divertOutput = 0
 	
@@ -75,7 +75,7 @@ class BeamData:
 				#  - 1: y
 				#  - 2: beam
 				#  - 4: ch0n
-				profile = np.loadtxt(data['fileName'], unpack=True, skiprows=1)
+				profile = np.loadtxt(self.workDir + data['fileName'], unpack=True, skiprows=1)
 				data['profileLL'] = []
 				# Split profile in x and y
 
@@ -871,7 +871,7 @@ class BeamData:
 					if(data['Beamline'].find('MEG') >= 0):
 						s = -s
 					# Check if any particle is transmitted
-					if(len(s) < 100000):
+					if(len(s) < 1):
 						Chi2 += 1e12
 					else:
 						for (x,y,dy) in zip(profile['profile'][0], profile['profile'][1]/profile['norm'], profile['dProfile']/profile['norm']):
@@ -882,11 +882,11 @@ class BeamData:
 							#	Chi2 += (y1 - y)**2/dy1**2/len(s)
 							#else:
 							#	Chi2 += (y1 - y)**2/len(s)
-							Chi2 += (y1 - y)**2/(dy**2+dy1**2)
+							Chi2 += (y1 - y)**2/(dy**2+dy1**2)*((len(s)>5e4) + 1e10/len(s)*(len(s)<=5e4))
 				elif(profile['direction'] == 'y'):
 					s = pill.arrays(['y'], '(abs(x) < 1) & (y > %f) & (y < %f)' %(profile['profile'][0][0], profile['profile'][0][-1]), library = 'np')['y']
 					# Check if any particle is transmitted
-					if(len(s) < 100000):
+					if(len(s) < 1):
 						Chi2 += 1e12
 					else:
 						for (x,y,dy) in zip(profile['profile'][0], profile['profile'][1]/profile['norm'], profile['dProfile']/profile['norm']):
@@ -897,7 +897,7 @@ class BeamData:
 							#	Chi2 += (y1 - y)**2/dy1**2/len(s)
 							#else:
 							#	Chi2 += (y1 - y)**2/len(s)
-							Chi2 += (y1 - y)**2/(dy**2+dy1**2)
+							Chi2 += (y1 - y)**2/(dy**2+dy1**2)*((len(s)>5e4) + 1e10/len(s)*(len(s)<=5e4))
 				elif(profile['direction'] == 'xy'):
 					s = pill.arrays(['x', 'y'], library = 'np')
 					# Check if any particle is transmitted
@@ -905,18 +905,18 @@ class BeamData:
 					sy = s['y']
 					if data['Beamline'].find('HULK'):
 						sx = -sx
-					if(len(sx) < 100000):
+					if(len(sx) < 1):
 						Chi2 += 1e12
 					else:
 						for (x,y,z,dz) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]/profile['norm'], profile['dProfile']/profile['norm']):
 							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()
-							z1 = tmp/4/len(s) # each bin is 2 mm wide
-							dz1 = np.sqrt(tmp)/4/len(s)
+							z1 = tmp/4/len(sx) # each bin is 2 mm wide
+							dz1 = np.sqrt(tmp)/4/len(sx)
 							#if dz1 > 0:
 							#	Chi2 += (z1 - z)**2/dz1**2/len(sx)
 							#else:
 							#	Chi2 += (z1 - z)**2/len(sx)
-							Chi2 += (z1 - z)**2/(dz**2+dz1**2)
+							Chi2 += (z1 - z)**2/(dz**2+dz1**2)*((len(sx)>5e4) + 1e10/len(sx)*(len(sx)<=5e4))
 		return Chi2
 	
 	# Run simulation trial for LL evaluation including beam interpolation
@@ -1032,6 +1032,10 @@ class BeamData:
 		
 		# Remove beamfile
 		if DELETEFILES:
+			os.remove("" + self.workDir + "g4bl/beam/DS" + beamFileMEG)
+			os.remove("" + self.workDir + "g4bl/beam/DS" + beamFileMu3e)
+			os.remove("" + self.workDir + "g4bl/beam/USI" + beamFileMEG)
+			os.remove("" + self.workDir + "g4bl/beam/USI" + beamFileMu3e)
 			os.remove("" + self.workDir + "g4bl/beam/US" + beamFileMEG)
 			os.remove("" + self.workDir + "g4bl/beam/US" + beamFileMu3e)
 
@@ -1128,6 +1132,8 @@ class BeamData:
 		
 		# Remove beamfile
 		if DELETEFILES:
+			os.remove("" + self.workDir + "g4bl/beam/DS" + beamFile)
+			os.remove("" + self.workDir + "g4bl/beam/USI" + beamFile)
 			os.remove("" + self.workDir + "g4bl/beam/US" + beamFile)
 
 		print(test)
