@@ -148,7 +148,7 @@ tubs MU3ESOLTUBO4 innerRadius=30 radius=200 length=817.97+$deltaLength material=
 tubs MU3ESOLTUBO3 innerRadius=33 radius=200 length=13.62 material=STAINLESS-STEEL kill=0 color=1,1,0.1,0.6
 tubs MU3ESOLTUBO2 innerRadius=78 radius=200 length=81 material=STAINLESS-STEEL kill=0 color=0,1,0,0.6
 tubs MU3ESOLTUBO1 innerRadius=160 radius=200 length=388-$deltaLength material=STAINLESS-STEEL kill=0 color=0,1,1,0.6
-fieldmap mu3esol file=$workDir/g4bl/FieldMaps/fieldMap.dat
+fieldmap mu3esol file=$workDir/g4bl/FieldMaps/fieldMap.dat current=$MU3ESOLset
 #########################################################################################
 
 ######################################### GRID ##########################################
@@ -226,10 +226,14 @@ place TRACKER z=$poszmu3esol
 place ATMOSPHERw z=$poszMU3ESOLTUBI5+14.0175
 place ATMOSPHERb z=$poszmu3esol
 place ENTRANCEw z=$poszMU3ESOLTUBI5+11
-place MODERATOR z=9780
-place COLLIMATOR z=9955
+#place MODERATOR z=9780
+#place COLLIMATOR z=9955
 
 zntuple z=$poszmu3esol
+param -unset DOztuple=0
+if $DOztuple
+	zntuple zloop=8500.0:12500:20.0 format=Extended
+endif
 
 param -unset placePepperPot=0
 if $placePepperPot

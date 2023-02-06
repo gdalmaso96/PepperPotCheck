@@ -751,7 +751,8 @@ class BeamData:
 	# Evaluate LL
 	def EvaluateLL(self, data, histoFile):
 		LL = 0
-		if data['Beamline'].find('HULK'):
+		print(data['Beamline'])
+		if data['Beamline'].find('HULK') >= 0:
 			treeName = 'NTuple/Z10175'
 		else:
 			treeName = 'VirtualDetector/PILL'
@@ -792,7 +793,7 @@ class BeamData:
 	# In fact there is no need to include the degrees of freedom at this level: those are constanat for each optimization, so they are meaningful only for significance tests
 	def EvaluateChi2Norm(self, data, histoFile):
 		Chi2 = 0
-		if data['Beamline'].find('HULK'):
+		if data['Beamline'].find('HULK') >= 0:
 			treeName = 'NTuple/Z10175'
 		else:
 			treeName = 'VirtualDetector/PILL'
@@ -857,7 +858,7 @@ class BeamData:
 	# In fact there is no need to include the degrees of freedom at this level: those are constanat for each optimization, so they are meaningful only for significance tests
 	def EvaluateChi2(self, data, histoFile):
 		Chi2 = 0
-		if data['Beamline'].find('HULK'):
+		if data['Beamline'].find('HULK') >= 0:
 			treeName = 'NTuple/Z10175'
 		else:
 			treeName = 'VirtualDetector/PILL'
@@ -1196,6 +1197,7 @@ class BeamData:
 				tempy[par[0:par.find('_y')]] = best.params[par]
 			else:
 				firstPars[par] = best.params[par]
+		print(firstPars)
 		beam = [firstPars['a'], firstPars['b'], firstPars['c'], firstPars['d'], firstPars['megx'], firstPars['megxp'], firstPars['mu3ex'], firstPars['mu3exp'], firstPars['y'], firstPars['yp'], firstPars['scale'], firstPars['rhoxxp'], firstPars['rhoxy'], firstPars['rhoyyp'], firstPars['rhoxpy'], firstPars['rhoxyp'], firstPars['rhoxpyp'], firstPars['rhoxP']]
 		if(len(tempx) > 1):
 			slicex.append(tempx)
@@ -1315,7 +1317,7 @@ class BeamData:
 
 							ax = fig.add_subplot(222)
 							plt.title("Fit")
-							plt.hist2d(s['x'], s['y'], bins=[100,100], cmap=cm.coolwarm)
+							plt.hist2d(s['x'], s['y'], bins=[200,200], cmap=cm.coolwarm)
 							plt.xlabel("x [mm]")
 							plt.ylabel("y [mm]")
 							plt.xlim(x.min(), x.max())

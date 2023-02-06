@@ -235,3 +235,21 @@ Added correlation between x and Ptot through Iman-Conover method
 Now any correlation matrix can be sampled using the relative correlation method. The correlation matrix is 5d.
 
 Started fit including the centroids, the momentum distribution and the 7 correlations (15 parameters). The statistics in the single run has been halved from 1e6 to 5e5 to execute each trial faster. After a few trials needs to be checked.
+
+-- 16.01.2023
+COBBRA fitted to:
+<ol>
+ <li> Corr5d: full correlation matrix sampling + momentum distribution sampling </li>
+ <li> CorrMom: x to P correlation only + momentum distribution sampling </li>
+ <li> CorrMomSlice: CorrMom + horizontal Slice </li>
+</ol>
+
+
+-- 24.01.2023 --
+COBRA fit completely wrong. Need to look into it again. Probably there is an issue with the spline.
+
+-- 06.02.2023 --
+Higher statistics and positive field convention is working at HULK center. Still need to understand why the plotBest seems mirrored. Might be due to flip in the meshgrid function. Need to look into that.
+The transmission is working and consistent to some extent with what was measured for different magnetic fields. 
+
+COBRA is missing the moderator and windows. Most probable cause of discrepancy. Will implement it and rerun fit.

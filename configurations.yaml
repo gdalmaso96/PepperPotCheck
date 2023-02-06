@@ -1,5 +1,6 @@
 datasets:
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: PepperPot
   Data type - 2: 25 mm center
   LL: 0
@@ -12,6 +13,7 @@ datasets:
   fileName: Data_2022_MEG/Collimator/pepperpot001.txt
   poszPILL: 2323
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: PepperPot
   Data type - 2: 25 mm staggered
   LL: 0
@@ -23,6 +25,7 @@ datasets:
   Simulation n.: 0
   fileName: Data_2022_MEG/Collimator/pepperpot002.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: PepperPot
   Data type - 2: blind
   LL: 0
@@ -34,9 +37,10 @@ datasets:
   Simulation n.: 0
   fileName: Data_2022_MEG/Collimator/pepperpot003.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 22.14
   QSK42cur: -41.64
@@ -45,9 +49,10 @@ datasets:
   Simulation n.: 1
   fileName: Data_2022_MEG/Collimator/tomo00.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 20.39
   QSK42cur: -41.37
@@ -56,9 +61,10 @@ datasets:
   Simulation n.: 2
   fileName: Data_2022_MEG/Collimator/tomo01.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 21.41
   QSK42cur: -41.56
@@ -67,9 +73,10 @@ datasets:
   Simulation n.: 3
   fileName: Data_2022_MEG/Collimator/tomo02.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 21.04
   QSK42cur: -41.51
@@ -78,9 +85,10 @@ datasets:
   Simulation n.: 4
   fileName: Data_2022_MEG/Collimator/tomo03.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 22.7
   QSK42cur: -41.66
@@ -89,9 +97,10 @@ datasets:
   Simulation n.: 5
   fileName: Data_2022_MEG/Collimator/tomo04.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 21.75
   QSK42cur: -41.62
@@ -100,9 +109,10 @@ datasets:
   Simulation n.: 6
   fileName: Data_2022_MEG/Collimator/tomo05.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 14.64
   QSK42cur: -39.13
@@ -111,9 +121,10 @@ datasets:
   Simulation n.: 7
   fileName: Data_2022_MEG/Collimator/tomo06.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 16.06
   QSK42cur: -39.81
@@ -122,9 +133,10 @@ datasets:
   Simulation n.: 8
   fileName: Data_2022_MEG/Collimator/tomo07.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 16.75
   QSK42cur: -40.12
@@ -133,9 +145,10 @@ datasets:
   Simulation n.: 9
   fileName: Data_2022_MEG/Collimator/tomo08.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 15.82
   QSK42cur: -39.71
@@ -144,9 +157,10 @@ datasets:
   Simulation n.: 10
   fileName: Data_2022_MEG/Collimator/tomo09.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 15.1
   QSK42cur: -39.37
@@ -155,9 +169,10 @@ datasets:
   Simulation n.: 11
   fileName: Data_2022_MEG/Collimator/tomo10.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 14.31
   QSK42cur: -38.97
@@ -166,9 +181,10 @@ datasets:
   Simulation n.: 12
   fileName: Data_2022_MEG/Collimator/tomo11.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 24.1
   QSK42cur: -18.97
@@ -177,9 +193,10 @@ datasets:
   Simulation n.: 13
   fileName: Data_2022_MEG/Collimator/tomoN00.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 25.39
   QSK42cur: -24.06
@@ -188,9 +205,10 @@ datasets:
   Simulation n.: 14
   fileName: Data_2022_MEG/Collimator/tomoN01.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 25.8
   QSK42cur: -25.8
@@ -199,9 +217,10 @@ datasets:
   Simulation n.: 15
   fileName: Data_2022_MEG/Collimator/tomoN02.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 26.15
   QSK42cur: -27.26
@@ -210,9 +229,10 @@ datasets:
   Simulation n.: 16
   fileName: Data_2022_MEG/Collimator/tomoN03.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 26.68
   QSK42cur: -29.63
@@ -221,9 +241,10 @@ datasets:
   Simulation n.: 17
   fileName: Data_2022_MEG/Collimator/tomoN04.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: vertical
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 27.34
   QSK42cur: -32.62
@@ -232,9 +253,10 @@ datasets:
   Simulation n.: 18
   fileName: Data_2022_MEG/Collimator/tomoN05.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: -13.32
   QSK42cur: -9.45
@@ -243,9 +265,10 @@ datasets:
   Simulation n.: 19
   fileName: Data_2022_MEG/Collimator/tomoN06.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 7.55
   QSK42cur: -34.27
@@ -254,9 +277,10 @@ datasets:
   Simulation n.: 20
   fileName: Data_2022_MEG/Collimator/tomoN07.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 14.25
   QSK42cur: -38.93
@@ -265,9 +289,10 @@ datasets:
   Simulation n.: 21
   fileName: Data_2022_MEG/Collimator/tomoN08.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 15.31
   QSK42cur: -40.13
@@ -276,9 +301,10 @@ datasets:
   Simulation n.: 22
   fileName: Data_2022_MEG/Collimator/tomoN09.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: -6.08
   QSK42cur: -21.91
@@ -287,9 +313,10 @@ datasets:
   Simulation n.: 23
   fileName: Data_2022_MEG/Collimator/tomoN10.txt
 - Beamline: MEG
+  Chi2: 0
   Data type - 1: Tomography
   Data type - 2: horizontal
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 7.73
   QSK42cur: -36.29
@@ -298,6 +325,7 @@ datasets:
   Simulation n.: 24
   fileName: Data_2022_MEG/Collimator/tomoN11.txt
 - Beamline: MEGCOBRA
+  Chi2: 0
   Data type - 1: RasterScan
   Data type - 2: horizontal
   LL: 0
@@ -310,10 +338,25 @@ datasets:
   SMV41: 72.5
   Simulation n.: 25
   fileName: Data_2022_MEG/COBRA/rasterscan.txt
+- Beamline: MEGCOBRA
+  Chi2: 0
+  Data type - 1: RasterScan
+  Data type - 2: horizontal
+  LL: 0
+  PILL position: COBRA
+  QSK41cur: 18.5
+  QSK42cur: -44.1
+  QSK43cur: 43
+  SMH41: 200
+  SML41cur: -25
+  SMV41: 72.5
+  Simulation n.: 56
+  fileName: Data_2022_MEG/COBRA/raster_mu_11.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -322,9 +365,10 @@ datasets:
   Simulation n.: 26
   fileName: Data_2022_Mu3e/Collimator/QSK43_30A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -333,9 +377,10 @@ datasets:
   Simulation n.: 27
   fileName: Data_2022_Mu3e/Collimator/QSK43_31A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -344,9 +389,10 @@ datasets:
   Simulation n.: 28
   fileName: Data_2022_Mu3e/Collimator/QSK43_32A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -355,9 +401,10 @@ datasets:
   Simulation n.: 29
   fileName: Data_2022_Mu3e/Collimator/QSK43_33A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -366,9 +413,10 @@ datasets:
   Simulation n.: 30
   fileName: Data_2022_Mu3e/Collimator/QSK43_34A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -377,9 +425,10 @@ datasets:
   Simulation n.: 31
   fileName: Data_2022_Mu3e/Collimator/QSK43_348A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -388,9 +437,10 @@ datasets:
   Simulation n.: 32
   fileName: Data_2022_Mu3e/Collimator/QSK43_35A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -399,9 +449,10 @@ datasets:
   Simulation n.: 33
   fileName: Data_2022_Mu3e/Collimator/QSK43_36A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -410,9 +461,10 @@ datasets:
   Simulation n.: 34
   fileName: Data_2022_Mu3e/Collimator/QSK43_37A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -421,9 +473,10 @@ datasets:
   Simulation n.: 35
   fileName: Data_2022_Mu3e/Collimator/QSK43_38A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -432,9 +485,10 @@ datasets:
   Simulation n.: 36
   fileName: Data_2022_Mu3e/Collimator/QSK43_39A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -443,9 +497,10 @@ datasets:
   Simulation n.: 37
   fileName: Data_2022_Mu3e/Collimator/QSK43_40A_180kV_fastScan.txt
 - Beamline: Mu3e
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: Collimator
   QSK41cur: 18.2
   QSK42cur: -40.7
@@ -456,9 +511,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -472,9 +528,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -488,9 +545,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -504,9 +562,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -520,9 +579,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -536,9 +596,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -552,9 +613,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -568,9 +630,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -584,9 +647,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -600,9 +664,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -616,9 +681,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -632,9 +698,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -648,9 +715,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -664,9 +732,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -680,9 +749,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -696,9 +766,10 @@ datasets:
 - ASK41cur: -92
   ASL41cur: -74.7
   Beamline: Mu3eQSM
+  Chi2: 0
   Data type - 1: QuadScan
   Data type - 2: ''
-  LL: 1
+  LL: 0
   PILL position: QSM41
   QSK41cur: 11
   QSK42cur: -35.5
@@ -709,6 +780,23 @@ datasets:
   SML41cur: 0
   Simulation n.: 54
   fileName: Data_2022_Mu3e/QSM41/QSM41_-250.txt
+- ASK41cur: -90.5
+  ASL41cur: -74.0
+  Beamline: Mu3eHULK
+  Chi2: 1
+  Data type - 1: RasterScan
+  Data type - 2: ''
+  LL: 1
+  PILL position: HULK
+  QSK41cur: 4.8
+  QSK42cur: -31.8
+  QSK43cur: 28.8
+  QSM41cur: 92
+  QSO41cur: 53.5
+  QSO42cur: -15
+  SML41cur: -14
+  Simulation n.: 55
+  fileName: Data_2022_Mu3e/HULK/scan_2022-05-20-22-31_PILL.txt
 pepperpot:
 - A: 0.305025
   l1: 21.3552
@@ -822,6 +910,7 @@ simulations:
   MEG: MEGconfiguration.g4bl
   MEGCOBRA: MEGCOBRAconfiguration.g4bl
   Mu3e: Mu3econfiguration.g4bl
+  Mu3eHULK: Mu3eHULKconfiguration.g4bl
   Mu3eQSM: Mu3eQSMconfiguration.g4bl
   USbeam: USbeam.root
   USbeamName: beam
