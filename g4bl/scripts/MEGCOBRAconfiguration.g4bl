@@ -78,12 +78,37 @@ virtualdetector PILL radius=317.9999*0.5 length=1 color=0,1,0,0.5 material=Vacuu
 ########################################## BTS ##########################################
 fieldmap BTS file=$workDir/g4bl/FieldMaps/fieldBTS.dat
 #tubs BTSDUMMY kill=1 innerRadius=232.5 outerRadius=235.36 length=2808 material=Vacuum color=1,0,1,0.5 #2630
-tubs BTSDUMMY kill=1 innerRadius=318*0.5 outerRadius=2350.36 length=10 material=Vacuum color=1,0,1,0.5 #2630
+tubs BTSDUMMY kill=1 innerRadius=320 outerRadius=2350.36 length=10 material=Vacuum color=1,0,1,0.5 #2630
+tubs BTSDUMMY1 kill=1 innerRadius=318*0.5 outerRadius=320 length=2800 material=Vacuum color=0.2,1,1,0.5 #2630
 #########################################################################################
 
 ########################################## COBRA ##########################################
 fieldmap COBRA file=$workDir/g4bl/FieldMaps/COBRAmap.dat
 tubs COBRADUMMY kill=1 innerRadius=318*0.5 outerRadius=351 length=2840 material=Vacuum color=1,0,1,0.5 #2630
+#########################################################################################
+
+######################################## MATERIAL #######################################
+# Degrader at BTS center is 300 um thick made of Mylar 1.395 g/cm3, 4 H - 5 C - 2 O
+material MYLARDEG H,0.041956464 C,0.62502368 O,0.33301986 density=1.395
+tubs DEGRADER outerRadius=318*0.5*0.9999999 length=0.3 material=MYLARDEG color=1,1,1,0.5
+
+# Vacuum window, 1420 mm US to COBRA center, 190 um thick made of Mylar 1.377 g/cm3
+material MYLARWIN H,0.041956464 C,0.62502368 O,0.33301986 density=1.377
+tubs WINDOW outerRadius=318*0.5*0.9999999 length=0.19 material=MYLARWIN color=0.5,1,1,0.5
+
+# EVAL window, 20 mm US to COBRA center, 20 um thick made of EVAL.
+# Considered EVOH F-F (chiedi Angela): 1.2 g/cm3, 32% ethylene content (68 mol C2H4O - 32 mol C2H4)
+# https://www.mitsui.com/de/en/business/plastics/__icsFiles/afieldfile/2021/05/26/01_eval_-_euen_1.pdf
+material EVAL H,0.10356168 C,0.61700364 O,0.27943468 density=1.20
+tubs WINEVAL outerRadius=318*0.5*0.9999999 length=0.02 material=EVAL color=1,0.5,1,0.5
+
+# Helium between the two windows. No sag is included at the moment
+material He Z=2 A=4.002602 density=0.000166322
+tubs HELIUM outerRadius=318*0.5*0.9999999 length=1420-20-0.01-0.095 material=He color=1,1,0.5,0.5
+
+# Air between EVAL and detector
+material Air AIR,1 density=0.00120479
+tubs cylAIR outerRadius=318*0.5*0.9999999 length=20-0.01 material=Air color=0.4,1,1,0.5
 #########################################################################################
 
 ####################################### BEAMLINE ########################################
@@ -101,9 +126,18 @@ place SML41DUMMY z=$poszSML41
 place MEGCOL z=$poszCOL
 
 place BTS z=$poszBTS current=$BTSset
+place DEGRADER z=$poszBTS
 place BTSDUMMY z=$poszBTS
+place BTSDUMMY1 z=$poszBTS
 
+place WINDOW z=$poszCOBRA-1420
+
+place HELIUM z=$poszCOBRA-719.95750
+
+place WINEVAL z=$poszCOBRA-20
+place cylAIR z=$poszCOBRA-9.995
 place COBRA z=$poszCOBRA current=$COBRAset
 place COBRADUMMY z=$poszCOBRA
 
-place PILL z=$poszPILL
+
+place PILL z=$poszPILL+0.5
