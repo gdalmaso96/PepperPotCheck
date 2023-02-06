@@ -252,4 +252,6 @@ COBRA fit completely wrong. Need to look into it again. Probably there is an iss
 Higher statistics and positive field convention is working at HULK center. Still need to understand why the plotBest seems mirrored. Might be due to flip in the meshgrid function. Need to look into that.
 The transmission is working and consistent to some extent with what was measured for different magnetic fields. 
 
-COBRA is missing the moderator and windows. Most probable cause of discrepancy. Will implement it and rerun fit.
+COBRA is missing the moderator and windows. Most probable cause of discrepancy. Will implement it and rerun fit. --- Done. Need last checks with Angela
+
+!!! Found issue in EvaluateChi2: the find("HULK") was not used properly and the axis was not mirrored during Chi2 evaluation. Run again while preparing COBRA beamline
