@@ -33,3 +33,7 @@ if __name__ == '__main__':
 		data.PlotBest("CorrMom_COBRA", treeName='VirtualDetector/PILL')
 	elif I == 7:
 		data.PlotBest("CorrMomSlice_COBRA", treeName='VirtualDetector/PILL')
+	elif I == 8:
+		data.PlotBest("CentCorrMom_HULK", treeName='NTuple/Z10175')
+	elif I == 9:
+		data.PlotBest("CentCorrMom_HULK_reducedPhaseSpace", treeName='NTuple/Z10175')

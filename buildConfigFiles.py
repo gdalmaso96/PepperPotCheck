@@ -44,7 +44,7 @@ datasets.append({'fileName' : 'Data_2022_MEG/Collimator/tomoN11.txt', 'QSK41cur'
 
 # COBRA profile
 datasets.append({'fileName' : 'Data_2022_MEG/COBRA/rasterscan.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -25, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 25, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 0, 'Chi2' : 0})
-datasets.append({'fileName' : 'Data_2022_MEG/COBRA/raster_mu_11.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -25, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 56, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 0, 'Chi2' : 0})
+datasets.append({'fileName' : 'Data_2022_MEG/COBRA/raster_mu_11.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -25, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 56, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 1, 'Chi2' : 1})
  
 # ------------------------------------------------------------------------------------ #
 # Mu3e files
@@ -83,7 +83,7 @@ datasets.append({'fileName' : 'Data_2022_Mu3e/QSM41/QSM41_-150.txt', 'QSK41cur' 
 datasets.append({'fileName' : 'Data_2022_Mu3e/QSM41/QSM41_-250.txt', 'QSK41cur' : 11, 'QSK42cur' : -35.5, 'QSK43cur' : 30, 'SML41cur' : 0, 'ASL41cur' : -74.7, 'QSO41cur' : 56, 'QSO42cur': -23, 'ASK41cur' : -92, 'QSM41cur' : -250, 'Data type - 1' : 'QuadScan', 'Data type - 2' : '', 'Simulation n.' : 54, 'Beamline': 'Mu3eQSM', 'PILL position' : 'QSM41', 'LL' : 0, 'Chi2' : 0})
 
 # HULK
-datasets.append({'fileName' : 'Data_2022_Mu3e/HULK/scan_2022-05-20-22-31_PILL.txt', 'QSK41cur' : 4.80, 'QSK42cur' : -31.8, 'QSK43cur' : 28.80, 'SML41cur' : -14, 'ASL41cur' : -74.00, 'QSO41cur' : 53.50, 'QSO42cur': -15, 'ASK41cur' : -90.50, 'QSM41cur' : 92, 'Data type - 1' : 'RasterScan', 'Data type - 2' : '', 'Simulation n.' : 55, 'Beamline': 'Mu3eHULK', 'PILL position' : 'HULK', 'LL' : 1, 'Chi2' : 1})
+datasets.append({'fileName' : 'Data_2022_Mu3e/HULK/scan_2022-05-20-22-31_PILL.txt', 'QSK41cur' : 4.80, 'QSK42cur' : -31.8, 'QSK43cur' : 28.80, 'SML41cur' : -14, 'ASL41cur' : -74.00, 'QSO41cur' : 53.50, 'QSO42cur': -15, 'ASK41cur' : -90.50, 'QSM41cur' : 92, 'Data type - 1' : 'RasterScan', 'Data type - 2' : '', 'Simulation n.' : 55, 'Beamline': 'Mu3eHULK', 'PILL position' : 'HULK', 'LL' : 0, 'Chi2' : 0})
 
 # ------------------------------------------------------------------------------------ #
 # Simulation settings

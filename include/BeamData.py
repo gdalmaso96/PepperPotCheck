@@ -736,7 +736,7 @@ class BeamData:
 		# if raster scan prepare 2d cubic spline
 		if profile['direction'] == 'xy':
 			x,y,z = self.MakeGrid(profile['profile'][0], profile['profile'][1], profile['profile'][2])
-			x,y,z = self.AddTails(x,y,z, 3)
+			x,y,z = self.AddTails(x,y,z, 10)
 			f = RectBivariateSpline(y[:,0],x[0],z)
 			profile['interpolation'] = f
 			# Evaluate normalization once
@@ -779,7 +779,8 @@ class BeamData:
 						LL += (-2*np.log(np.abs(profile['interpolation'](s))/profile['norm'])).sum()/len(s)/len(s)
 				elif(profile['direction'] == 'xy'):
 					s = pill.arrays(['x', 'y'], library = 'np')
-					if data['Beamline'].find('HULK'):
+					#if data['Beamline'].find('HULK'):
+					if data['Beamline'].find('HULK') >= 0:
 						s['x'] = -s['x']
 					for i in range(s['x'].size):
 						# Check if any particle is transmitted
@@ -839,7 +840,8 @@ class BeamData:
 					# Check if any particle is transmitted
 					sx = s['x']
 					sy = s['y']
-					if data['Beamline'].find('HULK'):
+					#if data['Beamline'].find('HULK'):
+					if data['Beamline'].find('HULK') >= 0:
 						sx = -sx
 					if(len(sx) < 1):
 						Chi2 += 1e12
@@ -904,15 +906,20 @@ class BeamData:
 					# Check if any particle is transmitted
 					sx = s['x']
 					sy = s['y']
-					if data['Beamline'].find('HULK'):
+					#if data['Beamline'].find('HULK'):
+					if data['Beamline'].find('HULK') >= 0:
 						sx = -sx
+						print('The flag is properly working!\n')
 					if(len(sx) < 1):
 						Chi2 += 1e12
 					else:
 						for (x,y,z,dz) in zip(profile['profile'][0], profile['profile'][1], profile['profile'][2]/profile['norm'], profile['dProfile']/profile['norm']):
-							tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()
-							z1 = tmp/4/len(sx) # each bin is 2 mm wide
-							dz1 = np.sqrt(tmp)/4/len(sx)
+							#tmp = ((np.abs(sx-x) < 1)*(np.abs(sy-y) < 1)).sum()
+							tmp = (np.sqrt((sx-x)**2 + (sy-y)**2) < 1.5).sum()
+							#z1 = tmp/4/len(sx) # each bin is 2 mm wide
+							#dz1 = np.sqrt(tmp)/4/len(sx) # each bin is 2 mm wide
+							z1 = tmp/len(sx)/np.pi/1.5**2 # APD size radius 1.5 mm
+							dz1 = np.sqrt(tmp)/len(sx)/np.pi/1.5**2
 							#if dz1 > 0:
 							#	Chi2 += (z1 - z)**2/dz1**2/len(sx)
 							#else:
