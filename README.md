@@ -255,3 +255,6 @@ The transmission is working and consistent to some extent with what was measured
 COBRA is missing the moderator and windows. Most probable cause of discrepancy. Will implement it and rerun fit. --- Done. Need last checks with Angela
 
 !!! Found issue in EvaluateChi2: the find("HULK") was not used properly and the axis was not mirrored during Chi2 evaluation. Run again while preparing COBRA beamline
+
+-- 09.02.2023 --
+Found issue in the fit at COBRA center: the 2d interpolation was restricted to an area too small for a good estimate of the normalization. This might improve fitting COBRA center
