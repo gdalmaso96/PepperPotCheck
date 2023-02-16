@@ -1299,7 +1299,8 @@ class BeamData:
 							plt.clf()
 						elif(profile['direction'] == 'xy'):
 							s = pill.arrays(['x', 'y'], library = 'np')
-							s['x'] = -s['x']
+							if data['Beamline'].find('HULK') >= 0:
+								s['x'] = -s['x']
 							
 							# Plot
 							x,y,z = self.MakeGrid(profile['profile'][0], profile['profile'][1], profile['profile'][2])

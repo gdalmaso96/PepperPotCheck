@@ -39,4 +39,4 @@ param -unset FS42Rdac=380
 param -unset FS42Vdac=250
 param -unset FSH43Ldac=240
 param -unset FSH43Rdac=220
-param -unset BTScur=198.6
+param -unset BTScur=-198.6
