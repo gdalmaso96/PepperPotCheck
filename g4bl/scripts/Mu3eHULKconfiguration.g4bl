@@ -226,8 +226,17 @@ place TRACKER z=$poszmu3esol
 place ATMOSPHERw z=$poszMU3ESOLTUBI5+14.0175
 place ATMOSPHERb z=$poszmu3esol
 place ENTRANCEw z=$poszMU3ESOLTUBI5+11
-#place MODERATOR z=9780
-#place COLLIMATOR z=9955
+
+param -unset MODERATORon=0
+param -unset poszMODERATOR=9780
+if $MODERATORon
+	place MODERATOR z=$poszMODERATOR
+endif
+param -unset COLLIMATORon=0
+param -unset poszCOLLIMATOR=9955
+if $COLLIMATORon
+	place COLLIMATOR z=$poszCOLLIMATOR
+endif
 
 zntuple z=$poszmu3esol
 param -unset DOztuple=0

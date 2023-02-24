@@ -258,3 +258,16 @@ COBRA is missing the moderator and windows. Most probable cause of discrepancy. 
 
 -- 09.02.2023 --
 Found issue in the fit at COBRA center: the 2d interpolation was restricted to an area too small for a good estimate of the normalization. This might improve fitting COBRA center
+
+-- 18.02.2023 --
+Fit at COBRA center biases in a weird way the momentum distribution. Centroid only is not good, trying to fit only the gaussian window on the momentum distribution
+
+-- 24.02.2023 --
+Fit to COBRA center not completely fine, might need to check out with scale
+
+Currently running:
+<ol>
+ <li> CorrMomScale_NoCent: free correlation xP, full momentum fit, scale free, centroid fixed to 0 </li>
+ <li> CorrMom_NoCent: free correlation xP, full momentum fit, centroid fixed to 0 </li>
+ <li> CorrScale_redCent: free correlation xP, free parameters are only the three sigmas, the momentum window is fixed centered at 27.5 MeV/c, centroid can vary for a smaller range </li>
+</ol>

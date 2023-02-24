@@ -44,7 +44,8 @@ datasets.append({'fileName' : 'Data_2022_MEG/Collimator/tomoN11.txt', 'QSK41cur'
 
 # COBRA profile
 datasets.append({'fileName' : 'Data_2022_MEG/COBRA/rasterscan.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -25, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 25, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 0, 'Chi2' : 0})
-datasets.append({'fileName' : 'Data_2022_MEG/COBRA/raster_mu_11.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -25, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 56, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 1, 'Chi2' : 1})
+#datasets.append({'fileName' : 'Data_2022_MEG/COBRA/raster_mu_11.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -25, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 56, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 1, 'Chi2' : 1})
+datasets.append({'fileName' : 'Data_2022_MEG/COBRA/raster_mu_11.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -10, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 56, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 1, 'Chi2' : 1})
  
 # ------------------------------------------------------------------------------------ #
 # Mu3e files
