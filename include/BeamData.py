@@ -162,6 +162,8 @@ class BeamData:
 					data['profileLL'].append(profDict)
 					profilesLL.append(profDict)
 	
+	# if boolean == 1 only Pz correlation is included
+	# if boolean == 2 all correlations free
 	def SetFreeCorrelations(self, boolean):
 		self.FreeCorrelations = boolean
 	
@@ -232,25 +234,43 @@ class BeamData:
 		ix3 = np.argsort(x3)
 		ix4 = np.argsort(x4)
 		ix5 = np.argsort(x5)
-
-		# Ordered vectors
-		x1 = x1[ix1]
-		x2 = x2[ix2]
-		x3 = x3[ix3]
-		x4 = x4[ix4]
-		x5 = x5[ix5]
-
+		
 		# Rank
-		I1 = np.argsort(i1)
-		x1 = x1[I1]
-		I2 = np.argsort(i2)
-		x2 = x2[I2]
-		I3 = np.argsort(i3)
-		x3 = x3[I3]
-		I4 = np.argsort(i4)
-		x4 = x4[I4]
-		I5 = np.argsort(i5)
-		x5 = x5[I5]
+		# Correlate only x and Pz
+		if self.FreeCorrelations == 1:
+			# Ordered vectors
+			x1 = x1[ix1]
+			x2 = x2[ix1]
+			x3 = x3[ix1]
+			x4 = x4[ix1]
+			x5 = x5[ix5]
+			
+			I1 = np.argsort(i1)
+			x1 = x1[I1]
+			x2 = x2[I1]
+			x3 = x3[I1]
+			x4 = x4[I1]
+			I5 = np.argsort(i5)
+			x5 = x5[I5]
+		# Correlate everything
+		if self.FreeCorrelations == 2:
+			# Ordered vectors
+			x1 = x1[ix1]
+			x2 = x2[ix2]
+			x3 = x3[ix3]
+			x4 = x4[ix4]
+			x5 = x5[ix5]
+
+			I1 = np.argsort(i1)
+			x1 = x1[I1]
+			I2 = np.argsort(i2)
+			x2 = x2[I2]
+			I3 = np.argsort(i3)
+			x3 = x3[I3]
+			I4 = np.argsort(i4)
+			x4 = x4[I4]
+			I5 = np.argsort(i5)
+			x5 = x5[I5]
 
 		return x4, x3, x2, x1, x5 # yp, y, xp, x, P
 
@@ -822,7 +842,7 @@ class BeamData:
 		yp = ymin + dy*(Irand.astype(int)/ly) + ddy
 
 		# Introduce correlations
-		if self.FreeCorrelations == 1:
+		if self.FreeCorrelations > 0:
 			x, xp, y, yp, Ptot = self.ImanConover(x, xp, y, yp, Ptot, beam[11], beam[12], beam[13], beam[14], beam[15], beam[16], beam[17])
 
 		# Create beam trees
