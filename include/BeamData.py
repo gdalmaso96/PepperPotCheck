@@ -8,6 +8,7 @@ from scipy import integrate
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
+import matplotlib
 import optuna
 import uproot
 from scipy.optimize import curve_fit
@@ -263,6 +264,188 @@ class BeamData:
 		s2 = pepperpot['s2']
 		l2 = pepperpot['l2']
 		return A*((x < mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))) + (x > mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))))
+
+	# Plot phase space
+	def plotSinglePhaseSpace(self, pepperpot, key, fig, scale=1, pad = 1, threeD = 0):
+		y = np.linspace(-500, 500, 100)
+		x = []
+		# Add one slice at the begining to set 0 boundary conditions
+		x.append(pepperpot[0][key] - (pepperpot[1][key] - pepperpot[0][key]))
+		for i in range(len(pepperpot)):
+			x.append(pepperpot[i][key])
+		# Add one slice at the end to set 0 boundary conditions
+		x.append(pepperpot[-1][key] + (pepperpot[-1][key] - pepperpot[-2][key]))
+
+		X = []
+		for i in range(len(y)):
+			X.append(x)
+		X = np.array(X)
+
+		Y = []
+		for i in range(len(x)):
+			Y.append(y)
+		Y = np.transpose(Y)
+
+		Z = []
+		# Add zero values on the boundaries in the space direction
+		Z.append(np.zeros(len(y)))
+		for i in range(len(pepperpot)):
+			Z.append(self.sliceFunction(y*scale, pepperpot[i]))
+		Z.append(np.zeros(len(y)))
+		Z = np.array(Z)
+
+		# Interpolate
+		f = RectBivariateSpline(x, y, Z, kx=3, ky=3)
+		x = np.linspace(x[1], x[-2], 50)
+		y = np.linspace(-300, 300, 50)
+
+		Z = f(x,y)
+		Z = Z*(Z>0)
+		# RectBivariateSpline has a strange indexing
+		Z = np.transpose(Z)
+		X, Y = np.meshgrid(x, y)
+		xtot = []
+		ytot = []
+		ztot = []
+		for (x, y, z) in zip(X, Y, Z):
+			a, mu, s = self.getGausPars(x, z, 'right')
+			tailXright = np.linspace(x[-1] + (x[1]-x[0]), x[-1] + (x[1]-x[0])*30, 30)
+			tailYright = np.zeros(30) + y[0]
+			tailZright = self.gaus(tailXright, a, mu, s)
+			a, mu, s = self.getGausPars(x, z, 'left')
+			tailXleft = np.linspace(x[0] - (x[1]-x[0])*30, x[0] - (x[1]-x[0]), 30)
+			tailYleft = np.zeros(30) + y[0]
+			tailZleft = self.gaus(tailXleft, a, mu, s)
+			xtot.append(np.concatenate((tailXleft, x, tailXright)))
+			ytot.append(np.concatenate((tailYleft, y, tailYright)))
+			ztot.append(np.concatenate((tailZleft, z, tailZright)))
+		xtot = np.array(xtot)
+		ytot = np.array(ytot)
+		ztot = np.array(ztot)
+
+		f = RectBivariateSpline(ytot[:, 0], xtot[0], ztot, kx=3, ky=3)
+		xtot = np.linspace(-50, 50, 500)
+		ytot = np.linspace(-150, 150, 500)
+		ztot = f(ytot, xtot)
+
+		xtot, ytot = np.meshgrid(xtot, ytot)
+
+		if threeD==0:
+			ax = fig.add_subplot(1, 2, pad)
+			plt.pcolormesh(xtot, ytot, ztot, cmap=cm.coolwarm)
+			plt.xlabel(key + ' [mm]')
+			plt.ylabel(key + '\' [mrad]')
+			plt.colorbar()
+			# Evaluate 90 per cent border
+			z = ztot
+			ztot = ztot/ztot.max()
+			x = xtot[0]
+			y = ytot[:,0]
+			I = integrate.dblquad(f, x[0], x[-1], y[0], y[-1])[0]
+			Rate = I
+			zInt = z.flatten()/I*(x[1]-x[0])*(y[1]-y[0])
+			zInt[::-1].sort()
+			zInt = np.cumsum(zInt)
+			I = np.linspace(0, len(zInt)-1, len(zInt))
+			# Remove points with the same value
+			while True:
+				if(np.abs(zInt[0] - zInt[1]) < 1e-6):
+					zInt = np.delete(zInt, 0)
+					I = np.delete(I, 0)
+				else:
+					break
+			ind = 0
+			while True:
+				if(np.abs(zInt[ind] - zInt[ind+1]) < 1e-6):
+					zInt = np.delete(zInt, ind+1)
+					I = np.delete(I, ind+1)
+				else:
+					ind += 1
+				if(ind+1 >= len(zInt)):
+					break
+			fInt = interp1d(zInt, I, kind='cubic')
+			I90 = fInt(0.9)
+			zInt = z.flatten()
+			zInt.sort()
+			zInt = zInt[::-1]
+			I = np.linspace(0, len(zInt)-1, len(zInt))
+			fInt = interp1d(I, zInt, kind='cubic')
+			z90 = fInt(I90) # level 90 per cent
+			AREA = I90*(x[1]-x[0])*(y[1]-y[0])
+			CS = plt.contour(x, y, z, colors='black', alpha=0.5, levels=[z90])
+			h, _ = CS.legend_elements()
+			ax.legend(h, ['90 %% contour:\n%.2f ' %AREA + r'$\mu$' + 'mrad' + ' area'], loc='lower right')
+			plt.grid()
+		else:
+			ztot = ztot/ztot.max()
+			plt.subplots_adjust(right=1.1, left=-0.1, wspace=-0.4)
+			ax = fig.add_subplot(1, 2, pad, projection='3d')
+			ax.plot_surface(xtot, ytot, ztot, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+			plt.xlabel(key + ' [mm]', labelpad=15)
+			plt.ylabel(key + '\' [mrad]', labelpad=15)
+		if pad==1:
+			plt.title('Horizontal phase space')
+		elif pad==2:
+			plt.title('Vertical phase space')
+
+	def plotPhaseSpace(self, beam, slicex, slicey, nEvents, fileName):
+		# Create the pepperpot list
+		pepperpotx = []
+		pepperpoty = []
+		Ix = 0
+		Iy = 0
+		for i in range(len(self.pepperpot)):
+			if(list(self.pepperpot[i].keys())[-1] == 'x'):
+				# Check if slicex or data
+				while True:
+					if(Ix >= len(slicex)):
+						break
+					if(slicex[Ix]['x'] >= self.pepperpot[i]['x']):
+						break
+					if(slicex[Ix]['x'] < self.pepperpot[i]['x']):
+						pepperpotx.append(slicex[Ix])
+						Ix += 1
+				# Add data slice
+				pepperpotx.append(self.pepperpot[i])
+			elif(list(self.pepperpot[i].keys())[-1] == 'y'):
+				# Check if slicex or data
+				while True:
+					if(Iy >= len(slicey)):
+						break
+					if(slicey[Iy]['y'] >= self.pepperpot[i]['y']):
+						break
+					if(slicey[Iy]['y'] < self.pepperpot[i]['y']):
+						pepperpoty.append(slicey[Iy])
+						Iy += 1
+				# Add data slice
+				pepperpoty.append(self.pepperpot[i])
+
+		fig = plt.figure(figsize=[12, 5], dpi=100)
+		matplotlib.rcParams.update({'font.size': 15})
+		plt.subplots_adjust(right=0.975, left=0.1, wspace=0.4)
+
+		plt.suptitle("Interpolated phase space")
+		self.plotSinglePhaseSpace(pepperpotx, 'x', fig, scale=beam[10], pad=1, threeD=1)
+		self.plotSinglePhaseSpace(pepperpoty, 'y', fig, scale=beam[10], pad=2, threeD=1)
+		plt.savefig(fileName+'_3d.png')
+
+		fig = plt.figure(figsize=[12, 5], dpi=100)
+		matplotlib.rcParams.update({'font.size': 15})
+		plt.subplots_adjust(right=0.975, left=0.1, wspace=0.4)
+
+		plt.suptitle("Interpolated phase space")
+		self.plotSinglePhaseSpace(pepperpotx, 'x', fig, scale=beam[10], pad=1, threeD=1)
+		self.plotSinglePhaseSpace(pepperpoty, 'y', fig, scale=beam[10], pad=2, threeD=1)
+		plt.savefig(fileName+'_3d.png')
+
+		fig = plt.figure(figsize=[12, 5], dpi=100)
+		matplotlib.rcParams.update({'font.size': 15})
+		plt.subplots_adjust(right=0.975, left=0.1, wspace=0.4)
+
+		plt.suptitle("Interpolated phase space")
+		self.plotSinglePhaseSpace(pepperpotx, 'x', fig, scale=beam[10], pad=1)
+		self.plotSinglePhaseSpace(pepperpoty, 'y', fig, scale=beam[10], pad=2)
+		plt.savefig(fileName+'_2d.png')
 	
 	# Prepare 2d cumulative function with gaussian tails
 	# Takes as an argument a list of slice parameters to then sample the transverse phase space
@@ -479,6 +662,56 @@ class BeamData:
 		cumulative1d = cumulative1d/cumulative1d[-1]
 		return cumulative1d, x
 
+	def plot1dCumulative(self, pars):
+		x = np.linspace(-35, 35, 10000)
+		surfacey = self.surface(x)
+		surfacey = surfacey/surfacey.max()
+		gaussy = self.gaus(x, 1, 0, pars[0])
+
+		fig = plt.figure(figsize=[9, 5], dpi=100)
+		matplotlib.rcParams.update({'font.size': 15})
+		plt.plot(x[8400:9300], surfacey[8400:9300], '-', color=cm.coolwarm(0), linewidth=2, label='Surface muons')
+		plt.plot(x[8400:9300], self.gaus(x[8400:9300], 1, 29.79, pars[0]), '-', color=cm.coolwarm(0.5), linewidth=2, label='First convolution, cloud muons')
+
+		# First convolution
+		surfacey = np.convolve(surfacey, gaussy, "same")
+		surfacey = surfacey/surfacey.max()
+
+		plt.plot(x[8400:9300], surfacey[8400:9300], '-', color=cm.coolwarm(0.99), linewidth=2, label='Result')
+		plt.xlabel('Momentum [MeV/c]')
+		plt.grid()
+		plt.legend(loc='lower left')
+		plt.savefig('momentumDistribution_1st.png')
+
+		fig = plt.figure(figsize=[9, 5], dpi=100)
+		matplotlib.rcParams.update({'font.size': 15})
+		plt.plot(x[8400:9300], surfacey[8400:9300], '-', color=cm.coolwarm(0), linewidth=2, label='First convolution')
+		# Apply window
+		gaussy = self.gaus(x, 1, pars[1], pars[2])
+		surfacey = surfacey*gaussy
+		surfacey = surfacey/surfacey.max()
+
+		plt.plot(x[8400:9300], gaussy[8400:9300], '-', color=cm.coolwarm(0.5), linewidth=2, label='Gaussian window')
+		plt.plot(x[8400:9300], surfacey[8400:9300], '-', color=cm.coolwarm(0.99), linewidth=2, label = 'Result')
+		plt.xlabel('Momentum [MeV/c]')
+		plt.grid()
+		plt.legend(loc='upper left')
+		plt.savefig('momentumDistribution_2nd.png')
+
+		fig = plt.figure(figsize=[9, 5], dpi=100)
+		matplotlib.rcParams.update({'font.size': 15})
+		plt.plot(x[8400:9300], surfacey[8400:9300], '-', color=cm.coolwarm(0), linewidth=2, label='Second step')
+		# Second convolution
+		gaussy = self.gaus(x, 1, 0, pars[3])
+		surfacey = np.convolve(surfacey, gaussy, "same")
+		surfacey = surfacey/surfacey.max()
+
+		plt.plot(x[8400:9300], self.gaus(x[8400:9300], 1, 29.79, pars[3]), '-', color=cm.coolwarm(0.5), linewidth=2, label='Second convolution, tails')
+		plt.plot(x[8400:9300], surfacey[8400:9300], '-', color=cm.coolwarm(0.99), linewidth=2, label = 'Momentum distribution')
+		plt.xlabel('Momentum [MeV/c]')
+		plt.grid()
+		plt.legend(loc='upper left')
+		plt.savefig('momentumDistribution_final.png')
 	# Sample phase space
 	# Beam is a list containing the parameters of the beam to be varied
 	# - beam[0-3] = pars in prepare1dCumulative
