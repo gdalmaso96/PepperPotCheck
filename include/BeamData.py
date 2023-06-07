@@ -6,6 +6,7 @@ import subprocess
 from scipy.interpolate import interp1d, interp2d, RectBivariateSpline
 from scipy import integrate
 import numpy as np
+from scipy.stats import norm
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import matplotlib
@@ -21,7 +22,11 @@ class BeamData:
 		self.datasets = data['datasets']
 		self.simulations = data['simulations']
 		self.pepperpot = data['pepperpot']
+		self.newPepperpot = data['newPepperpot']
 
+		# If 0 it uses the old parametrization, if 1 it uses the new one (gaus deconvolution) to model transverse phase space
+		self.selectParametrization = 0
+		
 		# Initialise complessive likelyhood
 		self.LL = 0
 
@@ -52,6 +57,9 @@ class BeamData:
 	
 	def gaus(self, x, a, mu, s):
 		return a*np.exp(-(x-mu)**2/2./s**2)
+	
+	def doubleGaus(self, x, A, x01, s1, x02, s2, f):
+		return A*(norm.pdf(x, x01, s1)*f + (1-f)*norm.pdf(x, x02, s2))
 	
 	def getGausPars(self, x, y, side):
 		tmpMu = (y*x).sum()/y.sum()
@@ -277,13 +285,22 @@ class BeamData:
 	
 	# Slice function
 	def sliceFunction(self, x, pepperpot):
-		A = pepperpot['A']
-		mu = pepperpot['mu']
-		s1 = pepperpot['s1']
-		l1 = pepperpot['l1']
-		s2 = pepperpot['s2']
-		l2 = pepperpot['l2']
-		return A*((x < mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))) + (x > mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))))
+		if self.selectParametrization == 0:
+			A = pepperpot['A']
+			mu = pepperpot['mu']
+			s1 = pepperpot['s1']
+			l1 = pepperpot['l1']
+			s2 = pepperpot['s2']
+			l2 = pepperpot['l2']
+			return A*((x < mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))) + (x > mu)*(np.exp(-(x-mu)**2/(s1**2+np.abs(l1*(x-mu))))))
+		if self.selectParametrization == 1:
+			A = pepperpot['A']
+			mu1 = pepperpot['mu1']
+			s1 = pepperpot['s1']
+			mu2 = pepperpot['mu2']
+			s2 = pepperpot['s2']
+			f = pepperpot['f']
+			return self.doubleGaus(x, A, mu1, s1, mu2, s2, f)
 
 	# Plot phase space
 	def plotSinglePhaseSpace(self, pepperpot, key, fig, scale=1, pad = 1, threeD = 0):
@@ -345,12 +362,19 @@ class BeamData:
 
 		f = RectBivariateSpline(ytot[:, 0], xtot[0], ztot, kx=3, ky=3)
 		xtot = np.linspace(-50, 50, 500)
-		ytot = np.linspace(-150, 150, 500)
+		ytot = np.linspace(-200, 200, 500)
 		ztot = f(ytot, xtot)
 
 		xtot, ytot = np.meshgrid(xtot, ytot)
 
 		if threeD==0:
+			xMPV = xtot.flatten()[ztot.argmax()]
+			xMPV = (xtot.flatten()*ztot.flatten()).sum()/ztot.flatten().sum()
+			sxMPV = np.sqrt((ztot.flatten()*(xtot.flatten() - xMPV)**2).sum()/ztot.flatten().sum())
+			yMPV = ytot.flatten()[ztot.argmax()]
+			yMPV = (ytot.flatten()*ztot.flatten()).sum()/ztot.flatten().sum()
+			syMPV = np.sqrt((ztot.flatten()*(ytot.flatten() - yMPV)**2).sum()/ztot.flatten().sum())
+			rhoMPV = (ztot.flatten()*(ytot.flatten() - yMPV)*(xtot.flatten() - xMPV)).sum()/ztot.flatten().sum()/sxMPV/syMPV
 			ax = fig.add_subplot(1, 2, pad)
 			plt.pcolormesh(xtot, ytot, ztot, cmap=cm.coolwarm)
 			plt.xlabel(key + ' [mm]')
@@ -385,6 +409,7 @@ class BeamData:
 					break
 			fInt = interp1d(zInt, I, kind='cubic')
 			I90 = fInt(0.9)
+			#I90 = fInt(0.682*0.682)
 			zInt = z.flatten()
 			zInt.sort()
 			zInt = zInt[::-1]
@@ -395,12 +420,21 @@ class BeamData:
 			CS = plt.contour(x, y, z, colors='black', alpha=0.5, levels=[z90])
 			h, _ = CS.legend_elements()
 			ax.legend(h, ['90 %% contour:\n%.2f ' %AREA + r'$\mu$' + 'mrad' + ' area'], loc='lower right')
+
+			textstr = key + f'MPV = {xMPV : .2f} mm'
+			textstr = textstr + f'\nSTD({key}MPV) = {sxMPV : .2f} mm'
+			textstr = textstr + '\n' + key + f'\'MPV = {yMPV : .2f} mrad'
+			textstr = textstr + f'\nSTD({key}\'MPV) = {syMPV : .2f} mrad'
+			textstr = textstr + f'\nCOR(MPV) = {rhoMPV : .3f} '
+			props = dict(boxstyle='round', facecolor='white', edgecolor='grey', alpha=0.7)
+			ax.text(0.05, 0.95, textstr, transform=ax.transAxes, verticalalignment='top', fontsize=12, bbox=props)
 			plt.grid()
 		else:
 			ztot = ztot/ztot.max()
 			plt.subplots_adjust(right=1.1, left=-0.1, wspace=-0.4)
 			ax = fig.add_subplot(1, 2, pad, projection='3d')
 			ax.plot_surface(xtot, ytot, ztot, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+			#ax.scatter(xtot, ytot, ztot, linewidth=0, antialiased=False)
 			plt.xlabel(key + ' [mm]', labelpad=15)
 			plt.ylabel(key + '\' [mrad]', labelpad=15)
 		if pad==1:
@@ -414,31 +448,59 @@ class BeamData:
 		pepperpoty = []
 		Ix = 0
 		Iy = 0
-		for i in range(len(self.pepperpot)):
-			if(list(self.pepperpot[i].keys())[-1] == 'x'):
-				# Check if slicex or data
-				while True:
-					if(Ix >= len(slicex)):
-						break
-					if(slicex[Ix]['x'] >= self.pepperpot[i]['x']):
-						break
-					if(slicex[Ix]['x'] < self.pepperpot[i]['x']):
-						pepperpotx.append(slicex[Ix])
-						Ix += 1
-				# Add data slice
-				pepperpotx.append(self.pepperpot[i])
-			elif(list(self.pepperpot[i].keys())[-1] == 'y'):
-				# Check if slicex or data
-				while True:
-					if(Iy >= len(slicey)):
-						break
-					if(slicey[Iy]['y'] >= self.pepperpot[i]['y']):
-						break
-					if(slicey[Iy]['y'] < self.pepperpot[i]['y']):
-						pepperpoty.append(slicey[Iy])
-						Iy += 1
-				# Add data slice
-				pepperpoty.append(self.pepperpot[i])
+		if self.selectParametrization == 0:
+			for i in range(len(self.pepperpot)):
+				if(list(self.pepperpot[i].keys())[-1] == 'x'):
+					# Check if slicex or data
+					while True:
+						if(Ix >= len(slicex)):
+							break
+						if(slicex[Ix]['x'] >= self.pepperpot[i]['x']):
+							break
+						if(slicex[Ix]['x'] < self.pepperpot[i]['x']):
+							pepperpotx.append(slicex[Ix])
+							Ix += 1
+					# Add data slice
+					pepperpotx.append(self.pepperpot[i])
+				elif(list(self.pepperpot[i].keys())[-1] == 'y'):
+					# Check if slicex or data
+					while True:
+						if(Iy >= len(slicey)):
+							break
+						if(slicey[Iy]['y'] >= self.pepperpot[i]['y']):
+							break
+						if(slicey[Iy]['y'] < self.pepperpot[i]['y']):
+							pepperpoty.append(slicey[Iy])
+							Iy += 1
+					# Add data slice
+					pepperpoty.append(self.pepperpot[i])
+		
+		elif self.selectParametrization == 1:
+			for i in range(len(self.newPepperpot)):
+				if(list(self.newPepperpot[i].keys())[-1] == 'x'):
+					# Check if slicex or data
+					while True:
+						if(Ix >= len(slicex)):
+							break
+						if(slicex[Ix]['x'] >= self.newPepperpot[i]['x']):
+							break
+						if(slicex[Ix]['x'] < self.newPepperpot[i]['x']):
+							pepperpotx.append(slicex[Ix])
+							Ix += 1
+					# Add data slice
+					pepperpotx.append(self.newPepperpot[i])
+				elif(list(self.newPepperpot[i].keys())[-1] == 'y'):
+					# Check if slicex or data
+					while True:
+						if(Iy >= len(slicey)):
+							break
+						if(slicey[Iy]['y'] >= self.newPepperpot[i]['y']):
+							break
+						if(slicey[Iy]['y'] < self.newPepperpot[i]['y']):
+							pepperpoty.append(slicey[Iy])
+							Iy += 1
+					# Add data slice
+					pepperpoty.append(self.newPepperpot[i])
 
 		fig = plt.figure(figsize=[12, 5], dpi=100)
 		matplotlib.rcParams.update({'font.size': 15})
@@ -752,31 +814,59 @@ class BeamData:
 		pepperpoty = []
 		Ix = 0
 		Iy = 0
-		for i in range(len(self.pepperpot)):
-			if(list(self.pepperpot[i].keys())[-1] == 'x'):
-				# Check if slicex or data
-				while True:
-					if(Ix >= len(slicex)):
-						break
-					if(slicex[Ix]['x'] >= self.pepperpot[i]['x']):
-						break
-					if(slicex[Ix]['x'] < self.pepperpot[i]['x']):
-						pepperpotx.append(slicex[Ix])
-						Ix += 1
-				# Add data slice
-				pepperpotx.append(self.pepperpot[i])
-			elif(list(self.pepperpot[i].keys())[-1] == 'y'):
-				# Check if slicex or data
-				while True:
-					if(Iy >= len(slicey)):
-						break
-					if(slicey[Iy]['y'] >= self.pepperpot[i]['y']):
-						break
-					if(slicey[Iy]['y'] < self.pepperpot[i]['y']):
-						pepperpoty.append(slicey[Iy])
-						Iy += 1
-				# Add data slice
-				pepperpoty.append(self.pepperpot[i])
+		if self.selectParametrization == 0:
+			for i in range(len(self.pepperpot)):
+				if(list(self.pepperpot[i].keys())[-1] == 'x'):
+					# Check if slicex or data
+					while True:
+						if(Ix >= len(slicex)):
+							break
+						if(slicex[Ix]['x'] >= self.pepperpot[i]['x']):
+							break
+						if(slicex[Ix]['x'] < self.pepperpot[i]['x']):
+							pepperpotx.append(slicex[Ix])
+							Ix += 1
+					# Add data slice
+					pepperpotx.append(self.pepperpot[i])
+				elif(list(self.pepperpot[i].keys())[-1] == 'y'):
+					# Check if slicex or data
+					while True:
+						if(Iy >= len(slicey)):
+							break
+						if(slicey[Iy]['y'] >= self.pepperpot[i]['y']):
+							break
+						if(slicey[Iy]['y'] < self.pepperpot[i]['y']):
+							pepperpoty.append(slicey[Iy])
+							Iy += 1
+					# Add data slice
+					pepperpoty.append(self.pepperpot[i])
+
+		elif self.selectParametrization == 1:
+			for i in range(len(self.newPepperpot)):
+				if(list(self.newPepperpot[i].keys())[-1] == 'x'):
+					# Check if slicex or data
+					while True:
+						if(Ix >= len(slicex)):
+							break
+						if(slicex[Ix]['x'] >= self.newPepperpot[i]['x']):
+							break
+						if(slicex[Ix]['x'] < self.newPepperpot[i]['x']):
+							pepperpotx.append(slicex[Ix])
+							Ix += 1
+					# Add data slice
+					pepperpotx.append(self.newPepperpot[i])
+				elif(list(self.newPepperpot[i].keys())[-1] == 'y'):
+					# Check if slicex or data
+					while True:
+						if(Iy >= len(slicey)):
+							break
+						if(slicey[Iy]['y'] >= self.newPepperpot[i]['y']):
+							break
+						if(slicey[Iy]['y'] < self.newPepperpot[i]['y']):
+							pepperpoty.append(slicey[Iy])
+							Iy += 1
+					# Add data slice
+					pepperpoty.append(self.newPepperpot[i])
 
 		# Sample momentum distribution
 		# Create cumulative function: it's fine to do it every time it is sampled. It doesn't take too much time
