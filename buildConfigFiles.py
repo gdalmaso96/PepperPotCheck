@@ -45,7 +45,7 @@ datasets.append({'fileName' : 'Data_2022_MEG/Collimator/tomoN11.txt', 'QSK41cur'
 # COBRA profile
 datasets.append({'fileName' : 'Data_2022_MEG/COBRA/rasterscan.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -25, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 25, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 0, 'Chi2' : 0})
 #datasets.append({'fileName' : 'Data_2022_MEG/COBRA/raster_mu_11.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -25, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 56, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 1, 'Chi2' : 1})
-datasets.append({'fileName' : 'Data_2022_MEG/COBRA/raster_mu_11.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -10, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 56, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 1, 'Chi2' : 1})
+datasets.append({'fileName' : 'Data_2022_MEG/COBRA/raster_mu_11.txt', 'QSK41cur' : 18.50, 'QSK42cur' : -44.1, 'QSK43cur' : 43, 'SML41cur' : -10, 'SMH41' : 200, 'SMV41' : 72.5, 'Data type - 1' : 'RasterScan', 'Data type - 2' : 'horizontal', 'Simulation n.' : 56, 'Beamline': 'MEGCOBRA', 'PILL position' : 'COBRA', 'LL' : 0, 'Chi2' : 0})
  
 # ------------------------------------------------------------------------------------ #
 # Mu3e files
@@ -84,7 +84,7 @@ datasets.append({'fileName' : 'Data_2022_Mu3e/QSM41/QSM41_-150.txt', 'QSK41cur' 
 datasets.append({'fileName' : 'Data_2022_Mu3e/QSM41/QSM41_-250.txt', 'QSK41cur' : 11, 'QSK42cur' : -35.5, 'QSK43cur' : 30, 'SML41cur' : 0, 'ASL41cur' : -74.7, 'QSO41cur' : 56, 'QSO42cur': -23, 'ASK41cur' : -92, 'QSM41cur' : -250, 'Data type - 1' : 'QuadScan', 'Data type - 2' : '', 'Simulation n.' : 54, 'Beamline': 'Mu3eQSM', 'PILL position' : 'QSM41', 'LL' : 0, 'Chi2' : 0})
 
 # HULK
-datasets.append({'fileName' : 'Data_2022_Mu3e/HULK/scan_2022-05-20-22-31_PILL.txt', 'QSK41cur' : 4.80, 'QSK42cur' : -31.8, 'QSK43cur' : 28.80, 'SML41cur' : -14, 'ASL41cur' : -74.00, 'QSO41cur' : 53.50, 'QSO42cur': -15, 'ASK41cur' : -90.50, 'QSM41cur' : 92, 'Data type - 1' : 'RasterScan', 'Data type - 2' : '', 'Simulation n.' : 55, 'Beamline': 'Mu3eHULK', 'PILL position' : 'HULK', 'LL' : 0, 'Chi2' : 0})
+datasets.append({'fileName' : 'Data_2022_Mu3e/HULK/scan_2022-05-20-22-31_PILL.txt', 'QSK41cur' : 4.80, 'QSK42cur' : -31.8, 'QSK43cur' : 28.80, 'SML41cur' : -14, 'ASL41cur' : -74.00, 'QSO41cur' : 53.50, 'QSO42cur': -15, 'ASK41cur' : -90.50, 'QSM41cur' : 92, 'Data type - 1' : 'RasterScan', 'Data type - 2' : '', 'Simulation n.' : 55, 'Beamline': 'Mu3eHULK', 'PILL position' : 'HULK', 'LL' : 1, 'Chi2' : 1})
 
 # ------------------------------------------------------------------------------------ #
 # Simulation settings
@@ -109,13 +109,31 @@ pepperpot.append({'y' : 12.5, 'A' : 1.64781, 'mu' : -2.13186,  's1' : 64.3065, '
 pepperpot.append({'y' : 25, 'A' : 1.22517, 'mu' : -1.38467,  's1' : 64.7991, 'l1' : 0.265646, 's2' : 59.8198, 'l2' : -14.4382})
 pepperpot.append({'y' : 37.5, 'A' : 0.427013, 'mu' : 6.17808,  's1' : 47.7518, 'l1' : -10.2908, 's2' : 71.9936, 'l2' : 2.38926})
 
+# New pepperpot parametrisation, gauss only
+newPepperpot = []
+newPepperpot.append({'x' : -37.50, 'A' : 0.5643398539714248, 'mu1' : -100.08645110237588, 's1' : 22.727298699962816, 'mu2' : -16.17019308976178, 's2' : 27.181122799817157, 'f' : 0.05701050188408757})
+newPepperpot.append({'x' : -25.00, 'A' : 3.043934320661763, 'mu1' : 17.474807495319222, 's1' : 45.53348603403154, 'mu2' : -64.28014734985047, 's2' : 75.36470128682026, 'f' : 0.965714140206257})
+newPepperpot.append({'x' : -12.50, 'A' : 5.562514776525446, 'mu1' : -32.596432776477755, 's1' : 47.2785838384531, 'mu2' : -7.512640886312815, 's2' : 47.97483727698369, 'f' : 0.3451079187964172})
+newPepperpot.append({'x' : 0.00, 'A' : 5.77747469350844, 'mu1' : -14.844649883273313, 's1' : 38.440138541095514, 'mu2' : 9.810180178007355, 's2' : 55.43822555548808, 'f' : 0.35756122065804774})
+newPepperpot.append({'x' : 12.50, 'A' : 4.371092047549753, 'mu1' : -43.86709899212271, 's1' : 43.67475606447826, 'mu2' : -7.893216522027519, 's2' : 50.526236786523306, 'f' : 0.5171911511100213})
+newPepperpot.append({'x' : 25.00, 'A' : 2.246062622846159, 'mu1' : -30.11554378790554, 's1' : 41.27407232641102, 'mu2' : -8.282225994923486, 's2' : 57.42834631098682, 'f' : 0.27260931870945415})
+newPepperpot.append({'x' : 37.50, 'A' : 0.5971358013227921, 'mu1' : -68.36119870521891, 's1' : 22.727272762310623, 'mu2' : -13.485424234274143, 's2' : 34.526020297705266, 'f' : 0.5577814164690204})
+
+newPepperpot.append({'y' : -37.50, 'A' : 0.32417036051493886, 'mu1' : -19.82240662315636, 's1' : 22.72891043747659, 'mu2' : -64.87549580390773, 's2' : 22.743856805061014, 'f' : 0.5020888165015114})
+newPepperpot.append({'y' : -25.00, 'A' : 2.045318436565877, 'mu1' : -28.049941739918864, 's1' : 35.44676594219727, 'mu2' : -107.50111247329808, 's2' : 2606.886589185089, 'f' : 0.5787881928051111})
+newPepperpot.append({'y' : -12.50, 'A' : 2.6780846267307896, 'mu1' : -31.046049046587758, 's1' : 33.68252730584893, 'mu2' : 9.86830766166298, 's2' : 24.42340515312359, 'f' : 0.6816894492217309})
+newPepperpot.append({'y' : 0.00, 'A' : 4.696094238903203, 'mu1' : -52.464665380193935, 's1' : 265.1608972273256, 'mu2' : -9.00863631393205, 's2' : 35.44837328000493, 'f' : 0.029534616734255947})
+newPepperpot.append({'y' : 12.50, 'A' : 3.4737881786636446, 'mu1' : -1.7271707109017365, 's1' : 37.78225785620785, 'mu2' : -33.48511960100041, 's2' : 22.72806209412591, 'f' : 0.8526109872235575})
+newPepperpot.append({'y' : 25.00, 'A' : 2.508580385706385, 'mu1' : 20.858161891798005, 's1' : 44.506206604986446, 'mu2' : -15.461218597645836, 's2' : 32.166010920694085, 'f' : 0.1931766277915466})
+newPepperpot.append({'y' : 37.50, 'A' : 0.8300531409466592, 'mu1' : -12.314495102506395, 's1' : 22.73096499837432, 'mu2' : 35.26416074425969, 's2' : 27.358686488616254, 'f' : 0.6441490038554367})
+
 # ------------------------------------------------------------------------------------ #
 # Invert beam simulation settings
 invert = {'Beamline' : 'MEGconfiguration.g4bl', 'QSK41cur' : -18.1982, 'QSK42cur' : 40.7008, 'QSK43cur' : -34.8, 'SML41cur' : 10, 'beamPositionZ' : 1250+1117-44, 'poszPILL' : 0}
 simulations['Invert'] = invert
 # ------------------------------------------------------------------------------------ #
 # Configurations settingsi
-configurations = {'datasets' : datasets, 'simulations' : simulations, 'pepperpot' : pepperpot}
+configurations = {'datasets' : datasets, 'simulations' : simulations, 'pepperpot' : pepperpot, 'newPepperpot' : newPepperpot}
 
 # ------------------------------------------------------------------------------------ #
 with open('configurations.yaml', 'w') as f: 

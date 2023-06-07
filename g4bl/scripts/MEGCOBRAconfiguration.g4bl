@@ -84,6 +84,7 @@ tubs BTSDUMMY1 kill=1 innerRadius=318*0.5 outerRadius=320 length=2800 material=V
 
 ########################################## COBRA ##########################################
 fieldmap COBRA file=$workDir/g4bl/FieldMaps/COBRAmap.dat
+#fieldmap COBRA file=$workDir/g4bl/FieldMaps/calculatedCOBRAmap.dat
 tubs COBRADUMMY kill=1 innerRadius=318*0.5 outerRadius=351 length=2840 material=Vacuum color=1,0,1,0.5 #2630
 #########################################################################################
 
